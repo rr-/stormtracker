@@ -1,18 +1,4 @@
-const defaultOptions = {
-  positionOptions: {
-    enableHighAccuracy: true,
-    maximumAge: 0,
-    timeout: 6000,
-  },
-  showAccuracyCircle: true,
-  showUserLocation: true,
-};
-
 class MyGeolocateControl {
-  constructor(options) {
-    this.options = { ...defaultOptions, ...options };
-  }
-
   onAdd(map) {
     this.map = map;
     this.container = document.createElement('div');
@@ -169,6 +155,7 @@ class MyGeolocateControl {
   }
 
   handleChange() {
+    this.circleElement.style.visibility = config.accuracyCircleEnabled ? 'visible' : 'hidden';
     this.trackButton.classList.toggle('active', config.trackEnabled);
     this.followButton.classList.toggle('active', config.followEnabled);
     if (config.trackEnabled && this.geolocationWatchID === undefined) {
@@ -192,7 +179,11 @@ class MyGeolocateControl {
     this.geolocationWatchID = window.navigator.geolocation.watchPosition(
       (position) => this.handleSuccess(position),
       (error) => this.handleError(error),
-      this.options.positionOptions
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 6000,
+      }
     );
     console.info('GPS: adding watch', this.geolocationWatchID);
   }

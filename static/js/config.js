@@ -27,6 +27,7 @@ Object.assign(config, {
   audioEnabled: localStorage.getItem('Audio') === '1' ?? true,
   trackEnabled: false,
   followEnabled: false,
+  accuracyCircleEnabled: false,
   rain: {
     enabled: true,
     opacity: 0.5,
