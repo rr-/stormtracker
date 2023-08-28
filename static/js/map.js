@@ -459,8 +459,6 @@ class MapRainControl extends MapBaseControl {
       paint: {
         'raster-opacity': config.rain.opacity,
       },
-      minzoom: 0,
-      maxzoom: 12,
     });
 
     for (let referenceLayer of ['road-label', 'road-label-navigation']) {
