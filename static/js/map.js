@@ -86,7 +86,7 @@ class CycleMapStyleButtons {
   }
 
   handleClick(styleIndex) {
-    this.masterControl.setMapStyle(styleIndex);
+    this.masterControl.switchMapStyle(styleIndex);
   }
 
   handleConfigChange() {
@@ -281,7 +281,7 @@ class MapMasterControl extends MapBaseControl {
   }
 
   cycleMapStyle() {
-    this.setMapStyle((config.mapStyle + 1) % config.mapStyles.length);
+    this.switchMapStyle((config.mapStyle + 1) % config.mapStyles.length);
   }
 
   toggleAudio(enable) {
@@ -319,7 +319,7 @@ class MapMasterControl extends MapBaseControl {
     this.ui.geolocate.handleChange();
   }
 
-  setMapStyle(index) {
+  switchMapStyle(index) {
     this.map.setStyle(config.mapStyles[index].style);
     config.mapStyle = index;
     config.save();
@@ -386,6 +386,16 @@ class MapKeyboardControl extends MapBaseControl {
     if (event.key === 's' || event.key === 'S') {
       this.masterControl.cycleMapStyle();
     }
+
+    if (event.key === 'g' || event.key === 'G') {
+      // toggle dark navigation / satellite
+      if (config.mapStyle === 0) {
+        this.masterControl.switchMapStyle(2);
+      } else {
+        this.masterControl.switchMapStyle(0);
+      }
+    }
+
     if (event.key === 't' || event.key === 'T') {
       this.masterControl.toggleTrack();
     }
