@@ -630,11 +630,13 @@ class MapStrikeLiveControl extends MapBaseControl {
       circle.div.style.visibility = config.strikeMarkers.enabled
         ? 'visible'
         : 'hidden';
-      this.map.setLayoutProperty(
-        this.layerName(n),
-        'visibility',
-        config.strikeMarkers.enabled ? 'visible' : 'none'
-      );
+      if (this.map.getLayer(this.layerName(n))) {
+        this.map.setLayoutProperty(
+          this.layerName(n),
+          'visibility',
+          config.strikeMarkers.enabled ? 'visible' : 'none'
+        );
+      }
     }
   }
 
