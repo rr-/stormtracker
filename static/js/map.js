@@ -207,7 +207,6 @@ class PlusImage {
 
 class MapBaseControl {
   handleStrikes(strikes) {}
-
   handleStrike(strikes) {}
 }
 
@@ -438,7 +437,7 @@ class MapRainControl extends MapBaseControl {
   handleStyleLoad() {
     if (this.lastKnownUrl) {
       this.handleTiles(this.lastKnownUrl);
-      this.handleChange();
+      this.handleConfigChange();
     }
   }
 
