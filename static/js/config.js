@@ -8,14 +8,14 @@ Object.assign(config, {
   startZoom: localStorage.getItem('MapZoom') ?? 5,
   mapStyles: [
     {
-      icon: 'mapDay',
-      name: 'Navigation (day)',
-      style: 'mapbox://styles/mapbox/navigation-day-v1',
-    },
-    {
       icon: 'mapNight',
       name: 'Navigation (dark)',
       style: 'mapbox://styles/mapbox/navigation-night-v1',
+    },
+    {
+      icon: 'mapDay',
+      name: 'Navigation (day)',
+      style: 'mapbox://styles/mapbox/navigation-day-v1',
     },
     {
       icon: 'mapSatellite',
