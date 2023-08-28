@@ -238,6 +238,7 @@ class MapMasterControl extends MapBaseControl {
       west: -180,
       east: 180,
     };
+    this.positionChanged = false;
 
     map.on('load', () => this.handleLoad());
     map.on('moveend', () => this.handleMapMove());
@@ -253,26 +254,30 @@ class MapMasterControl extends MapBaseControl {
   }
 
   handleMapMove() {
-    this.updateMapPosition();
+    this.positionChanged = true;
   }
 
   handleMapZoom() {
-    this.updateMapPosition();
-  }
-
-  updateMapPosition() {
-    config.startPos.lon = this.map.getCenter().lng;
-    config.startPos.lat = this.map.getCenter().lat;
-    config.startZoom = this.map.getZoom();
-    config.save();
+    this.positionChanged = true;
   }
 
   updateMapBounds() {
+    if (!this.positionChanged) {
+      return;
+    }
+
+    this.positionChanged = false;
+
     const MapBounds = this.map.getBounds();
     this.bounds.west = MapBounds.getWest();
     this.bounds.north = MapBounds.getNorth();
     this.bounds.east = MapBounds.getEast();
     this.bounds.south = MapBounds.getSouth();
+
+    config.startPos.lon = this.map.getCenter().lng;
+    config.startPos.lat = this.map.getCenter().lat;
+    config.startZoom = this.map.getZoom();
+    config.save();
   }
 
   cycleMapStyle() {
