@@ -1,6 +1,13 @@
 const test = false;
 
 // TODO: add ability to control lightning ranges
+// TODO: improve live markers persistLiveStrikes behavior
+// TODO: change live markers to leave circles behind
+// TODO: improve stats appearance
+// TODO: remove mapbox logo
+// TODO: add map scale
+// TODO: add distance circles
+// TODO: remove distracting symbols from the map
 
 (() => {
   const $map = document.getElementById('map');
