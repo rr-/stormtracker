@@ -76,3 +76,7 @@ body {
 .mapboxgl-ctrl button.mapboxgl-ctrl-mapSatellite .mapboxgl-ctrl-icon {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22m3 7 6-3 6 3 6-3v13l-6 3-6-3-6 3V7M9 4v13M15 7v13%22/%3E%3C/svg%3E');
 }
+
+.mapboxgl-ctrl-logo {
+  display: none !important;
+}

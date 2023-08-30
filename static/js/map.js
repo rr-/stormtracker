@@ -717,6 +717,7 @@ class Map {
       zoom: config.startZoom,
       style: config.mapStyles[config.mapStyle].style,
       hash: true,
+      attributionControl: false,
     });
 
     this.masterControl = new MapMasterControl(this.map);
