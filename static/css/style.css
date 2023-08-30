@@ -49,6 +49,9 @@ body {
 .mapboxgl-ctrl button.mapboxgl-ctrl-follow .mapboxgl-ctrl-icon {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M4 8V6a2 2 0 0 1 2-2h2%22/%3E%3C/svg%3E');
 }
+.mapboxgl-ctrl button.mapboxgl-ctrl-range-circles .mapboxgl-ctrl-icon {
+  --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M11 12a1 1 0 1 0 2 0 1 1 0 1 0-2 0%22/%3E%3Cpath d%3D%22M7 12a5 5 0 1 0 10 0 5 5 0 1 0-10 0%22/%3E%3Cpath d%3D%22M3 12a9 9 0 1 0 18 0 9 9 0 1 0-18 0%22/%3E%3C/svg%3E');
+}
 
 .mapboxgl-ctrl button.mapboxgl-ctrl-sound .mapboxgl-ctrl-icon {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M6 15H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2l3.5-4.5A.8.8 0 0 1 11 5v14a.8.8 0 0 1-1.5.5L6 15M16 10l4 4m0-4-4 4%22/%3E%3C/svg%3E');

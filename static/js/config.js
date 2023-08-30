@@ -27,6 +27,7 @@ Object.assign(config, {
   audioEnabled: localStorage.getItem('Audio') === '1' ?? true,
   trackEnabled: false,
   followEnabled: false,
+  rangeCirclesEnabled: true,
   accuracyCircleEnabled: false,
   rain: {
     enabled: true,
@@ -91,6 +92,9 @@ config.load = () => {
   if (localStorage.getItem('Rain') !== null) {
     config.rain.enabled = localStorage.getItem('Rain') === '1';
   }
+  if (localStorage.getItem('RangeCircles') !== null) {
+    config.rangeCirclesEnabled = localStorage.getItem('RangeCircles') === '1';
+  }
 };
 
 config.save = () => {
@@ -103,6 +107,7 @@ config.save = () => {
   localStorage.setItem('Follow', config.followEnabled ? '1' : '0');
   localStorage.setItem('Strikes', config.strikeMarkers.enabled ? '1' : '0');
   localStorage.setItem('Rain', config.rain.enabled ? '1' : '0');
+  localStorage.setItem('RangeCircles', config.rangeCirclesEnabled ? '1' : '0');
   config.dispatchEvent(new CustomEvent('save'));
 };
 

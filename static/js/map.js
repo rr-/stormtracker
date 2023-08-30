@@ -1,3 +1,12 @@
+const metersToPixels = (meters, zoomLevel, latitude) => {
+  const mapPixels =
+    meters /
+    (78271.484 / 2 ** zoomLevel) /
+    Math.cos((latitude * Math.PI) / 180);
+  const screenPixel = mapPixels * Math.floor(devicePixelRatio);
+  return screenPixel;
+};
+
 class UIButtons {
   constructor(masterControl) {
     this.masterControl = masterControl;
@@ -293,6 +302,12 @@ class MapMasterControl extends MapBaseControl {
     config.save();
   }
 
+  toggleRangeCircles(enable) {
+    config.rangeCirclesEnabled =
+      enable !== undefined ? enable : !config.rangeCirclesEnabled;
+    config.save();
+  }
+
   toggleStrikes(enable) {
     config.strikeMarkers.enabled =
       enable !== undefined ? enable : !config.strikeMarkers.enabled;
@@ -305,7 +320,6 @@ class MapMasterControl extends MapBaseControl {
       config.followEnabled = false;
     }
     config.save();
-    this.ui.geolocate.handleChange();
   }
 
   toggleFollow(enable) {
@@ -315,7 +329,6 @@ class MapMasterControl extends MapBaseControl {
       config.trackEnabled = true;
     }
     config.save();
-    this.ui.geolocate.handleChange();
   }
 
   switchMapStyle(index) {
@@ -406,6 +419,9 @@ class MapKeyboardControl extends MapBaseControl {
     }
     if (event.key === 'r' || event.key === 'R') {
       this.masterControl.toggleRain();
+    }
+    if (event.key === 'c' || event.key === 'C') {
+      this.masterControl.toggleRangeCircles();
     }
     if (event.key === '1') {
       this.masterControl.map.zoomTo(8);
@@ -707,6 +723,114 @@ class MapStrikeLiveControl extends MapBaseControl {
   }
 }
 
+class LocationRadiusControl extends MapBaseControl {
+  constructor(masterControl) {
+    super();
+    this.masterControl = masterControl;
+    this.masterControl.ui.geolocate.addEventListener('geolocate', (event) =>
+      this.handleGeolocate(event.detail)
+    );
+    this.map = masterControl.map;
+    this.map.on('style.load', () => this.handleStyleLoad());
+    this.map.on('zoom', () => this.handleZoom());
+
+    this.circles = [
+      { radius: 10000, color: '#00dd00bb' },
+      { radius: 25000, color: '#ffee00aa' },
+      { radius: 50000, color: '#ff550099' },
+      { radius: 75000, color: '#ff000088' },
+    ].map((props) => ({
+      ...props,
+      div: document.createElement('div'),
+      geojson: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: { type: 'LineString', coordinates: [] },
+          },
+        ],
+      },
+    }));
+
+    config.addEventListener('save', () => this.handleConfigChange());
+  }
+
+  get isEnabled() {
+    return config.rangeCirclesEnabled;
+  }
+
+  handleConfigChange() {
+    for (const [n, circle] of this.circles.entries()) {
+      circle.div.style.visibility = this.isEnabled ? 'visible' : 'hidden';
+      if (this.map.getLayer(this.layerName(n))) {
+        this.map.setLayoutProperty(
+          this.layerName(n),
+          'visibility',
+          this.isEnabled ? 'visible' : 'none'
+        );
+      }
+    }
+  }
+
+  handleStyleLoad() {
+    for (const [n, circle] of this.circles.entries()) {
+      circle.marker = new mapboxgl.Marker(circle.div)
+        .setLngLat([0, -90])
+        .addTo(this.map);
+      this.map.addLayer({
+        id: this.layerName(n),
+        type: 'line',
+        source: { type: 'geojson', data: circle.geojson },
+      });
+    }
+    this.handleConfigChange();
+  }
+
+  handleZoom() {
+    this.draw();
+  }
+
+  handleGeolocate(position) {
+    this.lastKnownPosition = position;
+    for (let circle of this.circles) {
+      if (circle.marker) {
+        circle.marker.setLngLat([position.lon, position.lat]);
+      }
+    }
+    this.draw();
+  }
+
+  draw() {
+    for (let circle of this.circles) {
+      this.drawCircle(circle);
+    }
+  }
+
+  drawCircle(circle) {
+    if (!this.isEnabled || !this.lastKnownPosition) {
+      return;
+    }
+
+    const radius = metersToPixels(
+      circle.radius,
+      this.map.getZoom(),
+      this.lastKnownPosition.lat
+    );
+    const size = radius * 2;
+    const center = size / 2;
+    circle.div.innerHTML =
+      `<svg style='width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)'>` +
+      `<circle cx='${center}' cy='${center}' ` +
+      `r='${radius}' stroke='${circle.color}' stroke-width='1.5' fill='none'/>` +
+      '</svg>';
+  }
+
+  layerName(n) {
+    return `location-radius-${n}`;
+  }
+}
+
 class Map {
   constructor(container, config) {
     mapboxgl.accessToken = config.mapboxAccessToken;
@@ -728,6 +852,7 @@ class Map {
     this.rainControl = new MapRainControl(this.masterControl);
     this.strikeLiveControl = new MapStrikeLiveControl(this.masterControl);
     this.strikeHistoryControl = new MapStrikeHistoryControl(this.masterControl);
+    this.locationRadiusControl = new LocationRadiusControl(this.masterControl);
 
     this.allControls = [
       this.masterControl,
@@ -736,6 +861,7 @@ class Map {
       this.rainControl,
       this.strikeLiveControl,
       this.strikeHistoryControl,
+      this.locationRadiusControl,
     ];
   }
 

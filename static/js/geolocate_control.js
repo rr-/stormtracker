@@ -1,56 +1,70 @@
-class MyGeolocateControl {
+class MyGeolocateControl extends EventTarget {
+  constructor(masterControl) {
+    super();
+    this.masterControl = masterControl;
+  }
+
   onAdd(map) {
     this.map = map;
-    this.container = document.createElement('div');
-    this.container.className = `mapboxgl-ctrl mapboxgl-ctrl-group`;
-
-    this.trackButton = htmlToElement(`
+    this.container = htmlToElement(`
+      <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
       <button
         class='mapboxgl-ctrl-geolocate'
         type='button'
         title='Find my location'
         aria-label='Find my location'
       ><span class="mapboxgl-ctrl-icon" aria-hidden="true"></span></button>
-    `);
 
-    this.followButton = htmlToElement(`
       <button
         class='mapboxgl-ctrl-follow'
         type='button'
         title='Follow my location'
         aria-label='Follow my location'
       ><span class="mapboxgl-ctrl-icon" aria-hidden="true"></span></button>
+
+      <button
+        class='mapboxgl-ctrl-range-circles'
+        type='button'
+        title='Toggle range circles'
+        aria-label='Toggle range circles'
+      ><span class="mapboxgl-ctrl-icon" aria-hidden="true"></span></button>
+    </div>
     `);
 
-    this.container.appendChild(this.trackButton);
-    this.container.appendChild(this.followButton);
+    this.trackButton = this.container.querySelector('.mapboxgl-ctrl-geolocate');
+    this.followButton = this.container.querySelector('.mapboxgl-ctrl-follow');
+    this.rangeCirclesButton = this.container.querySelector(
+      '.mapboxgl-ctrl-range-circles'
+    );
 
     this.dotElement = htmlToElement(
       '<div class="mapboxgl-user-location-dot"></div>'
     );
 
-    this.lastKnownPosition = null;
-    this.userLocationDotMarker = new mapboxgl.Marker(this.dotElement);
-
-    this.circleElement = htmlToElement(
+    this.accuracyCircleElement = htmlToElement(
       '<div class="mapboxgl-user-location-accuracy-circle"></div>'
     );
 
+    this.lastKnownPosition = null;
+    this.userLocationDotMarker = new mapboxgl.Marker(this.dotElement);
     this.accuracyCircleMarker = new mapboxgl.Marker({
-      element: this.circleElement,
+      element: this.accuracyCircleElement,
       pitchAlignment: 'map',
     });
 
     this.map.on('zoom', (event) => this.handleZoom(event));
-
     this.trackButton.addEventListener('click', () =>
       this.handleTrackButtonClick()
     );
     this.followButton.addEventListener('click', () =>
       this.handleFollowButtonClick()
     );
+    this.rangeCirclesButton.addEventListener('click', () =>
+      this.handleRangeCirclesButtonClick()
+    );
+    config.addEventListener('save', () => this.handleConfigChange());
 
-    this.handleChange();
+    this.handleConfigChange();
     return this.container;
   }
 
@@ -69,6 +83,14 @@ class MyGeolocateControl {
       this.updateCamera(position);
     }
 
+    this.dispatchEvent(
+      new CustomEvent('geolocate', {
+        detail: {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        },
+      })
+    );
     this.dotElement.classList.remove('mapboxgl-user-location-dot-stale');
   }
 
@@ -85,25 +107,25 @@ class MyGeolocateControl {
       this.accuracyCircleMarker.setLngLat(center).addTo(this.map);
       this.userLocationDotMarker.setLngLat(center).addTo(this.map);
       this.accuracy = position.coords.accuracy;
-      this.updateCircleRadius();
+      this.updateAccuracyCircle();
     } else {
       this.userLocationDotMarker.remove();
       this.accuracyCircleMarker.remove();
     }
   }
 
-  updateCircleRadius() {
+  updateAccuracyCircle() {
     const y = this.map._container.clientHeight / 2;
     const a = this.map.unproject([0, y]);
     const b = this.map.unproject([1, y]);
     const metersPerPixel = a.distanceTo(b);
     const circleDiameter = Math.ceil((2.0 * this.accuracy) / metersPerPixel);
-    this.circleElement.style.width = `${circleDiameter}px`;
-    this.circleElement.style.height = `${circleDiameter}px`;
+    this.accuracyCircleElement.style.width = `${circleDiameter}px`;
+    this.accuracyCircleElement.style.height = `${circleDiameter}px`;
   }
 
   handleZoom(event) {
-    this.updateCircleRadius();
+    this.updateAccuracyCircle();
     window.setTimeout(() => {
       if (this.lastKnownPosition && config.followEnabled) {
         this.updateCamera(this.lastKnownPosition);
@@ -120,7 +142,7 @@ class MyGeolocateControl {
       // PERMISSION_DENIED
       config.trackEnabled = false;
       config.followEnabled = false;
-      this.handleChange();
+      this.handleConfigChange();
       this.trackButton.classList.remove('waiting');
       this.trackButton.classList.remove('active');
       this.trackButton.classList.remove('error');
@@ -142,7 +164,6 @@ class MyGeolocateControl {
       config.followEnabled = false;
     }
     config.save();
-    this.handleChange();
   }
 
   handleFollowButtonClick() {
@@ -151,13 +172,23 @@ class MyGeolocateControl {
       config.trackEnabled = true;
     }
     config.save();
-    this.handleChange();
   }
 
-  handleChange() {
-    this.circleElement.style.visibility = config.accuracyCircleEnabled ? 'visible' : 'hidden';
+  handleRangeCirclesButtonClick() {
+    config.rangeCirclesEnabled = !config.rangeCirclesEnabled;
+    config.save();
+  }
+
+  handleConfigChange() {
+    this.accuracyCircleElement.style.visibility = config.accuracyCircleEnabled
+      ? 'visible'
+      : 'hidden';
     this.trackButton.classList.toggle('active', config.trackEnabled);
     this.followButton.classList.toggle('active', config.followEnabled);
+    this.rangeCirclesButton.classList.toggle(
+      'active',
+      config.rangeCirclesEnabled
+    );
     if (config.trackEnabled && this.geolocationWatchID === undefined) {
       this.startWatch();
     } else if (!config.trackEnabled && this.geolocationWatchID !== undefined) {
