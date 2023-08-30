@@ -75,10 +75,9 @@ class UIButtons {
 class CycleMapStyleButtons {
   constructor(masterControl) {
     this.masterControl = masterControl;
-    this.div = htmlToElement(`
-      <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
-      </div>
-    `);
+    this.div = htmlToElement(
+      `<div class="mapboxgl-ctrl mapboxgl-ctrl-group"></div>`
+    );
     for (let [styleIndex, style] of config.mapStyles.entries()) {
       const button = htmlToElement(`
         <button class="mapboxgl-ctrl-${style.icon}" title="Set map style to ${style.name}">
@@ -214,11 +213,6 @@ class PlusImage {
   }
 }
 
-class MapBaseControl {
-  handleStrikes(strikes) {}
-  handleStrike(strikes) {}
-}
-
 class MapUI {
   constructor(masterControl) {
     this.geolocate = new MyGeolocateControl();
@@ -236,6 +230,11 @@ class MapUI {
   }
 }
 
+class MapBaseControl {
+  handleStrikes(strikes) {}
+  handleStrike(strikes) {}
+}
+
 class MapMasterControl extends MapBaseControl {
   constructor(map) {
     super();
@@ -249,10 +248,21 @@ class MapMasterControl extends MapBaseControl {
     this.positionChanged = false;
 
     map.on('load', () => this.handleLoad());
+    map.on('style.load', () => this.handleStyleLoad());
     map.on('moveend', () => this.handleMapMove());
     map.on('zoomed', () => this.handleMapZoom());
 
     this.ui = new MapUI(this);
+  }
+
+  handleStyleLoad() {
+    this.removeDistractingIcons();
+  }
+
+  removeDistractingIcons() {
+    for (let layerName of ['airport-label', 'poi-label']) {
+      this.map.setPaintProperty(layerName, 'icon-opacity', 0);
+    }
   }
 
   handleLoad() {
