@@ -720,6 +720,8 @@ class Map {
       attributionControl: false,
     });
 
+    this.map.addControl(new mapboxgl.ScaleControl());
+
     this.masterControl = new MapMasterControl(this.map);
     this.audioControl = new MapAudioControl(this.masterControl);
     this.keyboardControl = new MapKeyboardControl(this.masterControl);
