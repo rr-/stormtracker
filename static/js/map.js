@@ -245,7 +245,7 @@ class MapMasterControl extends MapBaseControl {
       west: -180,
       east: 180,
     };
-    this.positionChanged = false;
+    this.positionChanged = true;
 
     map.on('load', () => this.handleLoad());
     map.on('style.load', () => this.handleStyleLoad());
