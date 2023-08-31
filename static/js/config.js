@@ -33,12 +33,18 @@ Object.assign(config, {
     enabled: true,
     opacity: 0.5,
   },
+  liveMarkers: {
+    enabled: true,
+    persist: true,
+    minSize: 16,
+    maxSize: 120,
+    timeAlive: 500, // 1 s
+    timeAlivePersisted: 60000, // 60 s
+    maxCount: 30,
+  },
   strikeMarkers: {
     enabled: true,
-    persistLiveStrikes: true,
     opacity: 0.8,
-    circleSize: 40,
-    maxCircles: 30,
     plusResolutions: [
       { mapZoom: 0, size: 3, thickness: 1 },
       { mapZoom: 2, size: 5, thickness: 1 },

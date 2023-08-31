@@ -1,8 +1,6 @@
 const test = false;
 
 // TODO: add ability to control lightning ranges
-// TODO: improve live markers persistLiveStrikes behavior
-// TODO: change live markers to leave circles behind
 // TODO: improve stats appearance
 
 (() => {

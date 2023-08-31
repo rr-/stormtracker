@@ -321,6 +321,7 @@ class MapMasterControl extends MapBaseControl {
   toggleStrikes(enable) {
     config.strikeMarkers.enabled =
       enable !== undefined ? enable : !config.strikeMarkers.enabled;
+    config.liveMarkers.enabled = config.strikeMarkers.enabled;
     config.save();
   }
 
@@ -577,13 +578,6 @@ class MapStrikeHistoryControl extends MapBaseControl {
     this.updateSource(n);
   }
 
-  handleStrike(strike) {
-    if (config.strikeMarkers.persistLiveStrikes) {
-      this.geojson[0].features.push(this.strikeToFeature(strike));
-      this.updateSource(0);
-    }
-  }
-
   updateSource(n) {
     const source = this.map.getSource(this.sourceName(n));
     if (source) {
@@ -628,8 +622,9 @@ class MapStrikeLiveControl extends MapBaseControl {
     this.map = masterControl.map;
     this.map.on('style.load', () => this.handleStyleLoad());
 
-    this.maxCounter = 30;
-    this.maxCircles = config.strikeMarkers.maxCircles;
+    this.minSize = config.liveMarkers.minSize;
+    this.maxSize = config.liveMarkers.maxSize;
+    this.maxCircles = config.liveMarkers.maxCount;
     this.lastCircle = 0;
     this.circles = new Array(this.maxCircles).fill().map(() => ({
       div: document.createElement('div'),
@@ -652,14 +647,14 @@ class MapStrikeLiveControl extends MapBaseControl {
   handleConfigChange() {
     for (let n = 0; n < this.maxCircles; n++) {
       const circle = this.circles[n];
-      circle.div.style.visibility = config.strikeMarkers.enabled
+      circle.div.style.visibility = config.liveMarkers.enabled
         ? 'visible'
         : 'hidden';
       if (this.map.getLayer(this.layerName(n))) {
         this.map.setLayoutProperty(
           this.layerName(n),
           'visibility',
-          config.strikeMarkers.enabled ? 'visible' : 'none'
+          config.liveMarkers.enabled ? 'visible' : 'none'
         );
       }
     }
@@ -686,8 +681,8 @@ class MapStrikeLiveControl extends MapBaseControl {
     }
 
     const circle = this.circles[this.lastCircle];
-    circle.active = true;
-    circle.counter = 0;
+    circle.start = performance.now();
+    circle.phase = 0;
     circle.marker.setLngLat([strike.lon, strike.lat]);
 
     this.lastCircle += 1;
@@ -695,37 +690,64 @@ class MapStrikeLiveControl extends MapBaseControl {
   }
 
   animate() {
-    for (let n = 0; n < this.maxCircles; n++) {
-      if (this.circles[n].active) {
-        this.animateCircle(this.circles[n]);
+    for (let circle of this.circles) {
+      if (circle.phase !== -1) {
+        this.animateCircle(circle);
       }
     }
   }
 
   animateCircle(circle) {
-    if (!config.strikeMarkers.enabled) {
+    if (!config.liveMarkers.enabled) {
       return;
     }
 
-    if (circle.counter > this.maxCounter) {
-      circle.active = false;
-      return;
+    const timeDelta = performance.now() - circle.start;
+    if (circle.phase === 0 && timeDelta > config.liveMarkers.timeAlive) {
+      circle.phase = config.liveMarkers.persist ? 1 : -1;
+    }
+    if (
+      circle.phase === 1 &&
+      timeDelta > config.liveMarkers.timeAlivePersisted
+    ) {
+      circle.phase = -1;
     }
 
-    const opacity =
-      1 - Math.pow(1 - (this.maxCounter - circle.counter) / this.maxCounter, 2);
-    const radius =
-      ((this.maxCounter - circle.counter) * config.strikeMarkers.circleSize) /
-      2 /
-      this.maxCounter;
-    const size = config.strikeMarkers.circleSize;
-    const center = size / 2;
-    circle.div.innerHTML =
-      `<svg style='width: ${size}px; height: ${size}px; opacity: ${opacity}; transform: translate(0, 2.5px)'>` +
-      `<circle cx='${center}' cy='${center}' ` +
-      `r='${radius}' stroke='red' stroke-width='1.5' fill='#ffffff55'/>` +
-      '</svg>';
-    circle.counter++;
+    if (circle.phase === 0) {
+      const progress = 1 - timeDelta / config.liveMarkers.timeAlive;
+      const opacity = progress / 1.5;
+      const radius =
+        (this.minSize + progress * (this.maxSize - this.minSize)) / 2;
+      const stroke = 1.5;
+      const size = radius * 2 + stroke * 2;
+      const center = size / 2;
+      circle.div.innerHTML = `<svg style='width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)'>
+          <circle
+            cx='${center}' cy='${center}'
+            r='${radius}'
+            stroke='white'
+            stroke-width='${stroke}'
+            fill='rgba(255, 255, 255, ${opacity})'
+          />
+        </svg>`;
+    } else if (circle.phase === 1) {
+      const radius = this.minSize / 2;
+      const stroke = 2;
+      const size = radius * 2 + stroke * 2;
+      const center = size / 2;
+      circle.div.innerHTML = `<svg style='width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)'>
+          <circle
+            cx='${center}'
+            cy='${center}'
+            r='${radius}'
+            stroke='white'
+            stroke-width='${stroke}'
+            fill='none'
+          />
+        </svg>`;
+    } else if (circle.phase === -1) {
+      circle.div.innerHTML = '';
+    }
   }
 
   layerName(n) {
