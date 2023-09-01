@@ -26,8 +26,15 @@ body {
   background: #60f0f0;
 }
 
-.mapboxgl-ctrl .mapboxgl-ctrl-icon {
-  background: black;
+:root {
+  --icon-color: black;
+}
+
+.icon {
+  background: var(--icon-color);
+  width: 100%;
+  height: 100%;
+  display: inline-block;
   mask-image: var(--mask);
   mask-size: 24px 24px;
   mask-repeat: no-repeat;
@@ -38,48 +45,91 @@ body {
   -webkit-mask-position: center;
 }
 
-.mapboxgl-ctrl button.active .mapboxgl-ctrl-icon {
-  background: #33b5e5;
+.active .icon {
+  --icon-color: #33b5e5;
 }
 
-.mapboxgl-ctrl button.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon {
+.icon.geolocate {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0%22/%3E%3Cpath d%3D%22M4 12a8 8 0 1 0 16 0 8 8 0 1 0-16 0M12 2v2M12 20v2M20 12h2M2 12h2%22/%3E%3C/svg%3E');
 }
 
-.mapboxgl-ctrl button.mapboxgl-ctrl-follow .mapboxgl-ctrl-icon {
+.icon.follow {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M4 8V6a2 2 0 0 1 2-2h2%22/%3E%3C/svg%3E');
 }
-.mapboxgl-ctrl button.mapboxgl-ctrl-range-circles .mapboxgl-ctrl-icon {
+.icon.range-circles {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M11 12a1 1 0 1 0 2 0 1 1 0 1 0-2 0%22/%3E%3Cpath d%3D%22M7 12a5 5 0 1 0 10 0 5 5 0 1 0-10 0%22/%3E%3Cpath d%3D%22M3 12a9 9 0 1 0 18 0 9 9 0 1 0-18 0%22/%3E%3C/svg%3E');
 }
 
-.mapboxgl-ctrl button.mapboxgl-ctrl-sound .mapboxgl-ctrl-icon {
+.icon.sound {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M6 15H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2l3.5-4.5A.8.8 0 0 1 11 5v14a.8.8 0 0 1-1.5.5L6 15M16 10l4 4m0-4-4 4%22/%3E%3C/svg%3E');
 }
-.mapboxgl-ctrl button.mapboxgl-ctrl-sound.active .mapboxgl-ctrl-icon {
+.active .icon.sound {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M15 8a5 5 0 0 1 0 8M17.7 5a9 9 0 0 1 0 14M6 15H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2l3.5-4.5A.8.8 0 0 1 11 5v14a.8.8 0 0 1-1.5.5L6 15%22/%3E%3C/svg%3E');
 }
 
-.mapboxgl-ctrl button.mapboxgl-ctrl-rain .mapboxgl-ctrl-icon {
+.icon.rain {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22%2F%3E%3Cpath d%3D%22M4 12a8 8 0 0 1 16 0zM12 12v6a2 2 0 0 0 4 0%22%2F%3E%3C%2Fsvg%3E');
 }
 
-.mapboxgl-ctrl button.mapboxgl-ctrl-strikes .mapboxgl-ctrl-icon {
+.icon.lightning {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M13 3v7h6l-8 11v-7H5l8-11%22/%3E%3C/svg%3E');
 }
 
-.mapboxgl-ctrl button.mapboxgl-ctrl-mapDay .mapboxgl-ctrl-icon {
+.icon.sun {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M14.828 14.828a4 4 0 1 0-5.656-5.656 4 4 0 0 0 5.656 5.656zM6.343 17.657l-1.414 1.414M6.343 6.343 4.929 4.929M17.657 6.343l1.414-1.414M17.657 17.657l1.414 1.414M4 12H2M12 4V2M20 12h2M12 20v2%22/%3E%3C/svg%3E');
 }
 
-.mapboxgl-ctrl button.mapboxgl-ctrl-mapNight .mapboxgl-ctrl-icon {
+.icon.moon {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M12 3h.393a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 2.992z%22/%3E%3C/svg%3E');
 }
 
-.mapboxgl-ctrl button.mapboxgl-ctrl-mapSatellite .mapboxgl-ctrl-icon {
+.icon.map {
   --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22m3 7 6-3 6 3 6-3v13l-6 3-6-3-6 3V7M9 4v13M15 7v13%22/%3E%3C/svg%3E');
+}
+
+.icon.clock {
+  --mask: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0%22/%3E%3Cpath d%3D%22M12 7v5l3 3%22/%3E%3C/svg%3E');
 }
 
 .mapboxgl-ctrl-logo {
   display: none !important;
+}
+
+.strikes-reload-value,
+.rain-reload-value,
+.strikes-delay-value {
+  width: 3em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.stat {
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px !important;
+  background: rgba(255, 255, 255, 0.5);
+  color: black;
+  --icon-color: black;
+  gap: 5px;
+}
+
+[data-style*='night'] .stat,
+[data-style*='dark'] .stat {
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  --icon-color: white;
+}
+
+[data-style*='night'] .bar-outer,
+[data-style*='dark'] .bar-outer {
+  opacity: 0.5;
+}
+
+.stat .icon {
+  width: 14px;
+  height: 14px;
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  pointer-events: auto;
 }

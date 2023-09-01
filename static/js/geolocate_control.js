@@ -9,32 +9,32 @@ class MyGeolocateControl extends EventTarget {
     this.container = htmlToElement(`
       <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
       <button
-        class='mapboxgl-ctrl-geolocate'
+        class='geolocate'
         type='button'
         title='Find my location'
         aria-label='Find my location'
-      ><span class="mapboxgl-ctrl-icon" aria-hidden="true"></span></button>
+      ><span class="icon geolocate" aria-hidden="true"></span></button>
 
       <button
-        class='mapboxgl-ctrl-follow'
+        class='follow'
         type='button'
         title='Follow my location'
         aria-label='Follow my location'
-      ><span class="mapboxgl-ctrl-icon" aria-hidden="true"></span></button>
+      ><span class="icon follow" aria-hidden="true"></span></button>
 
       <button
-        class='mapboxgl-ctrl-range-circles'
+        class='range-circles'
         type='button'
         title='Toggle range circles'
         aria-label='Toggle range circles'
-      ><span class="mapboxgl-ctrl-icon" aria-hidden="true"></span></button>
+      ><span class="icon range-circles" aria-hidden="true"></span></button>
     </div>
     `);
 
-    this.trackButton = this.container.querySelector('.mapboxgl-ctrl-geolocate');
-    this.followButton = this.container.querySelector('.mapboxgl-ctrl-follow');
+    this.trackButton = this.container.querySelector('button.geolocate');
+    this.followButton = this.container.querySelector('button.follow');
     this.rangeCirclesButton = this.container.querySelector(
-      '.mapboxgl-ctrl-range-circles'
+      'button.range-circles'
     );
 
     this.dotElement = htmlToElement(

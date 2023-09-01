@@ -1,7 +1,6 @@
 const test = false;
 
 // TODO: add ability to control lightning ranges
-// TODO: improve stats appearance
 
 (() => {
   const $map = document.getElementById('map');
@@ -29,10 +28,7 @@ const test = false;
     map.loadHistoricStrikes(event.detail.chunk, event.detail.strikes);
   });
   blitzHistoric.addEventListener('tick', (event) => {
-    map.masterControl.ui.stats.setStrikeReloadTime(
-      event.detail.remaining,
-      event.detail.refreshRate
-    );
+    map.masterControl.ui.stats.setStrikeReloadTime(event.detail);
   });
 
   if (!test) {

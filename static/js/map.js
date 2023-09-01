@@ -13,34 +13,31 @@ class UIButtons {
 
     this.div = htmlToElement(`
       <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
-        <button class="mapboxgl-ctrl-sound" title="Toggle sounds">
-          <span class="mapboxgl-ctrl-icon" aria-hidden="true">
-          </span>
+        <button class="sound" title="Toggle sounds">
+          <span class="icon sound" aria-hidden="true"></span>
         </button>
 
-        <button class="mapboxgl-ctrl-strikes" title="Toggle lightning strikes">
-          <span class="mapboxgl-ctrl-icon" aria-hidden="true">
-          </span>
+        <button class="strikes" title="Toggle lightning strikes">
+          <span class="icon lightning" aria-hidden="true"></span>
         </button>
 
-        <button class="mapboxgl-ctrl-rain" title="Toggle rain">
-          <span class="mapboxgl-ctrl-icon" aria-hidden="true">
-          </span>
+        <button class="rain" title="Toggle rain">
+          <span class="icon rain" aria-hidden="true"></span>
         </button>
       </div>
     `);
 
-    this.soundButton = this.div.querySelector('button.mapboxgl-ctrl-sound');
+    this.soundButton = this.div.querySelector('button.sound');
     this.soundButton.addEventListener('click', () =>
       this.handleToggleSoundClick()
     );
 
-    this.rainButton = this.div.querySelector('button.mapboxgl-ctrl-rain');
+    this.rainButton = this.div.querySelector('button.rain');
     this.rainButton.addEventListener('click', () =>
       this.handleToggleRainClick()
     );
 
-    this.strikesButton = this.div.querySelector('button.mapboxgl-ctrl-strikes');
+    this.strikesButton = this.div.querySelector('button.strikes');
     this.strikesButton.addEventListener('click', () =>
       this.handleToggleStrikesClick()
     );
@@ -80,8 +77,8 @@ class CycleMapStyleButtons {
     );
     for (let [styleIndex, style] of config.mapStyles.entries()) {
       const button = htmlToElement(`
-        <button class="mapboxgl-ctrl-${style.icon}" title="Set map style to ${style.name}">
-          <span class="mapboxgl-ctrl-icon" aria-hidden="true">
+        <button title="Set map style to ${style.name}">
+          <span class="icon ${style.icon}" aria-hidden="true">
           </span>
         </button>
       `);
@@ -112,63 +109,80 @@ class CycleMapStyleButtons {
 
 class StatsWidget {
   constructor() {
-    this.rainReloadDiv = document.createElement('div');
-    this.strikeReloadDiv = document.createElement('div');
-    this.strikeDelayDiv = document.createElement('div');
+    this.container = htmlToElement(`
+    <div>
+      <div class="stat" title="Time to reload the rain layer">
+        <span class="icon rain" aria-hidden="true"></span>
+
+        <span class="rain-reload-value"></span>
+        <div class="bar-outer">
+          <div class="bar-inner reload rain-reload-bar"></div>
+        </div>
+      </div>
+
+      <div class="stat" title="Time to reload the current strike markers">
+        <span class="icon lightning" aria-hidden="true"></span>
+        <span class="strikes-reload-value"></span>
+        <div class="bar-outer">
+          <div class="bar-inner reload strikes-reload-bar"></div>
+        </div>
+      </div>
+
+      <div class="stat" title="Delay of the live strike markers">
+        <span class="icon clock" aria-hidden="true"></span>
+        <span class="strikes-delay-value"></span>
+        <div class="bar-outer">
+          <div class="bar-inner strikes-delay-bar"></div>
+        </div>
+      </div>
+    </div>
+    `);
+
+    this.rainReloadTimeSpan =
+      this.container.querySelector('.rain-reload-value');
+    this.rainReloadTimeBar = this.container.querySelector('.rain-reload-bar');
+    this.strikesReloadTimeSpan = this.container.querySelector(
+      '.strikes-reload-value'
+    );
+    this.strikesReloadTimeBar = this.container.querySelector(
+      '.strikes-reload-bar'
+    );
+    this.strikesDelaySpan = this.container.querySelector(
+      '.strikes-delay-value'
+    );
+    this.strikesDelayBar = this.container.querySelector('.strikes-delay-bar');
   }
 
-  setRainReloadTime(remain, refreshRate) {
-    const width = percent(remain, refreshRate);
-    const value = parseInt(remain / 1000);
-    this.rainReloadDiv.innerHTML =
-      `Rain reload in: ${value} s` +
-      '<div class="bar-outer">' +
-      `<div class="bar-inner reload" style="width: ${width}%"></div>` +
-      '</div>';
+  setRainReloadTime(remaining, refreshRate) {
+    const width = percent(remaining, refreshRate);
+    const value = parseInt(remaining / 1000);
+    this.rainReloadTimeSpan.innerText = `${value} s`;
+    this.rainReloadTimeBar.style.width = `${width}%`;
   }
 
-  setStrikeReloadTime(remain, refreshRate) {
-    const width = percent(remain, refreshRate);
-    const value = parseInt(remain / 1000);
-    this.strikeReloadDiv.innerHTML =
-      `Strikes reload in: ${value} s` +
-      '<div class="bar-outer">' +
-      `<div class="bar-inner reload" style="width: ${width}%"></div>` +
-      '</div>';
+  setStrikeReloadTime(chunks) {
+    const value = parseInt(chunks[0].remaining / 1000);
+    const width = percent(chunks[0].remaining, chunks[0].refreshRate);
+    this.strikesReloadTimeSpan.innerText = `${value} s`;
+    this.strikesReloadTimeBar.style.width = `${width}%`;
   }
 
   setStrikeDelay(delay) {
     const width = percent(delay, 24);
     const className =
       delay < 8 ? 'delay-small' : delay < 16 ? 'delay-medium' : 'delay-big';
-    this.strikeDelayDiv.innerHTML =
-      `Strikes delay: ${delay} s` +
-      '<div class="bar-outer">' +
-      `<div class="bar-inner ${className}" style="width: ${width}%"></div>` +
-      '</div>';
+    this.strikesDelayBar.classList.toggle('delay-small', delay < 8);
+    this.strikesDelayBar.classList.toggle(
+      'delay-medium',
+      delay >= 8 && delay < 16
+    );
+    this.strikesDelayBar.classList.toggle('delay-big', delay >= 16);
+    this.strikesDelaySpan.innerText = `${delay} s`;
+    this.strikesDelayBar.style.width = `${width}%`;
   }
 
   onAdd(map) {
-    const rainReloadWrapper = htmlToElement(
-      '<div class="mapboxgl-ctrl mapboxgl-ctrl-attrib"></div>'
-    );
-    rainReloadWrapper.appendChild(this.rainReloadDiv);
-
-    const strikeReloadWrapper = htmlToElement(
-      '<div class="mapboxgl-ctrl mapboxgl-ctrl-attrib"></div>'
-    );
-    strikeReloadWrapper.appendChild(this.strikeReloadDiv);
-
-    const strikeDelayWrapper = htmlToElement(
-      '<div class="mapboxgl-ctrl mapboxgl-ctrl-attrib"></div>'
-    );
-    strikeDelayWrapper.appendChild(this.strikeDelayDiv);
-
-    const div = document.createElement('div');
-    div.appendChild(rainReloadWrapper);
-    div.appendChild(strikeReloadWrapper);
-    div.appendChild(strikeDelayWrapper);
-    return div;
+    return this.container;
   }
 }
 
@@ -344,6 +358,7 @@ class MapMasterControl extends MapBaseControl {
 
   switchMapStyle(index) {
     this.map.setStyle(config.mapStyles[index].style);
+    document.body.dataset.style = config.mapStyles[index].name;
     config.mapStyle = index;
     config.save();
   }
@@ -875,6 +890,7 @@ class Map {
       hash: true,
       attributionControl: false,
     });
+    document.body.dataset.style = config.mapStyles[config.mapStyle].name;
 
     this.map.addControl(new mapboxgl.ScaleControl());
 

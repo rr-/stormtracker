@@ -143,13 +143,14 @@ class BlitzortungHistoric extends EventTarget {
       }
     }
 
-    {
-      const refreshRate = this.dataSources[0].refreshRate;
-      const remaining = this.dataSources[0].lastRead + refreshRate - Date.now();
-      this.dispatchEvent(
-        new CustomEvent('tick', { detail: { remaining, refreshRate } })
-      );
-    }
+    this.dispatchEvent(
+      new CustomEvent('tick', {
+        detail: this.dataSources.map((dataSource) => ({
+          remaining: dataSource.lastRead + dataSource.refreshRate - Date.now(),
+          refreshRate: dataSource.refreshRate,
+        })),
+      })
+    );
   }
 
   chunkNeedsRefresh(n) {
