@@ -7,7 +7,7 @@ const metersToPixels = (meters, zoomLevel, latitude) => {
   return screenPixel;
 };
 
-class UIButtons {
+class ToggleButtons {
   constructor(masterControl) {
     this.masterControl = masterControl;
 
@@ -231,7 +231,7 @@ class MapUI {
   constructor(masterControl) {
     this.geolocate = new MyGeolocateControl();
     this.stats = new StatsWidget();
-    this.uiButtons = new UIButtons(masterControl);
+    this.toggleButtons = new ToggleButtons(masterControl);
     this.cycleMapButtons = new CycleMapStyleButtons(masterControl);
   }
 
@@ -239,7 +239,7 @@ class MapUI {
     map.touchZoomRotate.disableRotation();
     map.addControl(this.geolocate);
     map.addControl(this.stats, 'top-left');
-    map.addControl(this.uiButtons, 'top-right');
+    map.addControl(this.toggleButtons, 'top-right');
     map.addControl(this.cycleMapButtons, 'top-right');
   }
 }
@@ -259,6 +259,7 @@ class MapMasterControl extends MapBaseControl {
       west: -180,
       east: 180,
     };
+    this.isReady = false;
     this.positionChanged = true;
 
     map.on('load', () => this.handleLoad());
@@ -271,6 +272,8 @@ class MapMasterControl extends MapBaseControl {
 
   handleStyleLoad() {
     this.removeDistractingIcons();
+    this.updateMapBounds();
+    this.isReady = true;
   }
 
   removeDistractingIcons() {
@@ -393,7 +396,7 @@ class MapAudioControl extends MapBaseControl {
   }
 
   handleStrike(strike) {
-    if (this.masterControl.isStrikeVisible(strike)) {
+    if (this.masterControl.isStrikeVisible(strike) && this.masterControl.isReady) {
       this.audioCount++;
     }
   }
@@ -691,7 +694,7 @@ class MapStrikeLiveControl extends MapBaseControl {
   }
 
   handleStrike(strike) {
-    if (!this.masterControl.isStrikeVisible(strike)) {
+    if (!this.masterControl.isStrikeVisible(strike) || !this.masterControl.isReady) {
       return;
     }
 
