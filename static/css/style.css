@@ -103,6 +103,10 @@ body {
   text-align: center;
 }
 
+.stats {
+  pointer-events: none;
+}
+
 .stat {
   padding: 0 5px;
   display: flex;

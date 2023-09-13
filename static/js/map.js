@@ -110,7 +110,7 @@ class CycleMapStyleButtons {
 class StatsWidget {
   constructor() {
     this.container = htmlToElement(`
-    <div>
+    <div class="stats">
       <div class="stat" title="Time to reload the rain layer">
         <span class="icon rain" aria-hidden="true"></span>
 
