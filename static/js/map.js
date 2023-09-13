@@ -396,7 +396,10 @@ class MapAudioControl extends MapBaseControl {
   }
 
   handleStrike(strike) {
-    if (this.masterControl.isStrikeVisible(strike) && this.masterControl.isReady) {
+    if (
+      this.masterControl.isStrikeVisible(strike) &&
+      this.masterControl.isReady
+    ) {
       this.audioCount++;
     }
   }
@@ -645,7 +648,7 @@ class MapStrikeLiveControl extends MapBaseControl {
     this.maxCircles = config.liveMarkers.maxCount;
     this.lastCircle = 0;
     this.circles = new Array(this.maxCircles).fill().map(() => ({
-      div: document.createElement('div'),
+      div: htmlToElement('<div></div>'),
       geojson: {
         type: 'FeatureCollection',
         features: [
@@ -694,7 +697,10 @@ class MapStrikeLiveControl extends MapBaseControl {
   }
 
   handleStrike(strike) {
-    if (!this.masterControl.isStrikeVisible(strike) || !this.masterControl.isReady) {
+    if (
+      !this.masterControl.isStrikeVisible(strike) ||
+      !this.masterControl.isReady
+    ) {
       return;
     }
 
@@ -791,7 +797,9 @@ class LocationRadiusControl extends MapBaseControl {
       { radius: 75000, color: '#ff000088' },
     ].map((props) => ({
       ...props,
-      div: document.createElement('div'),
+      div: htmlToElement(
+        '<div class="mapboxgl-radius-circle"><svg><circle stroke-width="1.5" fill="none"/></svg></div>'
+      ),
       geojson: {
         type: 'FeatureCollection',
         features: [
@@ -869,11 +877,15 @@ class LocationRadiusControl extends MapBaseControl {
     );
     const size = radius * 2;
     const center = size / 2;
-    circle.div.innerHTML =
-      `<svg style='width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)'>` +
-      `<circle cx='${center}' cy='${center}' ` +
-      `r='${radius}' stroke='${circle.color}' stroke-width='1.5' fill='none'/>` +
-      '</svg>';
+    circle.div.querySelector(
+      'svg'
+    ).style = `width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)`;
+    circle.div.querySelector('circle').setAttribute('cx', `${center}`);
+    circle.div.querySelector('circle').setAttribute('cy', `${center}`);
+    circle.div.querySelector('circle').setAttribute('r', `${radius}`);
+    circle.div
+      .querySelector('circle')
+      .setAttribute('stroke', `${circle.color}`);
   }
 
   layerName(n) {

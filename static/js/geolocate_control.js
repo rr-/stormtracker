@@ -80,7 +80,9 @@ class MyGeolocateControl extends EventTarget {
     }
 
     if (config.followEnabled) {
-      this.updateCamera(position);
+      window.setTimeout(() => {
+        this.updateCamera(position);
+      }, 500);
     }
 
     this.dispatchEvent(
