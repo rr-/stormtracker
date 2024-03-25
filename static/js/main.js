@@ -3,31 +3,31 @@ const test = false;
 // TODO: add ability to control lightning ranges
 
 (() => {
-  const $map = document.getElementById('map');
+  const $map = document.getElementById("map");
   const map = new Map($map, config);
 
   const rainViewer = new RainViewer();
-  rainViewer.addEventListener('tick', (event) => {
+  rainViewer.addEventListener("tick", (event) => {
     map.masterControl.ui.stats.setRainReloadTime(
       event.detail.remaining,
-      event.detail.refreshRate
+      event.detail.refreshRate,
     );
   });
-  rainViewer.addEventListener('tiles', (event) => {
+  rainViewer.addEventListener("tiles", (event) => {
     map.loadRainTiles(event.detail.url);
   });
 
   const blitzLive = new BlitzortungLive();
-  blitzLive.addEventListener('strike', (event) => {
+  blitzLive.addEventListener("strike", (event) => {
     map.masterControl.ui.stats.setStrikeDelay(event.detail.strike.delay);
     map.addLiveStrike(event.detail.strike);
   });
 
   const blitzHistoric = new BlitzortungHistoric();
-  blitzHistoric.addEventListener('strikes', (event) => {
+  blitzHistoric.addEventListener("strikes", (event) => {
     map.loadHistoricStrikes(event.detail.chunk, event.detail.strikes);
   });
-  blitzHistoric.addEventListener('tick', (event) => {
+  blitzHistoric.addEventListener("tick", (event) => {
     map.masterControl.ui.stats.setStrikeReloadTime(event.detail);
   });
 
@@ -44,7 +44,7 @@ const test = false;
         new Array(10).fill().map(() => ({
           lat: config.startPos.lat + (Math.random() - 0.5),
           lon: config.startPos.lon + (Math.random() - 0.5),
-        }))
+        })),
       );
     }
 

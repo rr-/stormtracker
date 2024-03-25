@@ -13,12 +13,12 @@ class RainViewer extends EventTarget {
       this.refresh();
     }
     this.dispatchEvent(
-      new CustomEvent('tick', { detail: { remaining, refreshRate } })
+      new CustomEvent("tick", { detail: { remaining, refreshRate } }),
     );
   }
 
   async refresh() {
-    const apiUrl = 'https://api.rainviewer.com/public/weather-maps.json';
+    const apiUrl = "https://api.rainviewer.com/public/weather-maps.json";
     const apiResponse = await fetch(apiUrl);
     const data = await apiResponse.json();
 
@@ -29,6 +29,6 @@ class RainViewer extends EventTarget {
 
     console.info(`RainViewer: Got path ${url}`);
     this.lastRead = Date.now();
-    this.dispatchEvent(new CustomEvent('tiles', { detail: { url } }));
+    this.dispatchEvent(new CustomEvent("tiles", { detail: { url } }));
   }
 }

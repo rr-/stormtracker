@@ -1,22 +1,22 @@
 class BlitzortungLive extends EventTarget {
   constructor() {
     super();
-    this.mode = 'a';
+    this.mode = "a";
     this.key = 111;
-    this.hosts = ['ws1', 'ws7', 'ws8'];
+    this.hosts = ["ws1", "ws7", "ws8"];
   }
 
   connect() {
     const subdomain = this.hosts[Math.floor(Math.random() * this.hosts.length)];
     const url = `wss://${subdomain}.blitzortung.org/`;
     const ws = new WebSocket(url);
-    ws.addEventListener('open', () => this.handleOpen());
-    ws.addEventListener('close', () => this.handleClose());
-    ws.addEventListener('message', (event) => this.handleEvent(event));
-    ws.addEventListener('error', (event) => this.handleError(event));
+    ws.addEventListener("open", () => this.handleOpen());
+    ws.addEventListener("close", () => this.handleClose());
+    ws.addEventListener("message", (event) => this.handleEvent(event));
+    ws.addEventListener("error", (event) => this.handleError(event));
 
-    window.addEventListener('visibilitychange', () =>
-      this.handleVisibilityChange()
+    window.addEventListener("visibilitychange", () =>
+      this.handleVisibilityChange(),
     );
 
     this.connected = false;
@@ -31,7 +31,7 @@ class BlitzortungLive extends EventTarget {
 
   decode(data) {
     const e = {};
-    const d = data.split('');
+    const d = data.split("");
     let c = d[0];
     let f = c;
     const g = [c];
@@ -50,7 +50,7 @@ class BlitzortungLive extends EventTarget {
       o++;
       f = a;
     }
-    return g.join('');
+    return g.join("");
   }
 
   handleOpen() {
@@ -58,18 +58,18 @@ class BlitzortungLive extends EventTarget {
     this.ws.send(
       JSON.stringify({
         [this.mode]: this.key,
-      })
+      }),
     );
   }
 
   handleClose() {
-    console.info('Blitz WS: Disconnected, attempting to reconnect…');
+    console.info("Blitz WS: Disconnected, attempting to reconnect…");
     this.connected = false;
     this.connect();
   }
 
   handleError(event) {
-    console.info('Blitz WS: Error', event);
+    console.info("Blitz WS: Error", event);
   }
 
   handleEvent(event) {
@@ -85,8 +85,8 @@ class BlitzortungLive extends EventTarget {
       time: data.time,
       delay: data.delay,
     };
-    this.dispatchEvent(new CustomEvent('strike', { detail: { strike } }));
-    console.debug('Blitz WS: Data', data);
+    this.dispatchEvent(new CustomEvent("strike", { detail: { strike } }));
+    console.debug("Blitz WS: Data", data);
   }
 }
 
@@ -144,12 +144,12 @@ class BlitzortungHistoric extends EventTarget {
     }
 
     this.dispatchEvent(
-      new CustomEvent('tick', {
+      new CustomEvent("tick", {
         detail: this.dataSources.map((dataSource) => ({
           remaining: dataSource.lastRead + dataSource.refreshRate - Date.now(),
           refreshRate: dataSource.refreshRate,
         })),
-      })
+      }),
     );
   }
 
@@ -170,9 +170,9 @@ class BlitzortungHistoric extends EventTarget {
       dataSource.data = prevDataSource.data;
       dataSource.lastRead = prevDataSource.lastRead + 305000;
       this.dispatchEvent(
-        new CustomEvent('strikes', {
+        new CustomEvent("strikes", {
           detail: { chunk: n, strikes: dataSource.data },
-        })
+        }),
       );
     }
   }
@@ -184,9 +184,9 @@ class BlitzortungHistoric extends EventTarget {
     dataSource.data = await this.getChunkData(n);
 
     this.dispatchEvent(
-      new CustomEvent('strikes', {
+      new CustomEvent("strikes", {
         detail: { chunk: n, strikes: dataSource.data },
-      })
+      }),
     );
   }
 

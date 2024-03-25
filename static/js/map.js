@@ -27,23 +27,23 @@ class ToggleButtons {
       </div>
     `);
 
-    this.soundButton = this.div.querySelector('button.sound');
-    this.soundButton.addEventListener('click', () =>
-      this.handleToggleSoundClick()
+    this.soundButton = this.div.querySelector("button.sound");
+    this.soundButton.addEventListener("click", () =>
+      this.handleToggleSoundClick(),
     );
 
-    this.rainButton = this.div.querySelector('button.rain');
-    this.rainButton.addEventListener('click', () =>
-      this.handleToggleRainClick()
+    this.rainButton = this.div.querySelector("button.rain");
+    this.rainButton.addEventListener("click", () =>
+      this.handleToggleRainClick(),
     );
 
-    this.strikesButton = this.div.querySelector('button.strikes');
-    this.strikesButton.addEventListener('click', () =>
-      this.handleToggleStrikesClick()
+    this.strikesButton = this.div.querySelector("button.strikes");
+    this.strikesButton.addEventListener("click", () =>
+      this.handleToggleStrikesClick(),
     );
 
     this.handleConfigChange();
-    config.addEventListener('save', () => this.handleConfigChange());
+    config.addEventListener("save", () => this.handleConfigChange());
   }
 
   handleToggleSoundClick() {
@@ -59,9 +59,9 @@ class ToggleButtons {
   }
 
   handleConfigChange() {
-    this.soundButton.classList.toggle('active', config.audioEnabled);
-    this.rainButton.classList.toggle('active', config.rain.enabled);
-    this.strikesButton.classList.toggle('active', config.strikeMarkers.enabled);
+    this.soundButton.classList.toggle("active", config.audioEnabled);
+    this.rainButton.classList.toggle("active", config.rain.enabled);
+    this.strikesButton.classList.toggle("active", config.strikeMarkers.enabled);
   }
 
   onAdd(map) {
@@ -73,7 +73,7 @@ class CycleMapStyleButtons {
   constructor(masterControl) {
     this.masterControl = masterControl;
     this.div = htmlToElement(
-      `<div class="mapboxgl-ctrl mapboxgl-ctrl-group"></div>`
+      `<div class="mapboxgl-ctrl mapboxgl-ctrl-group"></div>`,
     );
     for (let [styleIndex, style] of config.mapStyles.entries()) {
       const button = htmlToElement(`
@@ -82,12 +82,12 @@ class CycleMapStyleButtons {
           </span>
         </button>
       `);
-      button.addEventListener('click', () => this.handleClick(styleIndex));
+      button.addEventListener("click", () => this.handleClick(styleIndex));
       this.div.appendChild(button);
     }
 
     this.handleConfigChange();
-    config.addEventListener('save', () => this.handleConfigChange());
+    config.addEventListener("save", () => this.handleConfigChange());
   }
 
   handleClick(styleIndex) {
@@ -96,9 +96,9 @@ class CycleMapStyleButtons {
 
   handleConfigChange() {
     for (const [styleIndex, button] of [
-      ...this.div.querySelectorAll('button'),
+      ...this.div.querySelectorAll("button"),
     ].entries()) {
-      button.classList.toggle('active', config.mapStyle === styleIndex);
+      button.classList.toggle("active", config.mapStyle === styleIndex);
     }
   }
 
@@ -139,18 +139,18 @@ class StatsWidget {
     `);
 
     this.rainReloadTimeSpan =
-      this.container.querySelector('.rain-reload-value');
-    this.rainReloadTimeBar = this.container.querySelector('.rain-reload-bar');
+      this.container.querySelector(".rain-reload-value");
+    this.rainReloadTimeBar = this.container.querySelector(".rain-reload-bar");
     this.strikesReloadTimeSpan = this.container.querySelector(
-      '.strikes-reload-value'
+      ".strikes-reload-value",
     );
     this.strikesReloadTimeBar = this.container.querySelector(
-      '.strikes-reload-bar'
+      ".strikes-reload-bar",
     );
     this.strikesDelaySpan = this.container.querySelector(
-      '.strikes-delay-value'
+      ".strikes-delay-value",
     );
-    this.strikesDelayBar = this.container.querySelector('.strikes-delay-bar');
+    this.strikesDelayBar = this.container.querySelector(".strikes-delay-bar");
   }
 
   setRainReloadTime(remaining, refreshRate) {
@@ -170,13 +170,13 @@ class StatsWidget {
   setStrikeDelay(delay) {
     const width = percent(delay, 24);
     const className =
-      delay < 8 ? 'delay-small' : delay < 16 ? 'delay-medium' : 'delay-big';
-    this.strikesDelayBar.classList.toggle('delay-small', delay < 8);
+      delay < 8 ? "delay-small" : delay < 16 ? "delay-medium" : "delay-big";
+    this.strikesDelayBar.classList.toggle("delay-small", delay < 8);
     this.strikesDelayBar.classList.toggle(
-      'delay-medium',
-      delay >= 8 && delay < 16
+      "delay-medium",
+      delay >= 8 && delay < 16,
     );
-    this.strikesDelayBar.classList.toggle('delay-big', delay >= 16);
+    this.strikesDelayBar.classList.toggle("delay-big", delay >= 16);
     this.strikesDelaySpan.innerText = `${delay} s`;
     this.strikesDelayBar.style.width = `${width}%`;
   }
@@ -199,10 +199,10 @@ class PlusImage {
   onAdd(map) {
     this.map = map;
 
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = this.width;
     canvas.height = this.height;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
 
     ctx.strokeStyle = this.color;
     ctx.lineWidth = this.thickness;
@@ -238,9 +238,9 @@ class MapUI {
   load(map) {
     map.touchZoomRotate.disableRotation();
     map.addControl(this.geolocate);
-    map.addControl(this.stats, 'top-left');
-    map.addControl(this.toggleButtons, 'top-right');
-    map.addControl(this.cycleMapButtons, 'top-right');
+    map.addControl(this.stats, "top-left");
+    map.addControl(this.toggleButtons, "top-right");
+    map.addControl(this.cycleMapButtons, "top-right");
   }
 }
 
@@ -262,10 +262,10 @@ class MapMasterControl extends MapBaseControl {
     this.isReady = false;
     this.positionChanged = true;
 
-    map.on('load', () => this.handleLoad());
-    map.on('style.load', () => this.handleStyleLoad());
-    map.on('moveend', () => this.handleMapMove());
-    map.on('zoomed', () => this.handleMapZoom());
+    map.on("load", () => this.handleLoad());
+    map.on("style.load", () => this.handleStyleLoad());
+    map.on("moveend", () => this.handleMapMove());
+    map.on("zoomed", () => this.handleMapZoom());
 
     this.ui = new MapUI(this);
   }
@@ -277,8 +277,8 @@ class MapMasterControl extends MapBaseControl {
   }
 
   removeDistractingIcons() {
-    for (let layerName of ['airport-label', 'poi-label']) {
-      this.map.setPaintProperty(layerName, 'icon-opacity', 0);
+    for (let layerName of ["airport-label", "poi-label"]) {
+      this.map.setPaintProperty(layerName, "icon-opacity", 0);
     }
   }
 
@@ -381,15 +381,15 @@ class MapAudioControl extends MapBaseControl {
     super();
     this.masterControl = masterControl;
     this.sounds = [
-      new Audio('static/sfx/t1.wav'),
-      new Audio('static/sfx/t2.wav'),
-      new Audio('static/sfx/t3.wav'),
-      new Audio('static/sfx/t4.wav'),
-      new Audio('static/sfx/t5.wav'),
-      new Audio('static/sfx/t6.wav'),
-      new Audio('static/sfx/t7.wav'),
-      new Audio('static/sfx/t8.wav'),
-      new Audio('static/sfx/t9.wav'),
+      new Audio("static/sfx/t1.wav"),
+      new Audio("static/sfx/t2.wav"),
+      new Audio("static/sfx/t3.wav"),
+      new Audio("static/sfx/t4.wav"),
+      new Audio("static/sfx/t5.wav"),
+      new Audio("static/sfx/t6.wav"),
+      new Audio("static/sfx/t7.wav"),
+      new Audio("static/sfx/t8.wav"),
+      new Audio("static/sfx/t9.wav"),
     ];
     this.audioCount = 0;
     window.setInterval(() => this.tick(), 80);
@@ -419,7 +419,7 @@ class MapKeyboardControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.masterControl = masterControl;
-    window.addEventListener('keydown', (event) => this.handleKeyDown(event));
+    window.addEventListener("keydown", (event) => this.handleKeyDown(event));
   }
 
   handleKeyDown(event) {
@@ -427,11 +427,11 @@ class MapKeyboardControl extends MapBaseControl {
       return;
     }
 
-    if (event.key === 's' || event.key === 'S') {
+    if (event.key === "s" || event.key === "S") {
       this.masterControl.cycleMapStyle();
     }
 
-    if (event.key === 'g' || event.key === 'G') {
+    if (event.key === "g" || event.key === "G") {
       // toggle dark navigation / satellite
       if (config.mapStyle === 0) {
         this.masterControl.switchMapStyle(2);
@@ -440,31 +440,31 @@ class MapKeyboardControl extends MapBaseControl {
       }
     }
 
-    if (event.key === 't' || event.key === 'T') {
+    if (event.key === "t" || event.key === "T") {
       this.masterControl.toggleTrack();
     }
-    if (event.key === 'f' || event.key === 'F') {
+    if (event.key === "f" || event.key === "F") {
       this.masterControl.toggleFollow();
     }
-    if (event.key === 'a' || event.key === 'A') {
+    if (event.key === "a" || event.key === "A") {
       this.masterControl.toggleAudio();
     }
-    if (event.key === 'r' || event.key === 'R') {
+    if (event.key === "r" || event.key === "R") {
       this.masterControl.toggleRain();
     }
-    if (event.key === 'c' || event.key === 'C') {
+    if (event.key === "c" || event.key === "C") {
       this.masterControl.toggleRangeCircles();
     }
-    if (event.key === '1') {
+    if (event.key === "1") {
       this.masterControl.map.zoomTo(8);
     }
-    if (event.key === '2') {
+    if (event.key === "2") {
       this.masterControl.map.zoomTo(10);
     }
-    if (event.key === '3') {
+    if (event.key === "3") {
       this.masterControl.map.zoomTo(11.5);
     }
-    if (event.key === '4') {
+    if (event.key === "4") {
       this.masterControl.map.zoomTo(13);
     }
   }
@@ -474,11 +474,11 @@ class MapRainControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.map = masterControl.map;
-    this.map.on('style.load', () => this.handleStyleLoad());
-    config.addEventListener('save', () => this.handleConfigChange());
+    this.map.on("style.load", () => this.handleStyleLoad());
+    config.addEventListener("save", () => this.handleConfigChange());
 
-    this.sourceName = 'rain-source';
-    this.layerName = 'rain-layer';
+    this.sourceName = "rain-source";
+    this.layerName = "rain-layer";
     this.lastKnownUrl = null;
   }
 
@@ -494,8 +494,8 @@ class MapRainControl extends MapBaseControl {
     if (layer) {
       this.map.setLayoutProperty(
         this.layerName,
-        'visibility',
-        config.rain.enabled ? 'visible' : 'none'
+        "visibility",
+        config.rain.enabled ? "visible" : "none",
       );
     }
   }
@@ -510,20 +510,20 @@ class MapRainControl extends MapBaseControl {
     }
 
     this.map.addSource(this.sourceName, {
-      type: 'raster',
+      type: "raster",
       tiles: [url],
     });
 
     this.map.addLayer({
       id: this.layerName,
-      type: 'raster',
+      type: "raster",
       source: this.sourceName,
       paint: {
-        'raster-opacity': config.rain.opacity,
+        "raster-opacity": config.rain.opacity,
       },
     });
 
-    for (let referenceLayer of ['road-label', 'road-label-navigation']) {
+    for (let referenceLayer of ["road-label", "road-label-navigation"]) {
       if (this.map.getLayer(referenceLayer)) {
         this.map.moveLayer(this.layerName, referenceLayer);
       }
@@ -535,14 +535,14 @@ class MapStrikeHistoryControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.map = masterControl.map;
-    this.map.on('style.load', () => this.handleStyleLoad());
+    this.map.on("style.load", () => this.handleStyleLoad());
 
-    config.addEventListener('save', () => this.handleConfigChange());
+    config.addEventListener("save", () => this.handleConfigChange());
 
     this.maxChunks = BlitzortungHistoric.maxChunks;
     this.geojson = new Array(this.maxChunks)
       .fill()
-      .map(() => ({ type: 'FeatureCollection', features: [] }));
+      .map(() => ({ type: "FeatureCollection", features: [] }));
   }
 
   handleConfigChange() {
@@ -550,8 +550,8 @@ class MapStrikeHistoryControl extends MapBaseControl {
       if (this.map.getLayer(this.layerName(n))) {
         this.map.setLayoutProperty(
           this.layerName(n),
-          'visibility',
-          config.strikeMarkers.enabled ? 'visible' : 'none'
+          "visibility",
+          config.strikeMarkers.enabled ? "visible" : "none",
         );
       }
     }
@@ -562,7 +562,7 @@ class MapStrikeHistoryControl extends MapBaseControl {
 
     for (let n = this.maxChunks - 1; n >= 0; n--) {
       this.map.addSource(this.sourceName(n), {
-        type: 'geojson',
+        type: "geojson",
         data: this.geojson[n],
       });
 
@@ -570,19 +570,19 @@ class MapStrikeHistoryControl extends MapBaseControl {
 
       this.map.addLayer({
         id: this.layerName(n),
-        type: 'symbol',
+        type: "symbol",
         paint: {
-          'icon-opacity': config.strikeMarkers.opacity,
+          "icon-opacity": config.strikeMarkers.opacity,
         },
         layout: {
-          'icon-image': {
+          "icon-image": {
             stops: config.strikeMarkers.plusResolutions.map((res) => [
               res.mapZoom,
               `plus-${plusId}-${res.mapZoom}`,
             ]),
           },
-          'icon-size': 1,
-          'icon-allow-overlap': true,
+          "icon-size": 1,
+          "icon-allow-overlap": true,
         },
         source: this.sourceName(n),
       });
@@ -593,7 +593,7 @@ class MapStrikeHistoryControl extends MapBaseControl {
 
   handleStrikes(n, strikes) {
     this.geojson[n] = {
-      type: 'FeatureCollection',
+      type: "FeatureCollection",
       features: strikes.map(this.strikeToFeature),
     };
     this.updateSource(n);
@@ -616,9 +616,9 @@ class MapStrikeHistoryControl extends MapBaseControl {
 
   strikeToFeature(strike) {
     return {
-      type: 'Feature',
+      type: "Feature",
       geometry: {
-        type: 'Point',
+        type: "Point",
         coordinates: [strike.lon, strike.lat],
       },
     };
@@ -629,7 +629,7 @@ class MapStrikeHistoryControl extends MapBaseControl {
       for (let res of config.strikeMarkers.plusResolutions) {
         this.map.addImage(
           `plus-${n}-${res.mapZoom}`,
-          new PlusImage(color, res.size, res.thickness)
+          new PlusImage(color, res.size, res.thickness),
         );
       }
     }
@@ -641,26 +641,26 @@ class MapStrikeLiveControl extends MapBaseControl {
     super();
     this.masterControl = masterControl;
     this.map = masterControl.map;
-    this.map.on('style.load', () => this.handleStyleLoad());
+    this.map.on("style.load", () => this.handleStyleLoad());
 
     this.minSize = config.liveMarkers.minSize;
     this.maxSize = config.liveMarkers.maxSize;
     this.maxCircles = config.liveMarkers.maxCount;
     this.lastCircle = 0;
     this.circles = new Array(this.maxCircles).fill().map(() => ({
-      div: htmlToElement('<div></div>'),
+      div: htmlToElement("<div></div>"),
       geojson: {
-        type: 'FeatureCollection',
+        type: "FeatureCollection",
         features: [
           {
-            type: 'Feature',
-            geometry: { type: 'LineString', coordinates: [] },
+            type: "Feature",
+            geometry: { type: "LineString", coordinates: [] },
           },
         ],
       },
     }));
 
-    config.addEventListener('save', () => this.handleConfigChange());
+    config.addEventListener("save", () => this.handleConfigChange());
 
     setInterval(() => this.animate(), 59);
   }
@@ -669,13 +669,13 @@ class MapStrikeLiveControl extends MapBaseControl {
     for (let n = 0; n < this.maxCircles; n++) {
       const circle = this.circles[n];
       circle.div.style.visibility = config.liveMarkers.enabled
-        ? 'visible'
-        : 'hidden';
+        ? "visible"
+        : "hidden";
       if (this.map.getLayer(this.layerName(n))) {
         this.map.setLayoutProperty(
           this.layerName(n),
-          'visibility',
-          config.liveMarkers.enabled ? 'visible' : 'none'
+          "visibility",
+          config.liveMarkers.enabled ? "visible" : "none",
         );
       }
     }
@@ -689,8 +689,8 @@ class MapStrikeLiveControl extends MapBaseControl {
         .addTo(this.map);
       this.map.addLayer({
         id: this.layerName(n),
-        type: 'line',
-        source: { type: 'geojson', data: circle.geojson },
+        type: "line",
+        source: { type: "geojson", data: circle.geojson },
       });
     }
     this.handleConfigChange();
@@ -770,7 +770,7 @@ class MapStrikeLiveControl extends MapBaseControl {
           />
         </svg>`;
     } else if (circle.phase === -1) {
-      circle.div.innerHTML = '';
+      circle.div.innerHTML = "";
     }
   }
 
@@ -783,35 +783,35 @@ class LocationRadiusControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.masterControl = masterControl;
-    this.masterControl.ui.geolocate.addEventListener('geolocate', (event) =>
-      this.handleGeolocate(event.detail)
+    this.masterControl.ui.geolocate.addEventListener("geolocate", (event) =>
+      this.handleGeolocate(event.detail),
     );
     this.map = masterControl.map;
-    this.map.on('style.load', () => this.handleStyleLoad());
-    this.map.on('zoom', () => this.handleZoom());
+    this.map.on("style.load", () => this.handleStyleLoad());
+    this.map.on("zoom", () => this.handleZoom());
 
     this.circles = [
-      { radius: 10000, color: '#00dd00bb' },
-      { radius: 25000, color: '#ffee00aa' },
-      { radius: 50000, color: '#ff550099' },
-      { radius: 75000, color: '#ff000088' },
+      { radius: 10000, color: "#00dd00bb" },
+      { radius: 25000, color: "#ffee00aa" },
+      { radius: 50000, color: "#ff550099" },
+      { radius: 75000, color: "#ff000088" },
     ].map((props) => ({
       ...props,
       div: htmlToElement(
-        '<div class="mapboxgl-radius-circle"><svg><circle stroke-width="1.5" fill="none"/></svg></div>'
+        '<div class="mapboxgl-radius-circle"><svg><circle stroke-width="1.5" fill="none"/></svg></div>',
       ),
       geojson: {
-        type: 'FeatureCollection',
+        type: "FeatureCollection",
         features: [
           {
-            type: 'Feature',
-            geometry: { type: 'LineString', coordinates: [] },
+            type: "Feature",
+            geometry: { type: "LineString", coordinates: [] },
           },
         ],
       },
     }));
 
-    config.addEventListener('save', () => this.handleConfigChange());
+    config.addEventListener("save", () => this.handleConfigChange());
   }
 
   get isEnabled() {
@@ -820,12 +820,12 @@ class LocationRadiusControl extends MapBaseControl {
 
   handleConfigChange() {
     for (const [n, circle] of this.circles.entries()) {
-      circle.div.style.visibility = this.isEnabled ? 'visible' : 'hidden';
+      circle.div.style.visibility = this.isEnabled ? "visible" : "hidden";
       if (this.map.getLayer(this.layerName(n))) {
         this.map.setLayoutProperty(
           this.layerName(n),
-          'visibility',
-          this.isEnabled ? 'visible' : 'none'
+          "visibility",
+          this.isEnabled ? "visible" : "none",
         );
       }
     }
@@ -838,8 +838,8 @@ class LocationRadiusControl extends MapBaseControl {
         .addTo(this.map);
       this.map.addLayer({
         id: this.layerName(n),
-        type: 'line',
-        source: { type: 'geojson', data: circle.geojson },
+        type: "line",
+        source: { type: "geojson", data: circle.geojson },
       });
     }
     this.handleConfigChange();
@@ -873,19 +873,18 @@ class LocationRadiusControl extends MapBaseControl {
     const radius = metersToPixels(
       circle.radius,
       this.map.getZoom(),
-      this.lastKnownPosition.lat
+      this.lastKnownPosition.lat,
     );
     const size = radius * 2;
     const center = size / 2;
-    circle.div.querySelector(
-      'svg'
-    ).style = `width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)`;
-    circle.div.querySelector('circle').setAttribute('cx', `${center}`);
-    circle.div.querySelector('circle').setAttribute('cy', `${center}`);
-    circle.div.querySelector('circle').setAttribute('r', `${radius}`);
+    circle.div.querySelector("svg").style =
+      `width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)`;
+    circle.div.querySelector("circle").setAttribute("cx", `${center}`);
+    circle.div.querySelector("circle").setAttribute("cy", `${center}`);
+    circle.div.querySelector("circle").setAttribute("r", `${radius}`);
     circle.div
-      .querySelector('circle')
-      .setAttribute('stroke', `${circle.color}`);
+      .querySelector("circle")
+      .setAttribute("stroke", `${circle.color}`);
   }
 
   layerName(n) {

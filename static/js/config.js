@@ -5,26 +5,26 @@ const config = new Config();
 Object.assign(config, {
   mapboxAccessToken: MAPBOX_ACCESS_TOKEN,
   startPos: { lat: 16.8774, lon: 52.3462 },
-  startZoom: localStorage.getItem('MapZoom') ?? 5,
+  startZoom: localStorage.getItem("MapZoom") ?? 5,
   mapStyles: [
     {
-      icon: 'moon',
-      name: 'Navigation (dark)',
-      style: 'mapbox://styles/mapbox/navigation-night-v1',
+      icon: "moon",
+      name: "Navigation (dark)",
+      style: "mapbox://styles/mapbox/navigation-night-v1",
     },
     {
-      icon: 'sun',
-      name: 'Navigation (day)',
-      style: 'mapbox://styles/mapbox/navigation-day-v1',
+      icon: "sun",
+      name: "Navigation (day)",
+      style: "mapbox://styles/mapbox/navigation-day-v1",
     },
     {
-      icon: 'map',
-      name: 'Satellite',
-      style: 'mapbox://styles/mapbox/satellite-streets-v12',
+      icon: "map",
+      name: "Satellite",
+      style: "mapbox://styles/mapbox/satellite-streets-v12",
     },
   ],
-  mapStyle: localStorage.getItem('MapStyle') ?? 0,
-  audioEnabled: localStorage.getItem('Audio') === '1' ?? true,
+  mapStyle: localStorage.getItem("MapStyle") ?? 0,
+  audioEnabled: localStorage.getItem("Audio") === "1" ?? true,
   trackEnabled: false,
   followEnabled: false,
   rangeCirclesEnabled: true,
@@ -58,13 +58,13 @@ Object.assign(config, {
       { mapZoom: 18, size: 30, thickness: 10 },
     ],
     plusColors: [
-      '#ffffff',
-      '#ffff80',
-      '#ffff00',
-      '#ffaa00',
-      '#ff5500',
-      '#ff0000',
-      '#800000',
+      "#ffffff",
+      "#ffff80",
+      "#ffff00",
+      "#ffaa00",
+      "#ff5500",
+      "#ff0000",
+      "#800000",
     ],
     chunkMarkers: [
       0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6,
@@ -73,48 +73,48 @@ Object.assign(config, {
 });
 
 config.load = () => {
-  if (localStorage.getItem('MapLng') !== null) {
-    config.startPos.lon = +localStorage.getItem('MapLng');
-    config.startPos.lat = +localStorage.getItem('MapLat');
+  if (localStorage.getItem("MapLng") !== null) {
+    config.startPos.lon = +localStorage.getItem("MapLng");
+    config.startPos.lat = +localStorage.getItem("MapLat");
   }
-  if (localStorage.getItem('MapZoom') !== null) {
-    config.startZoom = +localStorage.getItem('MapZoom');
+  if (localStorage.getItem("MapZoom") !== null) {
+    config.startZoom = +localStorage.getItem("MapZoom");
   }
-  if (localStorage.getItem('MapStyle') !== null) {
-    config.mapStyle = +localStorage.getItem('MapStyle');
+  if (localStorage.getItem("MapStyle") !== null) {
+    config.mapStyle = +localStorage.getItem("MapStyle");
   }
-  if (localStorage.getItem('Audio') !== null) {
-    config.audioEnabled = localStorage.getItem('Audio') === '1';
+  if (localStorage.getItem("Audio") !== null) {
+    config.audioEnabled = localStorage.getItem("Audio") === "1";
   }
-  if (localStorage.getItem('Track') !== null) {
-    config.trackEnabled = localStorage.getItem('Track') === '1';
+  if (localStorage.getItem("Track") !== null) {
+    config.trackEnabled = localStorage.getItem("Track") === "1";
   }
-  if (localStorage.getItem('Follow') !== null) {
-    config.followEnabled = localStorage.getItem('Follow') === '1';
+  if (localStorage.getItem("Follow") !== null) {
+    config.followEnabled = localStorage.getItem("Follow") === "1";
   }
-  if (localStorage.getItem('Strikes') !== null) {
-    config.strikeMarkers.enabled = localStorage.getItem('Strikes') === '1';
+  if (localStorage.getItem("Strikes") !== null) {
+    config.strikeMarkers.enabled = localStorage.getItem("Strikes") === "1";
   }
-  if (localStorage.getItem('Rain') !== null) {
-    config.rain.enabled = localStorage.getItem('Rain') === '1';
+  if (localStorage.getItem("Rain") !== null) {
+    config.rain.enabled = localStorage.getItem("Rain") === "1";
   }
-  if (localStorage.getItem('RangeCircles') !== null) {
-    config.rangeCirclesEnabled = localStorage.getItem('RangeCircles') === '1';
+  if (localStorage.getItem("RangeCircles") !== null) {
+    config.rangeCirclesEnabled = localStorage.getItem("RangeCircles") === "1";
   }
 };
 
 config.save = () => {
-  localStorage.setItem('MapLng', config.startPos.lon);
-  localStorage.setItem('MapLat', config.startPos.lat);
-  localStorage.setItem('MapZoom', config.startZoom);
-  localStorage.setItem('MapStyle', config.mapStyle);
-  localStorage.setItem('Audio', config.audioEnabled ? '1' : '0');
-  localStorage.setItem('Track', config.trackEnabled ? '1' : '0');
-  localStorage.setItem('Follow', config.followEnabled ? '1' : '0');
-  localStorage.setItem('Strikes', config.strikeMarkers.enabled ? '1' : '0');
-  localStorage.setItem('Rain', config.rain.enabled ? '1' : '0');
-  localStorage.setItem('RangeCircles', config.rangeCirclesEnabled ? '1' : '0');
-  config.dispatchEvent(new CustomEvent('save'));
+  localStorage.setItem("MapLng", config.startPos.lon);
+  localStorage.setItem("MapLat", config.startPos.lat);
+  localStorage.setItem("MapZoom", config.startZoom);
+  localStorage.setItem("MapStyle", config.mapStyle);
+  localStorage.setItem("Audio", config.audioEnabled ? "1" : "0");
+  localStorage.setItem("Track", config.trackEnabled ? "1" : "0");
+  localStorage.setItem("Follow", config.followEnabled ? "1" : "0");
+  localStorage.setItem("Strikes", config.strikeMarkers.enabled ? "1" : "0");
+  localStorage.setItem("Rain", config.rain.enabled ? "1" : "0");
+  localStorage.setItem("RangeCircles", config.rangeCirclesEnabled ? "1" : "0");
+  config.dispatchEvent(new CustomEvent("save"));
 };
 
 config.load();

@@ -31,38 +31,38 @@ class MyGeolocateControl extends EventTarget {
     </div>
     `);
 
-    this.trackButton = this.container.querySelector('button.geolocate');
-    this.followButton = this.container.querySelector('button.follow');
+    this.trackButton = this.container.querySelector("button.geolocate");
+    this.followButton = this.container.querySelector("button.follow");
     this.rangeCirclesButton = this.container.querySelector(
-      'button.range-circles'
+      "button.range-circles",
     );
 
     this.dotElement = htmlToElement(
-      '<div class="mapboxgl-user-location-dot"></div>'
+      '<div class="mapboxgl-user-location-dot"></div>',
     );
 
     this.accuracyCircleElement = htmlToElement(
-      '<div class="mapboxgl-user-location-accuracy-circle"></div>'
+      '<div class="mapboxgl-user-location-accuracy-circle"></div>',
     );
 
     this.lastKnownPosition = null;
     this.userLocationDotMarker = new mapboxgl.Marker(this.dotElement);
     this.accuracyCircleMarker = new mapboxgl.Marker({
       element: this.accuracyCircleElement,
-      pitchAlignment: 'map',
+      pitchAlignment: "map",
     });
 
-    this.map.on('zoom', (event) => this.handleZoom(event));
-    this.trackButton.addEventListener('click', () =>
-      this.handleTrackButtonClick()
+    this.map.on("zoom", (event) => this.handleZoom(event));
+    this.trackButton.addEventListener("click", () =>
+      this.handleTrackButtonClick(),
     );
-    this.followButton.addEventListener('click', () =>
-      this.handleFollowButtonClick()
+    this.followButton.addEventListener("click", () =>
+      this.handleFollowButtonClick(),
     );
-    this.rangeCirclesButton.addEventListener('click', () =>
-      this.handleRangeCirclesButtonClick()
+    this.rangeCirclesButton.addEventListener("click", () =>
+      this.handleRangeCirclesButtonClick(),
     );
-    config.addEventListener('save', () => this.handleConfigChange());
+    config.addEventListener("save", () => this.handleConfigChange());
 
     this.handleConfigChange();
     return this.container;
@@ -71,11 +71,11 @@ class MyGeolocateControl extends EventTarget {
   handleSuccess(position) {
     this.lastKnownPosition = position;
 
-    this.trackButton.classList.remove('waiting');
-    this.trackButton.classList.remove('active-error');
+    this.trackButton.classList.remove("waiting");
+    this.trackButton.classList.remove("active-error");
 
     if (config.trackEnabled) {
-      this.trackButton.classList.add('active');
+      this.trackButton.classList.add("active");
       this.updateMarker(position);
     }
 
@@ -86,14 +86,14 @@ class MyGeolocateControl extends EventTarget {
     }
 
     this.dispatchEvent(
-      new CustomEvent('geolocate', {
+      new CustomEvent("geolocate", {
         detail: {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         },
-      })
+      }),
     );
-    this.dotElement.classList.remove('mapboxgl-user-location-dot-stale');
+    this.dotElement.classList.remove("mapboxgl-user-location-dot-stale");
   }
 
   updateCamera(position) {
@@ -145,19 +145,19 @@ class MyGeolocateControl extends EventTarget {
       config.trackEnabled = false;
       config.followEnabled = false;
       this.handleConfigChange();
-      this.trackButton.classList.remove('waiting');
-      this.trackButton.classList.remove('active');
-      this.trackButton.classList.remove('error');
+      this.trackButton.classList.remove("waiting");
+      this.trackButton.classList.remove("active");
+      this.trackButton.classList.remove("error");
       this.trackButton.disabled = true;
-      this.trackButton.title = 'Location not available';
+      this.trackButton.title = "Location not available";
       this.followButton.disabled = true;
-      this.followButton.title = 'Location not available';
+      this.followButton.title = "Location not available";
     } else {
-      this.trackButton.classList.add('active-error');
-      this.trackButton.classList.add('waiting');
+      this.trackButton.classList.add("active-error");
+      this.trackButton.classList.add("waiting");
     }
 
-    this.dotElement.classList.add('mapboxgl-user-location-dot-stale');
+    this.dotElement.classList.add("mapboxgl-user-location-dot-stale");
   }
 
   handleTrackButtonClick() {
@@ -183,13 +183,13 @@ class MyGeolocateControl extends EventTarget {
 
   handleConfigChange() {
     this.accuracyCircleElement.style.visibility = config.accuracyCircleEnabled
-      ? 'visible'
-      : 'hidden';
-    this.trackButton.classList.toggle('active', config.trackEnabled);
-    this.followButton.classList.toggle('active', config.followEnabled);
+      ? "visible"
+      : "hidden";
+    this.trackButton.classList.toggle("active", config.trackEnabled);
+    this.followButton.classList.toggle("active", config.followEnabled);
     this.rangeCirclesButton.classList.toggle(
-      'active',
-      config.rangeCirclesEnabled
+      "active",
+      config.rangeCirclesEnabled,
     );
     if (config.trackEnabled && this.geolocationWatchID === undefined) {
       this.startWatch();
@@ -208,7 +208,7 @@ class MyGeolocateControl extends EventTarget {
   }
 
   startWatch() {
-    this.trackButton.classList.add('waiting');
+    this.trackButton.classList.add("waiting");
     this.geolocationWatchID = window.navigator.geolocation.watchPosition(
       (position) => this.handleSuccess(position),
       (error) => this.handleError(error),
@@ -216,16 +216,16 @@ class MyGeolocateControl extends EventTarget {
         enableHighAccuracy: true,
         maximumAge: 0,
         timeout: 6000,
-      }
+      },
     );
-    console.info('GPS: adding watch', this.geolocationWatchID);
+    console.info("GPS: adding watch", this.geolocationWatchID);
   }
 
   clearWatch() {
-    console.info('GPS: clearing watch', this.geolocationWatchID);
+    console.info("GPS: clearing watch", this.geolocationWatchID);
     window.navigator.geolocation.clearWatch(this.geolocationWatchID);
     this.geolocationWatchID = undefined;
-    this.trackButton.classList.remove('waiting');
+    this.trackButton.classList.remove("waiting");
     this.updateMarker(null);
   }
 }
