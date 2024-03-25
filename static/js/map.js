@@ -7,6 +7,11 @@ const metersToPixels = (meters, zoomLevel, latitude) => {
   return screenPixel;
 };
 
+const isDark = () => {
+  const style = document.body.dataset.style;
+  return style.indexOf('night') != -1 || style.indexOf('dark') != -1;
+}
+
 class ToggleButtons {
   constructor(masterControl) {
     this.masterControl = masterControl;
@@ -788,27 +793,16 @@ class LocationRadiusControl extends MapBaseControl {
     );
     this.map = masterControl.map;
     this.map.on("style.load", () => this.handleStyleLoad());
-    this.map.on("zoom", () => this.handleZoom());
 
     this.circles = [
-      { radius: 10000, color: "#00dd00bb" },
-      { radius: 25000, color: "#ffee00aa" },
-      { radius: 50000, color: "#ff550099" },
-      { radius: 75000, color: "#ff000088" },
+      { radius: 10000, colorDark: "#44dd00", colorLight: '#00aa00', opacity: 1.0 },
+      { radius: 25000, colorDark: "#ffdd00", colorLight: '#ccaa00', opacity: 0.8 },
+      { radius: 50000, colorDark: "#ff8800", colorLight: '#ff8800', opacity: 0.6 },
+      { radius: 75000, colorDark: "#ff0000", colorLight: '#ff0000', opacity: 0.4 },
     ].map((props) => ({
       ...props,
-      div: htmlToElement(
-        '<div class="mapboxgl-radius-circle"><svg><circle stroke-width="1.5" fill="none"/></svg></div>',
-      ),
-      geojson: {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: { type: "LineString", coordinates: [] },
-          },
-        ],
-      },
+      geojsonCircle: this.createGeoJSONCircle([0, -90], props.radius),
+      geojsonLabel: this.createGeoJSONLabel([0, -90], props.radius),
     }));
 
     config.addEventListener("save", () => this.handleConfigChange());
@@ -818,12 +812,20 @@ class LocationRadiusControl extends MapBaseControl {
     return config.rangeCirclesEnabled;
   }
 
-  handleConfigChange() {
+  get layerNames() {
+    const ret = [];
     for (const [n, circle] of this.circles.entries()) {
-      circle.div.style.visibility = this.isEnabled ? "visible" : "hidden";
-      if (this.map.getLayer(this.layerName(n))) {
+      ret.push(this.layerNameCircle(n));
+      ret.push(this.layerNameLabel(n));
+    }
+    return ret;
+  }
+
+  handleConfigChange() {
+    for (const layerName of this.layerNames) {
+      if (this.map.getLayer(layerName)) {
         this.map.setLayoutProperty(
-          this.layerName(n),
+          layerName,
           "visibility",
           this.isEnabled ? "visible" : "none",
         );
@@ -833,62 +835,131 @@ class LocationRadiusControl extends MapBaseControl {
 
   handleStyleLoad() {
     for (const [n, circle] of this.circles.entries()) {
-      circle.marker = new mapboxgl.Marker(circle.div)
-        .setLngLat([0, -90])
-        .addTo(this.map);
+      this.map.addSource(this.sourceNameCircle(n), {
+        type: "geojson",
+        data: circle.geojsonCircle,
+      });
+
+      this.map.addSource(this.sourceNameLabel(n), {
+        type: "geojson",
+        data: circle.geojsonLabel,
+      });
+
       this.map.addLayer({
-        id: this.layerName(n),
+        id: this.layerNameCircle(n),
         type: "line",
-        source: { type: "geojson", data: circle.geojson },
+        source: this.sourceNameCircle(n),
+        paint: {
+          "line-width": 1,
+          "line-color": isDark() ? circle.colorDark : circle.colorLight,
+          "line-opacity": circle.opacity,
+        },
+      });
+
+      this.map.addLayer({
+        id: this.layerNameLabel(n),
+        type: "symbol",
+        source: this.sourceNameLabel(n),
+        paint: {
+          "text-color": isDark() ? circle.colorDark : circle.colorLight,
+        },
+        layout: {
+          "text-field": ["get", "t"],
+          "text-size": 12,
+          'text-anchor': 'bottom',
+          "text-rotation-alignment": "auto",
+          "text-allow-overlap": true,
+        },
       });
     }
-    this.handleConfigChange();
-  }
 
-  handleZoom() {
-    this.draw();
+    this.handleConfigChange();
   }
 
   handleGeolocate(position) {
     this.lastKnownPosition = position;
-    for (let circle of this.circles) {
-      if (circle.marker) {
-        circle.marker.setLngLat([position.lon, position.lat]);
+    for (let [n, circle] of this.circles.entries()) {
+      circle.geojsonCircle = this.createGeoJSONCircle(position, circle.radius);
+      const sourceCircle = this.map.getSource(this.sourceNameCircle(n));
+      if (sourceCircle) {
+        sourceCircle.setData(circle.geojsonCircle);
+      }
+
+      circle.geojsonLabel = this.createGeoJSONLabel(position, circle.radius);
+      const sourceLabel = this.map.getSource(this.sourceNameLabel(n));
+      if (sourceLabel) {
+        sourceLabel.setData(circle.geojsonLabel);
       }
     }
-    this.draw();
   }
 
-  draw() {
-    for (let circle of this.circles) {
-      this.drawCircle(circle);
-    }
+  sourceNameCircle(n) {
+    return `location-radius-circle-${n}-source`;
   }
 
-  drawCircle(circle) {
-    if (!this.isEnabled || !this.lastKnownPosition) {
-      return;
+  sourceNameLabel(n) {
+    return `location-radius-label-${n}-source`;
+  }
+
+  layerNameCircle(n) {
+    return `location-radius-circle-${n}`;
+  }
+
+  layerNameLabel(n) {
+    return `location-radius-label-${n}`;
+  }
+
+  createGeoJSONCircle(center, radiusInM, numPoints) {
+    if (!numPoints) {
+      numPoints = 64;
     }
 
-    const radius = metersToPixels(
-      circle.radius,
-      this.map.getZoom(),
-      this.lastKnownPosition.lat,
+    const points = [...new Array(numPoints)].map((_, i) =>
+      this.shiftCircle(center, radiusInM, (i / numPoints) * (2 * Math.PI)),
     );
-    const size = radius * 2;
-    const center = size / 2;
-    circle.div.querySelector("svg").style =
-      `width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)`;
-    circle.div.querySelector("circle").setAttribute("cx", `${center}`);
-    circle.div.querySelector("circle").setAttribute("cy", `${center}`);
-    circle.div.querySelector("circle").setAttribute("r", `${radius}`);
-    circle.div
-      .querySelector("circle")
-      .setAttribute("stroke", `${circle.color}`);
+    points.push(points[0]);
+
+    return {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [points],
+          },
+        },
+      ],
+    };
   }
 
-  layerName(n) {
-    return `location-radius-${n}`;
+  createGeoJSONLabel(center, radiusInM) {
+    const [x, y] = this.shiftCircle(center, radiusInM, Math.PI / 2);
+    return {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [x, y],
+          },
+          properties: {
+            t: `${radiusInM / 1000} km`,
+          },
+        },
+      ],
+    };
+  }
+
+  shiftCircle(center, radius, theta) {
+    const radiusInKm = radius / 1000;
+    const distanceX =
+      radiusInKm / (111.32 * Math.cos((center.lat * Math.PI) / 180));
+    const distanceY = radiusInKm / 110.574;
+    const x = distanceX * Math.cos(theta);
+    const y = distanceY * Math.sin(theta);
+    return [center.lon + x, center.lat + y];
   }
 }
 
