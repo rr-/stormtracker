@@ -1,15 +1,17 @@
-import requests
 from pathlib import Path
+
+import requests
 from flask import (
     Flask,
     current_app,
     jsonify,
     render_template,
     request,
+    send_from_directory,
     url_for,
 )
 
-from stormtracker.common import MAPBOX_ACCESS_TOKEN, ROOT_URL
+from stormtracker.common import MAPBOX_ACCESS_TOKEN, ROOT_URL, VERSION
 
 app = Flask(__name__, static_url_path=f"{ROOT_URL}/static")
 
@@ -33,21 +35,29 @@ def get_file_fingerprint(static_folder: Path, filename: str) -> str | None:
 
 
 @app.context_processor
-def override_url_for():
-    return dict(url_for=dated_url_for)
+def override_context():
+    return dict(
+        url_for=dated_url_for,
+        mapbox_access_token=MAPBOX_ACCESS_TOKEN,
+        root_url=ROOT_URL,
+        version=VERSION,
+    )
+
+
+@app.route("/js/<string:version>/<path:filename>")
+def route_js(version: str, filename: str):
+    return send_from_directory(app.static_folder, f"js/{filename}")
 
 
 @app.get("/")
-def read_root():
+def route_root():
     return render_template(
         "index.html",
-        mapbox_access_token=MAPBOX_ACCESS_TOKEN,
-        root_url=ROOT_URL,
     )
 
 
 @app.get("/blitzortung-geojson/")
-def read_blitzortung_geojson():
+def route_blitzortung_geojson():
     try:
         n = int(request.args.get("n"))
     except (TypeError, ValueError):
