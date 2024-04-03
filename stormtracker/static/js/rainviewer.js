@@ -1,4 +1,4 @@
-class RainViewer extends EventTarget {
+export class RainViewer extends EventTarget {
   connect() {
     this.refreshRate = 120000;
     this.lastRead = null;

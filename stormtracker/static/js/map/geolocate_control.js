@@ -1,4 +1,7 @@
-class MyGeolocateControl extends EventTarget {
+import { config } from "../config.js";
+import { htmlToElement } from "../common.js";
+
+export class MyGeolocateControl extends EventTarget {
   constructor(masterControl) {
     super();
     this.masterControl = masterControl;

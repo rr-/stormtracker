@@ -1,6 +1,6 @@
 class Config extends EventTarget {}
 
-const config = new Config();
+export const config = new Config();
 
 Object.assign(config, {
   mapboxAccessToken: MAPBOX_ACCESS_TOKEN,

@@ -1,5 +1,11 @@
 const test = false;
 
+import { config } from "./config.js";
+import { BlitzortungHistoric } from "./blitzortung_historic.js";
+import { BlitzortungLive } from "./blitzortung_live.js";
+import { RainViewer } from "./rainviewer.js";
+import { Map } from "./map/map.js";
+
 // TODO: add ability to control lightning ranges
 
 (() => {
