@@ -16,7 +16,7 @@ export class BlitzortungLive extends EventTarget {
     ws.addEventListener("error", (event) => this.handleError(event));
 
     window.addEventListener("visibilitychange", () =>
-      this.handleVisibilityChange(),
+      this.handleVisibilityChange()
     );
 
     this.connected = false;
@@ -58,7 +58,7 @@ export class BlitzortungLive extends EventTarget {
     this.ws.send(
       JSON.stringify({
         [this.mode]: this.key,
-      }),
+      })
     );
   }
 

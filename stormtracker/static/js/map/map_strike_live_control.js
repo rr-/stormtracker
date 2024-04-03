@@ -41,7 +41,7 @@ export class MapStrikeLiveControl extends MapBaseControl {
         this.map.setLayoutProperty(
           this.layerName(n),
           "visibility",
-          config.liveMarkers.enabled ? "visible" : "none",
+          config.liveMarkers.enabled ? "visible" : "none"
         );
       }
     }

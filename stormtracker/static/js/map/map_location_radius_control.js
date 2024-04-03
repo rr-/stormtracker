@@ -1,13 +1,13 @@
-import { isDark } from "./utils.js";
 import { config } from "../config.js";
 import { MapBaseControl } from "./map_base_control.js";
+import { isDark } from "./utils.js";
 
 export class MapLocationRadiusControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.masterControl = masterControl;
     this.masterControl.ui.geolocate.addEventListener("geolocate", (event) =>
-      this.handleGeolocate(event.detail),
+      this.handleGeolocate(event.detail)
     );
     this.map = masterControl.map;
     this.map.on("style.load", () => this.handleStyleLoad());
@@ -65,7 +65,7 @@ export class MapLocationRadiusControl extends MapBaseControl {
         this.map.setLayoutProperty(
           layerName,
           "visibility",
-          this.isEnabled ? "visible" : "none",
+          this.isEnabled ? "visible" : "none"
         );
       }
     }
@@ -153,7 +153,7 @@ export class MapLocationRadiusControl extends MapBaseControl {
     }
 
     const points = [...new Array(numPoints)].map((_, i) =>
-      this.shiftCircle(center, radiusInM, (i / numPoints) * (2 * Math.PI)),
+      this.shiftCircle(center, radiusInM, (i / numPoints) * (2 * Math.PI))
     );
     points.push(points[0]);
 

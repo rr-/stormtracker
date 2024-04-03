@@ -1,10 +1,10 @@
-const test = false;
-
-import { config } from "./config.js";
 import { BlitzortungHistoric } from "./blitzortung_historic.js";
 import { BlitzortungLive } from "./blitzortung_live.js";
-import { RainViewer } from "./rainviewer.js";
+import { config } from "./config.js";
 import { Map } from "./map/map.js";
+import { RainViewer } from "./rainviewer.js";
+
+const test = false;
 
 // TODO: add ability to control lightning ranges
 
@@ -16,7 +16,7 @@ import { Map } from "./map/map.js";
   rainViewer.addEventListener("tick", (event) => {
     map.masterControl.ui.stats.setRainReloadTime(
       event.detail.remaining,
-      event.detail.refreshRate,
+      event.detail.refreshRate
     );
   });
   rainViewer.addEventListener("tiles", (event) => {
@@ -50,7 +50,7 @@ import { Map } from "./map/map.js";
         new Array(10).fill().map(() => ({
           lat: config.startPos.lat + (Math.random() - 0.5),
           lon: config.startPos.lon + (Math.random() - 0.5),
-        })),
+        }))
       );
     }
 

@@ -32,17 +32,18 @@ export class StatsWidget {
     </div>
     `);
 
-    this.rainReloadTimeSpan =
-      this.container.querySelector(".rain-reload-value");
+    this.rainReloadTimeSpan = this.container.querySelector(
+      ".rain-reload-value"
+    );
     this.rainReloadTimeBar = this.container.querySelector(".rain-reload-bar");
     this.strikesReloadTimeSpan = this.container.querySelector(
-      ".strikes-reload-value",
+      ".strikes-reload-value"
     );
     this.strikesReloadTimeBar = this.container.querySelector(
-      ".strikes-reload-bar",
+      ".strikes-reload-bar"
     );
     this.strikesDelaySpan = this.container.querySelector(
-      ".strikes-delay-value",
+      ".strikes-delay-value"
     );
     this.strikesDelayBar = this.container.querySelector(".strikes-delay-bar");
   }
@@ -68,7 +69,7 @@ export class StatsWidget {
     this.strikesDelayBar.classList.toggle("delay-small", delay < 8);
     this.strikesDelayBar.classList.toggle(
       "delay-medium",
-      delay >= 8 && delay < 16,
+      delay >= 8 && delay < 16
     );
     this.strikesDelayBar.classList.toggle("delay-big", delay >= 16);
     this.strikesDelaySpan.innerText = `${delay} s`;

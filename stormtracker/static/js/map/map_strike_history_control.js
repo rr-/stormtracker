@@ -1,7 +1,7 @@
-import { config } from "../config.js";
 import { BlitzortungHistoric } from "../blitzortung_historic.js";
-import { PlusImage } from "./plus_image.js";
+import { config } from "../config.js";
 import { MapBaseControl } from "./map_base_control.js";
+import { PlusImage } from "./plus_image.js";
 
 export class MapStrikeHistoryControl extends MapBaseControl {
   constructor(masterControl) {
@@ -23,7 +23,7 @@ export class MapStrikeHistoryControl extends MapBaseControl {
         this.map.setLayoutProperty(
           this.layerName(n),
           "visibility",
-          config.strikeMarkers.enabled ? "visible" : "none",
+          config.strikeMarkers.enabled ? "visible" : "none"
         );
       }
     }
@@ -101,7 +101,7 @@ export class MapStrikeHistoryControl extends MapBaseControl {
       for (let res of config.strikeMarkers.plusResolutions) {
         this.map.addImage(
           `plus-${n}-${res.mapZoom}`,
-          new PlusImage(color, res.size, res.thickness),
+          new PlusImage(color, res.size, res.thickness)
         );
       }
     }

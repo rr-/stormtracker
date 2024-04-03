@@ -4,6 +4,7 @@ Data source: Blitzortung
 Map provider: Mapbox GL
 
 Usage:
+
 ```
 cp .env.local .env
 vim .env

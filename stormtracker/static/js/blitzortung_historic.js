@@ -57,7 +57,7 @@ export class BlitzortungHistoric extends EventTarget {
           remaining: dataSource.lastRead + dataSource.refreshRate - Date.now(),
           refreshRate: dataSource.refreshRate,
         })),
-      }),
+      })
     );
   }
 
@@ -80,7 +80,7 @@ export class BlitzortungHistoric extends EventTarget {
       this.dispatchEvent(
         new CustomEvent("strikes", {
           detail: { chunk: n, strikes: dataSource.data },
-        }),
+        })
       );
     }
   }
@@ -94,7 +94,7 @@ export class BlitzortungHistoric extends EventTarget {
     this.dispatchEvent(
       new CustomEvent("strikes", {
         detail: { chunk: n, strikes: dataSource.data },
-      }),
+      })
     );
   }
 

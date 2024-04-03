@@ -26,7 +26,7 @@ export class MapRainControl extends MapBaseControl {
       this.map.setLayoutProperty(
         this.layerName,
         "visibility",
-        config.rain.enabled ? "visible" : "none",
+        config.rain.enabled ? "visible" : "none"
       );
     }
   }

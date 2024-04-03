@@ -5,7 +5,7 @@ export class CycleMapStyleButtons {
   constructor(masterControl) {
     this.masterControl = masterControl;
     this.div = htmlToElement(
-      `<div class="mapboxgl-ctrl mapboxgl-ctrl-group"></div>`,
+      `<div class="mapboxgl-ctrl mapboxgl-ctrl-group"></div>`
     );
     for (let [styleIndex, style] of config.mapStyles.entries()) {
       const button = htmlToElement(`

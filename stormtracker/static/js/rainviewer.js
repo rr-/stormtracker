@@ -13,7 +13,7 @@ export class RainViewer extends EventTarget {
       this.refresh();
     }
     this.dispatchEvent(
-      new CustomEvent("tick", { detail: { remaining, refreshRate } }),
+      new CustomEvent("tick", { detail: { remaining, refreshRate } })
     );
   }
 

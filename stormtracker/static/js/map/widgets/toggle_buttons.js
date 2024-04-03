@@ -23,17 +23,17 @@ export class ToggleButtons {
 
     this.soundButton = this.div.querySelector("button.sound");
     this.soundButton.addEventListener("click", () =>
-      this.handleToggleSoundClick(),
+      this.handleToggleSoundClick()
     );
 
     this.rainButton = this.div.querySelector("button.rain");
     this.rainButton.addEventListener("click", () =>
-      this.handleToggleRainClick(),
+      this.handleToggleRainClick()
     );
 
     this.strikesButton = this.div.querySelector("button.strikes");
     this.strikesButton.addEventListener("click", () =>
-      this.handleToggleStrikesClick(),
+      this.handleToggleStrikesClick()
     );
 
     this.handleConfigChange();

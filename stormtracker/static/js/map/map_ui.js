@@ -1,7 +1,7 @@
 import { MyGeolocateControl } from "./geolocate_control.js";
+import { CycleMapStyleButtons } from "./widgets/cycle_map_style_buttons.js";
 import { StatsWidget } from "./widgets/stats.js";
 import { ToggleButtons } from "./widgets/toggle_buttons.js";
-import { CycleMapStyleButtons } from "./widgets/cycle_map_style_buttons.js";
 
 export class MapUI {
   constructor(masterControl) {

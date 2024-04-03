@@ -1,5 +1,5 @@
-import { config } from "../config.js";
 import { htmlToElement } from "../common.js";
+import { config } from "../config.js";
 
 export class MyGeolocateControl extends EventTarget {
   constructor(masterControl) {
@@ -37,15 +37,15 @@ export class MyGeolocateControl extends EventTarget {
     this.trackButton = this.container.querySelector("button.geolocate");
     this.followButton = this.container.querySelector("button.follow");
     this.rangeCirclesButton = this.container.querySelector(
-      "button.range-circles",
+      "button.range-circles"
     );
 
     this.dotElement = htmlToElement(
-      '<div class="mapboxgl-user-location-dot"></div>',
+      '<div class="mapboxgl-user-location-dot"></div>'
     );
 
     this.accuracyCircleElement = htmlToElement(
-      '<div class="mapboxgl-user-location-accuracy-circle"></div>',
+      '<div class="mapboxgl-user-location-accuracy-circle"></div>'
     );
 
     this.lastKnownPosition = null;
@@ -57,13 +57,13 @@ export class MyGeolocateControl extends EventTarget {
 
     this.map.on("zoom", (event) => this.handleZoom(event));
     this.trackButton.addEventListener("click", () =>
-      this.handleTrackButtonClick(),
+      this.handleTrackButtonClick()
     );
     this.followButton.addEventListener("click", () =>
-      this.handleFollowButtonClick(),
+      this.handleFollowButtonClick()
     );
     this.rangeCirclesButton.addEventListener("click", () =>
-      this.handleRangeCirclesButtonClick(),
+      this.handleRangeCirclesButtonClick()
     );
     config.addEventListener("save", () => this.handleConfigChange());
 
@@ -94,7 +94,7 @@ export class MyGeolocateControl extends EventTarget {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         },
-      }),
+      })
     );
     this.dotElement.classList.remove("mapboxgl-user-location-dot-stale");
   }
@@ -192,7 +192,7 @@ export class MyGeolocateControl extends EventTarget {
     this.followButton.classList.toggle("active", config.followEnabled);
     this.rangeCirclesButton.classList.toggle(
       "active",
-      config.rangeCirclesEnabled,
+      config.rangeCirclesEnabled
     );
     if (config.trackEnabled && this.geolocationWatchID === undefined) {
       this.startWatch();
@@ -219,7 +219,7 @@ export class MyGeolocateControl extends EventTarget {
         enableHighAccuracy: true,
         maximumAge: 0,
         timeout: 6000,
-      },
+      }
     );
     console.info("GPS: adding watch", this.geolocationWatchID);
   }
