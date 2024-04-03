@@ -5,6 +5,7 @@ Map provider: Mapbox GL
 
 Usage:
 ```
-python3 -m pip install --user requires.txt
-export MAPBOX_ACCESS_TOKEN=…
-python3 -m flask --app tracker:app run
+cp .env.local .env
+vim .env
+docker-compose up
+```

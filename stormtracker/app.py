@@ -1,7 +1,5 @@
-#!/usr/bin/env python3
-import os
-
 import requests
+from pathlib import Path
 from flask import (
     Flask,
     current_app,
@@ -11,25 +9,25 @@ from flask import (
     url_for,
 )
 
-BASE_DIR = os.environ.get("STORMTRACKER_BASE_DIR", "")
-MAPBOX_ACCESS_TOKEN = os.environ["STORMTRACKER_MAPBOX_ACCESS_TOKEN"]
-app = Flask(__name__, static_url_path=f"{BASE_DIR}/static")
+from stormtracker.common import MAPBOX_ACCESS_TOKEN, ROOT_URL
+
+app = Flask(__name__, static_url_path=f"{ROOT_URL}/static")
 
 
 def dated_url_for(endpoint, **values):
     if endpoint == "static":
         if filename := values.get("filename"):
-            static_folder = current_app.static_folder
+            static_folder = Path(current_app.static_folder)
             static_url = current_app.static_url_path
             fingerprint = get_file_fingerprint(static_folder, filename)
             return url_for(endpoint, **values) + "?q=" + fingerprint
     return url_for(endpoint, **values)
 
 
-def get_file_fingerprint(static_folder, filename):
-    filepath = os.path.join(static_folder, filename)
-    if os.path.exists(filepath):
-        modified_time = int(os.path.getmtime(filepath))
+def get_file_fingerprint(static_folder: Path, filename: str) -> str | None:
+    path = static_folder / filename
+    if path.exists():
+        modified_time = int(path.stat().st_mtime)
         return str(modified_time)
     return None
 
@@ -44,7 +42,7 @@ def read_root():
     return render_template(
         "index.html",
         mapbox_access_token=MAPBOX_ACCESS_TOKEN,
-        base_dir=BASE_DIR,
+        root_url=ROOT_URL,
     )
 
 

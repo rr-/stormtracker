@@ -191,7 +191,7 @@ class BlitzortungHistoric extends EventTarget {
   }
 
   async getChunkData(n) {
-    const apiUrl = `${BASE_DIR}/blitzortung-geojson/?n=${n}`;
+    const apiUrl = `${ROOT_URL}/blitzortung-geojson/?n=${n}`;
     const apiResponse = await fetch(apiUrl);
     const data = await apiResponse.json();
     return data.map((strike) => ({
