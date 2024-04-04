@@ -59,6 +59,9 @@ body {
 .icon.range-circles {
   --mask: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M11 12a1 1 0 1 0 2 0 1 1 0 1 0-2 0%22/%3E%3Cpath d%3D%22M7 12a5 5 0 1 0 10 0 5 5 0 1 0-10 0%22/%3E%3Cpath d%3D%22M3 12a9 9 0 1 0 18 0 9 9 0 1 0-18 0%22/%3E%3C/svg%3E");
 }
+.icon.range-reachability {
+  --mask: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%3E%20%3Cpath%20stroke%3D%22none%22%20d%3D%22M0%200h24v24H0z%22/%3E%20%3Cg%20transform%3D%22translate(12%208)%22%3E%20%3Cpath%20d%3D%22M0%2C0%20l4%2C4%20l1%2C5%20l-8%2C-1%20l-4%2C-6%20z%22/%3E%20%3Cpath%20d%3D%22M0%2C0%20l4%2C4%20l1%2C5%20l-8%2C-1%20l-4%2C-6%20z%22%20transform%3D%22translate(0%203)%20scale(0.4)%22%20vector-effect%3D%22non-scaling-stroke%22/%3E%20%3Cpath%20d%3D%22M0%2C0%20l4%2C4%20l1%2C5%20l-8%2C-1%20l-4%2C-6%20z%22%20transform%3D%22translate(0%20-4)%20scale(1.8)%22%20vector-effect%3D%22non-scaling-stroke%22/%3E%20%3C/g%3E%20%3C/svg%3E");
+}
 
 .icon.sound {
   --mask: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M6 15H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2l3.5-4.5A.8.8 0 0 1 11 5v14a.8.8 0 0 1-1.5.5L6 15M16 10l4 4m0-4-4 4%22/%3E%3C/svg%3E");

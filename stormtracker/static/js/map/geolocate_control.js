@@ -31,6 +31,13 @@ export class MyGeolocateControl extends EventTarget {
         title='Toggle range circles'
         aria-label='Toggle range circles'
       ><span class="icon range-circles" aria-hidden="true"></span></button>
+
+      <button
+        class='range-polygons'
+        type='button'
+        title='Toggle range polygons'
+        aria-label='Toggle range polygons'
+      ><span class="icon range-reachability" aria-hidden="true"></span></button>
     </div>
     `);
 
@@ -38,6 +45,9 @@ export class MyGeolocateControl extends EventTarget {
     this.followButton = this.container.querySelector("button.follow");
     this.rangeCirclesButton = this.container.querySelector(
       "button.range-circles"
+    );
+    this.rangePolygonsButton = this.container.querySelector(
+      "button.range-polygons"
     );
 
     this.dotElement = htmlToElement(
@@ -64,6 +74,9 @@ export class MyGeolocateControl extends EventTarget {
     );
     this.rangeCirclesButton.addEventListener("click", () =>
       this.handleRangeCirclesButtonClick()
+    );
+    this.rangePolygonsButton.addEventListener("click", () =>
+      this.handleRangePolygonsButtonClick()
     );
     config.addEventListener("save", () => this.handleConfigChange());
 
@@ -184,6 +197,11 @@ export class MyGeolocateControl extends EventTarget {
     config.save();
   }
 
+  handleRangePolygonsButtonClick() {
+    config.rangePolygonsEnabled = !config.rangePolygonsEnabled;
+    config.save();
+  }
+
   handleConfigChange() {
     this.accuracyCircleElement.style.visibility = config.accuracyCircleEnabled
       ? "visible"
@@ -193,6 +211,10 @@ export class MyGeolocateControl extends EventTarget {
     this.rangeCirclesButton.classList.toggle(
       "active",
       config.rangeCirclesEnabled
+    );
+    this.rangePolygonsButton.classList.toggle(
+      "active",
+      config.rangePolygonsEnabled
     );
     if (config.trackEnabled && this.geolocationWatchID === undefined) {
       this.startWatch();
