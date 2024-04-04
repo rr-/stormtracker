@@ -7,7 +7,7 @@ export class MapLocationReachabilityControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.masterControl = masterControl;
-    this.masterControl.ui.geolocate.addEventListener("geolocate", (event) =>
+    this.masterControl.geolocation.addEventListener("geolocate", (event) =>
       this.handleGeolocate(event.detail)
     );
     this.map = masterControl.map;

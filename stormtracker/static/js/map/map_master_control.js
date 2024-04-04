@@ -1,10 +1,13 @@
 import { config } from "../config.js";
+import { GeolocationController } from "./controllers/geolocation.js";
 import { MapBaseControl } from "./map_base_control.js";
 import { MapUI } from "./map_ui.js";
 
 export class MapMasterControl extends MapBaseControl {
   constructor(map) {
     super();
+    this.geolocation = new GeolocationController(map);
+
     this.map = map;
     this.bounds = {
       north: 90,
@@ -19,6 +22,7 @@ export class MapMasterControl extends MapBaseControl {
     map.on("style.load", () => this.handleStyleLoad());
     map.on("moveend", () => this.handleMapMove());
     map.on("zoomed", () => this.handleMapZoom());
+    config.addEventListener("save", () => this.handleConfigChange());
 
     this.ui = new MapUI(this);
   }
@@ -41,12 +45,30 @@ export class MapMasterControl extends MapBaseControl {
     window.setInterval(() => this.updateMapBounds(), 2000);
   }
 
+  handleConfigChange() {
+    if (config.followEnabled && this.map.dragPan.isEnabled()) {
+      this.map.dragPan.disable();
+      const position = this.geolocation.lastKnownPosition;
+      if (position) {
+        this.map.setCenter([position.lon, position.lat]);
+      }
+    } else if (!config.followEnabled && !this.map.dragPan.isEnabled()) {
+      this.map.dragPan.enable();
+    }
+  }
+
   handleMapMove() {
     this.positionChanged = true;
   }
 
   handleMapZoom() {
     this.positionChanged = true;
+    window.setTimeout(() => {
+      const position = this.geolocation.lastKnownPosition;
+      if (position && config.followEnabled) {
+        this.map.setCenter([position.lon, position.lat]);
+      }
+    }, 500);
   }
 
   updateMapBounds() {

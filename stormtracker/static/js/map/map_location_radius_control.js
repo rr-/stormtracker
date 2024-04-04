@@ -6,7 +6,7 @@ export class MapLocationRadiusControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.masterControl = masterControl;
-    this.masterControl.ui.geolocate.addEventListener("geolocate", (event) =>
+    this.masterControl.geolocation.addEventListener("geolocate", (event) =>
       this.handleGeolocate(event.detail)
     );
     this.map = masterControl.map;
@@ -69,6 +69,7 @@ export class MapLocationRadiusControl extends MapBaseControl {
         );
       }
     }
+    this.sync();
   }
 
   handleStyleLoad() {
@@ -120,7 +121,6 @@ export class MapLocationRadiusControl extends MapBaseControl {
   }
 
   handleGeolocate(position) {
-    this.lastKnownPosition = position;
     this.sync();
   }
 
@@ -129,44 +129,53 @@ export class MapLocationRadiusControl extends MapBaseControl {
       return;
     }
 
-    this.geojson = this.createGeoJSON(this.lastKnownPosition);
-    this.map.getSource(this.sourceName).setData(this.geojson);
+    this.geojson = this.createGeoJSON(
+      this.masterControl.geolocation.lastKnownPosition
+    );
+
+    const source = this.map.getSource(this.sourceName);
+    if (source) {
+      source.setData(this.geojson);
+    }
   }
 
   createGeoJSON(center) {
     const features = [];
-    for (const [i, step] of this.steps.entries()) {
-      const numPoints = 64;
-      const points = [...new Array(numPoints)].map((_, i) =>
-        this.shiftCircle(center, step.radius, (i / numPoints) * (2 * Math.PI))
-      );
-      points.push(points[0]);
 
-      features.push({
-        type: "Feature",
-        geometry: {
-          type: "Polygon",
-          coordinates: [points],
-        },
-        properties: { index: i },
-      });
+    if (center) {
+      for (const [i, step] of this.steps.entries()) {
+        const numPoints = 64;
+        const points = [...new Array(numPoints)].map((_, i) =>
+          this.shiftCircle(center, step.radius, (i / numPoints) * (2 * Math.PI))
+        );
+        points.push(points[0]);
 
-      const [labelX, labelY] = this.shiftCircle(
-        center,
-        step.radius,
-        Math.PI / 2
-      );
-      features.push({
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: [labelX, labelY],
-        },
-        properties: {
-          index: i,
-          text: `${step.radius / 1000} km`,
-        },
-      });
+        features.push({
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [points],
+          },
+          properties: { index: i },
+        });
+
+        const [labelX, labelY] = this.shiftCircle(
+          center,
+          step.radius,
+          Math.PI / 2
+        );
+        features.push({
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [labelX, labelY],
+          },
+          properties: {
+            index: i,
+            text: `${step.radius / 1000} km`,
+          },
+        });
+      }
     }
 
     return { type: "FeatureCollection", features: features };
