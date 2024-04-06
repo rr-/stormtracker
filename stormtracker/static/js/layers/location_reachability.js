@@ -1,17 +1,10 @@
 import { throttleAsync } from "../common.js";
+import { isDark } from "../common.js";
 import { config } from "../config.js";
-import { MapBaseControl } from "./map_base_control.js";
-import { isDark } from "./utils.js";
 
-export class MapLocationReachabilityControl extends MapBaseControl {
-  constructor(masterControl) {
-    super();
-    this.masterControl = masterControl;
-    this.masterControl.geolocation.addEventListener("update", (event) =>
-      this.handleGeolocationUpdate(event.detail)
-    );
-    this.map = masterControl.map;
-    this.map.on("style.load", () => this.handleStyleLoad());
+export class LocationReachabilityLayer {
+  constructor(control) {
+    this.control = control;
 
     this.steps = [
       {
@@ -45,6 +38,10 @@ export class MapLocationReachabilityControl extends MapBaseControl {
       10000
     );
 
+    control.map.on("style.load", () => this.handleStyleLoad());
+    control.geolocation.addEventListener("update", () =>
+      this.handleGeolocationUpdate()
+    );
     config.addEventListener("save", () => this.handleConfigChange());
   }
 
@@ -65,8 +62,8 @@ export class MapLocationReachabilityControl extends MapBaseControl {
   }
 
   handleConfigChange() {
-    if (this.map.getLayer(this.layerName)) {
-      this.map.setLayoutProperty(
+    if (this.control.map.getLayer(this.layerName)) {
+      this.control.map.setLayoutProperty(
         this.layerName,
         "visibility",
         this.isEnabled ? "visible" : "none"
@@ -76,12 +73,12 @@ export class MapLocationReachabilityControl extends MapBaseControl {
   }
 
   handleStyleLoad() {
-    this.map.addSource(this.sourceName, {
+    this.control.map.addSource(this.sourceName, {
       type: "geojson",
       data: { type: "FeatureCollection", features: [] },
     });
 
-    this.map.addLayer({
+    this.control.map.addLayer({
       id: this.layerName,
       type: "line",
       source: this.sourceName,
@@ -110,20 +107,20 @@ export class MapLocationReachabilityControl extends MapBaseControl {
     this.handleConfigChange();
   }
 
-  handleGeolocationUpdate(position) {
+  handleGeolocationUpdate() {
     this.sync();
   }
 
   async sync() {
-    if (!this.isEnabled || !this.masterControl.geolocation.lastKnownPosition) {
+    if (!this.isEnabled || !this.control.geolocation.lastKnownPosition) {
       return;
     }
 
     const result = await this.throttledFetchGeoJSON(
-      this.masterControl.geolocation.lastKnownPosition
+      this.control.geolocation.lastKnownPosition
     );
     if (result) {
-      this.map.getSource(this.sourceName).setData(result);
+      this.control.map.getSource(this.sourceName).setData(result);
     }
   }
 

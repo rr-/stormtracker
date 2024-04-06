@@ -1,16 +1,9 @@
+import { isDark } from "../common.js";
 import { config } from "../config.js";
-import { MapBaseControl } from "./map_base_control.js";
-import { isDark } from "./utils.js";
 
-export class MapLocationRadiusControl extends MapBaseControl {
-  constructor(masterControl) {
-    super();
-    this.masterControl = masterControl;
-    this.masterControl.geolocation.addEventListener("update", (event) =>
-      this.handleGeolocationUpdate(event.detail)
-    );
-    this.map = masterControl.map;
-    this.map.on("style.load", () => this.handleStyleLoad());
+export class LocationRadiusLayer {
+  constructor(control) {
+    this.control = control;
 
     this.steps = [
       {
@@ -41,6 +34,10 @@ export class MapLocationRadiusControl extends MapBaseControl {
     this.geojson = { type: "FeatureCollection", features: [] };
 
     config.addEventListener("save", () => this.handleConfigChange());
+    control.map.on("style.load", () => this.handleStyleLoad());
+    control.geolocation.addEventListener("update", () =>
+      this.handleGeolocationUpdate()
+    );
   }
 
   get isEnabled() {
@@ -61,8 +58,8 @@ export class MapLocationRadiusControl extends MapBaseControl {
 
   handleConfigChange() {
     for (const layer of [this.layerNameCircles, this.layerNameLabels]) {
-      if (this.map.getLayer(layer)) {
-        this.map.setLayoutProperty(
+      if (this.control.map.getLayer(layer)) {
+        this.control.map.setLayoutProperty(
           layer,
           "visibility",
           this.isEnabled ? "visible" : "none"
@@ -73,12 +70,12 @@ export class MapLocationRadiusControl extends MapBaseControl {
   }
 
   handleStyleLoad() {
-    this.map.addSource(this.sourceName, {
+    this.control.map.addSource(this.sourceName, {
       type: "geojson",
       data: this.geojson,
     });
 
-    this.map.addLayer({
+    this.control.map.addLayer({
       id: this.layerNameCircles,
       type: "line",
       source: this.sourceName,
@@ -97,7 +94,7 @@ export class MapLocationRadiusControl extends MapBaseControl {
       },
     });
 
-    this.map.addLayer({
+    this.control.map.addLayer({
       id: this.layerNameLabels,
       type: "symbol",
       source: this.sourceName,
@@ -120,7 +117,7 @@ export class MapLocationRadiusControl extends MapBaseControl {
     this.handleConfigChange();
   }
 
-  handleGeolocationUpdate(position) {
+  handleGeolocationUpdate() {
     this.sync();
   }
 
@@ -130,10 +127,10 @@ export class MapLocationRadiusControl extends MapBaseControl {
     }
 
     this.geojson = this.createGeoJSON(
-      this.masterControl.geolocation.lastKnownPosition
+      this.control.geolocation.lastKnownPosition
     );
 
-    const source = this.map.getSource(this.sourceName);
+    const source = this.control.map.getSource(this.sourceName);
     if (source) {
       source.setData(this.geojson);
     }

@@ -1,9 +1,9 @@
-import { htmlToElement } from "../../common.js";
-import { config } from "../../config.js";
+import { htmlToElement } from "../common.js";
+import { config } from "../config.js";
 
 export class GPSButtons {
-  constructor(masterControl) {
-    this.masterControl = masterControl;
+  constructor(control) {
+    this.control = control;
 
     this.div = htmlToElement(`
       <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
@@ -54,16 +54,20 @@ export class GPSButtons {
     this.rangePolygonsButton.addEventListener("click", () =>
       this.handleRangePolygonsButtonClick()
     );
-    config.addEventListener("save", () => this.handleConfigChange());
 
-    this.masterControl.geolocation.addEventListener("update", (event) =>
+    config.addEventListener("save", () => this.handleConfigChange());
+    control.geolocation.addEventListener("update", (event) =>
       this.handleGeolocationUpdate(event.detail)
     );
-    this.masterControl.geolocation.addEventListener("error", (event) =>
+    control.geolocation.addEventListener("error", (event) =>
       this.handleGeolocationError(event.detail)
     );
 
     this.handleConfigChange();
+  }
+
+  onAdd(map) {
+    return this.div;
   }
 
   handleGeolocationUpdate(position) {
@@ -128,9 +132,5 @@ export class GPSButtons {
       "active",
       config.rangePolygonsEnabled
     );
-  }
-
-  onAdd(map) {
-    return this.div;
   }
 }

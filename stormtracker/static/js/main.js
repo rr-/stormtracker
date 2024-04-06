@@ -1,5 +1,5 @@
 import { config } from "./config.js";
-import { Map } from "./map/map.js";
+import { Map } from "./map.js";
 
 // TODO: fix tracking
 // TODO: add bearing

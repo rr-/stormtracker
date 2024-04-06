@@ -1,16 +1,18 @@
 import { config } from "../config.js";
-import { MapBaseControl } from "./map_base_control.js";
 
-export class MapRainControl extends MapBaseControl {
-  constructor(masterControl) {
-    super();
-    this.map = masterControl.map;
-    this.map.on("style.load", () => this.handleStyleLoad());
-    config.addEventListener("save", () => this.handleConfigChange());
+export class RainLayer {
+  constructor(control) {
+    this.control = control;
 
     this.sourceName = "rain-source";
     this.layerName = "rain-layer";
     this.lastKnownUrl = null;
+
+    control.map.on("style.load", () => this.handleStyleLoad());
+    control.rain.addEventListener("tiles", (event) =>
+      this.handleTiles(event.detail.url)
+    );
+    config.addEventListener("save", () => this.handleConfigChange());
   }
 
   handleStyleLoad() {
@@ -21,9 +23,9 @@ export class MapRainControl extends MapBaseControl {
   }
 
   handleConfigChange() {
-    const layer = this.map.getLayer(this.layerName);
+    const layer = this.control.map.getLayer(this.layerName);
     if (layer) {
-      this.map.setLayoutProperty(
+      this.control.map.setLayoutProperty(
         this.layerName,
         "visibility",
         config.rain.enabled ? "visible" : "none"
@@ -34,18 +36,18 @@ export class MapRainControl extends MapBaseControl {
   handleTiles(url) {
     this.lastKnownUrl = url;
 
-    let source = this.map.getSource(this.sourceName);
+    let source = this.control.map.getSource(this.sourceName);
     if (source) {
       source.setTiles([url]);
       return;
     }
 
-    this.map.addSource(this.sourceName, {
+    this.control.map.addSource(this.sourceName, {
       type: "raster",
       tiles: [url],
     });
 
-    this.map.addLayer({
+    this.control.map.addLayer({
       id: this.layerName,
       type: "raster",
       source: this.sourceName,
@@ -55,8 +57,8 @@ export class MapRainControl extends MapBaseControl {
     });
 
     for (let referenceLayer of ["road-label", "road-label-navigation"]) {
-      if (this.map.getLayer(referenceLayer)) {
-        this.map.moveLayer(this.layerName, referenceLayer);
+      if (this.control.map.getLayer(referenceLayer)) {
+        this.control.map.moveLayer(this.layerName, referenceLayer);
       }
     }
   }

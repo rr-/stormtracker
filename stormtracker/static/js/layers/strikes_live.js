@@ -1,13 +1,9 @@
 import { htmlToElement } from "../common.js";
 import { config } from "../config.js";
-import { MapBaseControl } from "./map_base_control.js";
 
-export class MapStrikeLiveControl extends MapBaseControl {
-  constructor(masterControl) {
-    super();
-    this.masterControl = masterControl;
-    this.map = masterControl.map;
-    this.map.on("style.load", () => this.handleStyleLoad());
+export class StrikesLiveLayer {
+  constructor(control) {
+    this.control = control;
 
     this.minSize = config.liveMarkers.minSize;
     this.maxSize = config.liveMarkers.maxSize;
@@ -26,9 +22,12 @@ export class MapStrikeLiveControl extends MapBaseControl {
       },
     }));
 
-    config.addEventListener("save", () => this.handleConfigChange());
-
     setInterval(() => this.animate(), 59);
+    config.addEventListener("save", () => this.handleConfigChange());
+    control.map.on("style.load", () => this.handleStyleLoad());
+    control.strikesLive.addEventListener("strike", (event) =>
+      this.handleStrike(event)
+    );
   }
 
   handleConfigChange() {
@@ -37,8 +36,8 @@ export class MapStrikeLiveControl extends MapBaseControl {
       circle.div.style.visibility = config.liveMarkers.enabled
         ? "visible"
         : "hidden";
-      if (this.map.getLayer(this.layerName(n))) {
-        this.map.setLayoutProperty(
+      if (this.control.map.getLayer(this.layerName(n))) {
+        this.control.map.setLayoutProperty(
           this.layerName(n),
           "visibility",
           config.liveMarkers.enabled ? "visible" : "none"
@@ -52,8 +51,8 @@ export class MapStrikeLiveControl extends MapBaseControl {
       const circle = this.circles[n];
       circle.marker = new mapboxgl.Marker(circle.div)
         .setLngLat([0, -90])
-        .addTo(this.map);
-      this.map.addLayer({
+        .addTo(this.control.map);
+      this.control.map.addLayer({
         id: this.layerName(n),
         type: "line",
         source: { type: "geojson", data: circle.geojson },
@@ -62,11 +61,9 @@ export class MapStrikeLiveControl extends MapBaseControl {
     this.handleConfigChange();
   }
 
-  handleStrike(strike) {
-    if (
-      !this.masterControl.isStrikeVisible(strike) ||
-      !this.masterControl.isReady
-    ) {
+  handleStrike(event) {
+    const strike = event.detail.strike;
+    if (!this.control.isStrikeVisible(strike) || !this.control.isReady) {
       return;
     }
 

@@ -1,11 +1,10 @@
-import { htmlToElement } from "../../common.js";
-import { config } from "../../config.js";
+import { htmlToElement } from "../common.js";
+import { config } from "../config.js";
 
 export class GeolocationController extends EventTarget {
-  constructor(map) {
+  constructor() {
     super();
     this.lastKnownPosition = null;
-    this.map = map;
 
     config.addEventListener("save", () => this.handleConfigChange());
   }

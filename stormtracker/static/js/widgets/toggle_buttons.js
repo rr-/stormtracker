@@ -1,9 +1,9 @@
-import { htmlToElement } from "../../common.js";
-import { config } from "../../config.js";
+import { htmlToElement } from "../common.js";
+import { config } from "../config.js";
 
 export class ToggleButtons {
-  constructor(masterControl) {
-    this.masterControl = masterControl;
+  constructor(control) {
+    this.control = control;
 
     this.div = htmlToElement(`
       <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
@@ -36,29 +36,30 @@ export class ToggleButtons {
       this.handleToggleStrikesClick()
     );
 
-    this.handleConfigChange();
     config.addEventListener("save", () => this.handleConfigChange());
+
+    this.handleConfigChange();
+  }
+
+  onAdd(map) {
+    return this.div;
   }
 
   handleToggleSoundClick() {
-    this.masterControl.toggleAudio();
+    this.control.toggleAudio();
   }
 
   handleToggleRainClick() {
-    this.masterControl.toggleRain();
+    this.control.toggleRain();
   }
 
   handleToggleStrikesClick() {
-    this.masterControl.toggleStrikes();
+    this.control.toggleStrikes();
   }
 
   handleConfigChange() {
     this.soundButton.classList.toggle("active", config.audioEnabled);
     this.rainButton.classList.toggle("active", config.rain.enabled);
     this.strikesButton.classList.toggle("active", config.strikeMarkers.enabled);
-  }
-
-  onAdd(map) {
-    return this.div;
   }
 }

@@ -1,22 +1,18 @@
-import { config } from "../config.js";
+import { config } from "./config.js";
 import { GeolocationController } from "./controllers/geolocation.js";
-import { KeyboardController } from "./controllers/keyboard.js";
 import { RainController } from "./controllers/rain.js";
 import { StrikesHistoricController } from "./controllers/strikes_historic.js";
 import { StrikesLiveController } from "./controllers/strikes_live.js";
-import { MapBaseControl } from "./map_base_control.js";
-import { MapUI } from "./map_ui.js";
 
-export class MapMasterControl extends MapBaseControl {
+export class MapControl {
   constructor(map) {
-    super();
-    this.geolocation = new GeolocationController(map);
-    this.keyboard = new KeyboardController(this);
+    this.map = map;
+
+    this.geolocation = new GeolocationController();
     this.strikesLive = new StrikesLiveController();
     this.strikesHistoric = new StrikesHistoricController();
     this.rain = new RainController();
 
-    this.map = map;
     this.bounds = {
       north: 90,
       south: -90,
@@ -31,8 +27,6 @@ export class MapMasterControl extends MapBaseControl {
     map.on("moveend", () => this.handleMapMove());
     map.on("zoomed", () => this.handleMapZoom());
     config.addEventListener("save", () => this.handleConfigChange());
-
-    this.ui = new MapUI(this);
   }
 
   handleStyleLoad() {
@@ -48,7 +42,6 @@ export class MapMasterControl extends MapBaseControl {
   }
 
   handleLoad() {
-    this.ui.load(this.map);
     this.updateMapBounds();
     window.setInterval(() => this.updateMapBounds(), 2000);
   }

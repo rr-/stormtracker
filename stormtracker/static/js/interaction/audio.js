@@ -1,10 +1,10 @@
 import { config } from "../config.js";
-import { MapBaseControl } from "./map_base_control.js";
 
-export class MapAudioControl extends MapBaseControl {
-  constructor(masterControl) {
-    super();
-    this.masterControl = masterControl;
+export class AudioInteraction {
+  constructor(control) {
+    this.control = control;
+
+    this.audioCount = 0;
     this.sounds = [
       new Audio("static/sfx/t1.wav"),
       new Audio("static/sfx/t2.wav"),
@@ -16,15 +16,16 @@ export class MapAudioControl extends MapBaseControl {
       new Audio("static/sfx/t8.wav"),
       new Audio("static/sfx/t9.wav"),
     ];
-    this.audioCount = 0;
+
     window.setInterval(() => this.tick(), 80);
+    control.strikesLive.addEventListener("strike", (event) =>
+      this.handleStrike(event)
+    );
   }
 
-  handleStrike(strike) {
-    if (
-      this.masterControl.isStrikeVisible(strike) &&
-      this.masterControl.isReady
-    ) {
+  handleStrike(event) {
+    const strike = event.detail.strike;
+    if (this.control.isStrikeVisible(strike) && this.control.isReady) {
       this.audioCount++;
     }
   }

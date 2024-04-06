@@ -1,8 +1,10 @@
-import { htmlToElement } from "../../common.js";
-import { percent } from "../../common.js";
+import { htmlToElement } from "../common.js";
+import { percent } from "../common.js";
 
 export class StatsWidget {
-  constructor() {
+  constructor(control) {
+    this.control = control;
+
     this.container = htmlToElement(`
     <div class="stats">
       <div class="stat" title="Time to reload the rain layer">
@@ -46,6 +48,32 @@ export class StatsWidget {
       ".strikes-delay-value"
     );
     this.strikesDelayBar = this.container.querySelector(".strikes-delay-bar");
+
+    control.rain.addEventListener("tick", (event) =>
+      this.handleRainTick(event)
+    );
+    control.strikesLive.addEventListener("strike", (event) =>
+      this.handleStrike(event)
+    );
+    control.strikesHistoric.addEventListener("tick", (event) =>
+      this.handleStrikesTick(event)
+    );
+  }
+
+  onAdd(map) {
+    return this.container;
+  }
+
+  handleStrikesTick(event) {
+    this.setStrikeReloadTime(event.detail);
+  }
+
+  handleStrike(event) {
+    this.setStrikeDelay(event.detail.strike.delay);
+  }
+
+  handleRainTick(event) {
+    this.setRainReloadTime(event.detail.remaining, event.detail.refreshRate);
   }
 
   setRainReloadTime(remaining, refreshRate) {
@@ -74,9 +102,5 @@ export class StatsWidget {
     this.strikesDelayBar.classList.toggle("delay-big", delay >= 16);
     this.strikesDelaySpan.innerText = `${delay} s`;
     this.strikesDelayBar.style.width = `${width}%`;
-  }
-
-  onAdd(map) {
-    return this.container;
   }
 }

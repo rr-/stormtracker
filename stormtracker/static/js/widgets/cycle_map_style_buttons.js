@@ -1,9 +1,10 @@
-import { htmlToElement } from "../../common.js";
-import { config } from "../../config.js";
+import { htmlToElement } from "../common.js";
+import { config } from "../config.js";
 
 export class CycleMapStyleButtons {
-  constructor(masterControl) {
-    this.masterControl = masterControl;
+  constructor(control) {
+    this.control = control;
+
     this.div = htmlToElement(
       `<div class="mapboxgl-ctrl mapboxgl-ctrl-group"></div>`
     );
@@ -22,8 +23,12 @@ export class CycleMapStyleButtons {
     config.addEventListener("save", () => this.handleConfigChange());
   }
 
+  onAdd(map) {
+    return this.div;
+  }
+
   handleClick(styleIndex) {
-    this.masterControl.switchMapStyle(styleIndex);
+    this.control.switchMapStyle(styleIndex);
   }
 
   handleConfigChange() {
@@ -32,9 +37,5 @@ export class CycleMapStyleButtons {
     ].entries()) {
       button.classList.toggle("active", config.mapStyle === styleIndex);
     }
-  }
-
-  onAdd(map) {
-    return this.div;
   }
 }

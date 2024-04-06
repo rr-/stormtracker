@@ -1,15 +1,13 @@
-import { htmlToElement } from "../../common.js";
-import { config } from "../../config.js";
+import { htmlToElement } from "../common.js";
+import { config } from "../config.js";
 
 export class GPSMarker extends EventTarget {
-  constructor(masterControl) {
+  constructor(control) {
     super();
-    this.masterControl = masterControl;
+    this.control = control;
   }
 
   onAdd(map) {
-    this.map = map;
-
     this.div = htmlToElement("<div></div>");
 
     this.dotElement = htmlToElement(
@@ -26,16 +24,15 @@ export class GPSMarker extends EventTarget {
       pitchAlignment: "map",
     });
 
-    this.masterControl.geolocation.addEventListener("update", (event) =>
-      this.handleGeolocationUpdate(event.detail)
-    );
-
-    this.masterControl.geolocation.addEventListener("error", (event) =>
-      this.handleGeolocationError(event.detail)
-    );
-
-    this.map.on("zoom", (event) => this.handleZoom(event));
     config.addEventListener("save", () => this.handleConfigChange());
+    this.control.map.on("zoom", (event) => this.handleZoom(event));
+    this.control.geolocation.addEventListener("update", (event) =>
+      this.handleGeolocationUpdate(event)
+    );
+    this.control.geolocation.addEventListener("error", () =>
+      this.handleGeolocationError()
+    );
+
     return this.div;
   }
 
@@ -45,12 +42,12 @@ export class GPSMarker extends EventTarget {
       : "hidden";
   }
 
-  handleGeolocationUpdate(position) {
-    this.updateMarker(position);
+  handleGeolocationUpdate(event) {
+    this.updateMarker(event.detail);
     this.dotElement.classList.remove("mapboxgl-user-location-dot-stale");
   }
 
-  handleGeolocationError(error) {
+  handleGeolocationError() {
     this.dotElement.classList.add("mapboxgl-user-location-dot-stale");
   }
 
@@ -59,9 +56,9 @@ export class GPSMarker extends EventTarget {
   }
 
   updateAccuracyCircle() {
-    const y = this.map._container.clientHeight / 2;
-    const a = this.map.unproject([0, y]);
-    const b = this.map.unproject([1, y]);
+    const y = this.control.map._container.clientHeight / 2;
+    const a = this.control.map.unproject([0, y]);
+    const b = this.control.map.unproject([1, y]);
     const metersPerPixel = a.distanceTo(b);
     const circleDiameter = Math.ceil((2.0 * this.accuracy) / metersPerPixel);
     this.accuracyCircleElement.style.width = `${circleDiameter}px`;
@@ -74,8 +71,8 @@ export class GPSMarker extends EventTarget {
         lng: position.lon,
         lat: position.lat,
       };
-      this.accuracyCircleMarker.setLngLat(center).addTo(this.map);
-      this.userLocationDotMarker.setLngLat(center).addTo(this.map);
+      this.accuracyCircleMarker.setLngLat(center).addTo(this.control.map);
+      this.userLocationDotMarker.setLngLat(center).addTo(this.control.map);
       this.accuracy = position.accuracy;
       this.updateAccuracyCircle();
     } else {

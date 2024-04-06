@@ -1,8 +1,8 @@
-import { config } from "../../config.js";
+import { config } from "../config.js";
 
-export class KeyboardController {
-  constructor(masterControl) {
-    this.masterControl = masterControl;
+export class KeyboardInteraction {
+  constructor(control) {
+    this.control = control;
     window.addEventListener("keydown", (event) => this.handleKeyDown(event));
   }
 
@@ -12,44 +12,44 @@ export class KeyboardController {
     }
 
     if (event.key === "s" || event.key === "S") {
-      this.masterControl.cycleMapStyle();
+      this.control.cycleMapStyle();
     }
 
     if (event.key === "g" || event.key === "G") {
       // toggle dark navigation / satellite
       if (config.mapStyle === 0) {
-        this.masterControl.switchMapStyle(2);
+        this.control.switchMapStyle(2);
       } else {
-        this.masterControl.switchMapStyle(0);
+        this.control.switchMapStyle(0);
       }
     }
 
     if (event.key === "t" || event.key === "T") {
-      this.masterControl.toggleTrack();
+      this.control.toggleTrack();
     }
     if (event.key === "f" || event.key === "F") {
-      this.masterControl.toggleFollow();
+      this.control.toggleFollow();
     }
     if (event.key === "a" || event.key === "A") {
-      this.masterControl.toggleAudio();
+      this.control.toggleAudio();
     }
     if (event.key === "r" || event.key === "R") {
-      this.masterControl.toggleRain();
+      this.control.toggleRain();
     }
     if (event.key === "c" || event.key === "C") {
-      this.masterControl.toggleRangeCircles();
+      this.control.toggleRangeCircles();
     }
     if (event.key === "1") {
-      this.masterControl.map.zoomTo(8);
+      this.control.map.zoomTo(8);
     }
     if (event.key === "2") {
-      this.masterControl.map.zoomTo(10);
+      this.control.map.zoomTo(10);
     }
     if (event.key === "3") {
-      this.masterControl.map.zoomTo(11.5);
+      this.control.map.zoomTo(11.5);
     }
     if (event.key === "4") {
-      this.masterControl.map.zoomTo(13);
+      this.control.map.zoomTo(13);
     }
   }
 }
