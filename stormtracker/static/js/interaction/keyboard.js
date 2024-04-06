@@ -51,5 +51,8 @@ export class KeyboardInteraction {
     if (event.key === "4") {
       this.control.map.zoomTo(13);
     }
+    if (event.key === "5") {
+      this.control.map.zoomTo(15);
+    }
   }
 }
