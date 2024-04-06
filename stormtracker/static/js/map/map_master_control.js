@@ -1,5 +1,6 @@
 import { config } from "../config.js";
 import { GeolocationController } from "./controllers/geolocation.js";
+import { KeyboardController } from "./controllers/keyboard.js";
 import { MapBaseControl } from "./map_base_control.js";
 import { MapUI } from "./map_ui.js";
 
@@ -7,6 +8,7 @@ export class MapMasterControl extends MapBaseControl {
   constructor(map) {
     super();
     this.geolocation = new GeolocationController(map);
+    this.keyboard = new KeyboardController(this);
 
     this.map = map;
     this.bounds = {

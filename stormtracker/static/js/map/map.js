@@ -1,5 +1,4 @@
 import { MapAudioControl } from "./map_audio_control.js";
-import { MapKeyboardControl } from "./map_keyboard_control.js";
 import { MapLocationRadiusControl } from "./map_location_radius_control.js";
 import { MapLocationReachabilityControl } from "./map_location_reachability_control.js";
 import { MapMasterControl } from "./map_master_control.js";
@@ -25,7 +24,6 @@ export class Map {
 
     this.masterControl = new MapMasterControl(this.map);
     this.audioControl = new MapAudioControl(this.masterControl);
-    this.keyboardControl = new MapKeyboardControl(this.masterControl);
     this.rainControl = new MapRainControl(this.masterControl);
     this.strikeLiveControl = new MapStrikeLiveControl(this.masterControl);
     this.strikeHistoryControl = new MapStrikeHistoryControl(this.masterControl);
@@ -39,7 +37,6 @@ export class Map {
     this.allControls = [
       this.masterControl,
       this.audioControl,
-      this.keyboardControl,
       this.rainControl,
       this.strikeLiveControl,
       this.strikeHistoryControl,

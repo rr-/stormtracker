@@ -1,9 +1,7 @@
-import { config } from "../config.js";
-import { MapBaseControl } from "./map_base_control.js";
+import { config } from "../../config.js";
 
-export class MapKeyboardControl extends MapBaseControl {
+export class KeyboardController {
   constructor(masterControl) {
-    super();
     this.masterControl = masterControl;
     window.addEventListener("keydown", (event) => this.handleKeyDown(event));
   }
