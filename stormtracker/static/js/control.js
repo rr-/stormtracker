@@ -30,15 +30,8 @@ export class MapControl {
   }
 
   handleStyleLoad() {
-    this.removeDistractingIcons();
     this.updateMapBounds();
     this.isReady = true;
-  }
-
-  removeDistractingIcons() {
-    for (let layerName of ["airport-label", "poi-label"]) {
-      this.map.setPaintProperty(layerName, "icon-opacity", 0);
-    }
   }
 
   handleLoad() {
@@ -47,13 +40,12 @@ export class MapControl {
   }
 
   handleConfigChange() {
-    if (config.followEnabled && this.map.dragPan.isEnabled()) {
-      this.map.dragPan.disable();
+    if (config.followEnabled) {
       const position = this.geolocation.lastKnownPosition;
       if (position) {
-        this.map.setCenter([position.lon, position.lat]);
+        this.map.easeTo({ center: [position.lon, position.lat] });
       }
-    } else if (!config.followEnabled && !this.map.dragPan.isEnabled()) {
+    } else if (!config.followEnabled) {
       this.map.dragPan.enable();
     }
   }
@@ -67,7 +59,7 @@ export class MapControl {
     window.setTimeout(() => {
       const position = this.geolocation.lastKnownPosition;
       if (position && config.followEnabled) {
-        this.map.setCenter([position.lon, position.lat]);
+        this.map.easeTo({ center: [position.lon, position.lat] });
       }
     }, 500);
   }
@@ -79,11 +71,11 @@ export class MapControl {
 
     this.positionChanged = false;
 
-    const MapBounds = this.map.getBounds();
-    this.bounds.west = MapBounds.getWest();
-    this.bounds.north = MapBounds.getNorth();
-    this.bounds.east = MapBounds.getEast();
-    this.bounds.south = MapBounds.getSouth();
+    const bounds = this.map.getBounds();
+    this.bounds.west = bounds.getWest();
+    this.bounds.north = bounds.getNorth();
+    this.bounds.east = bounds.getEast();
+    this.bounds.south = bounds.getSouth();
 
     config.startPos.lon = this.map.getCenter().lng;
     config.startPos.lat = this.map.getCenter().lat;
@@ -142,7 +134,7 @@ export class MapControl {
     config.save();
   }
 
-  isStrikeVisible(strike) {
+  isPointVisible(strike) {
     return (
       strike.lon > this.bounds.west &&
       strike.lon < this.bounds.east &&

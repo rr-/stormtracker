@@ -34,6 +34,7 @@ export class MapUI {
       ]);
 
     control.map.on("load", () => this.handleLoad());
+    control.map.on("style.load", () => this.handleStyleLoad());
   }
 
   handleLoad() {
@@ -44,5 +45,15 @@ export class MapUI {
     this.control.map.addControl(this.stats, "top-left");
     this.control.map.addControl(this.toggleButtons, "top-right");
     this.control.map.addControl(this.cycleMapButtons, "top-right");
+  }
+
+  handleStyleLoad() {
+    this.removeDistractingIcons();
+  }
+
+  removeDistractingIcons() {
+    for (let layerName of ["airport-label", "poi-label"]) {
+      this.map.setPaintProperty(layerName, "icon-opacity", 0);
+    }
   }
 }

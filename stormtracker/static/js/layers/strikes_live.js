@@ -63,7 +63,7 @@ export class StrikesLiveLayer {
 
   handleStrike(event) {
     const strike = event.detail.strike;
-    if (!this.control.isStrikeVisible(strike) || !this.control.isReady) {
+    if (!this.control.isPointVisible(strike) || !this.control.isReady) {
       return;
     }
 
