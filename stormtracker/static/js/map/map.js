@@ -42,6 +42,33 @@ export class Map {
       this.strikeHistoryControl,
       this.locationRadiusControl,
     ];
+
+    // TODO: move me to child widgets
+    this.masterControl.rain.addEventListener("tick", (event) => {
+      this.masterControl.ui.stats.setRainReloadTime(
+        event.detail.remaining,
+        event.detail.refreshRate
+      );
+    });
+    this.masterControl.rain.addEventListener("tiles", (event) => {
+      this.loadRainTiles(event.detail.url);
+    });
+
+    this.masterControl.strikesLive.addEventListener("strike", (event) => {
+      this.masterControl.ui.stats.setStrikeDelay(event.detail.strike.delay);
+      this.addLiveStrike(event.detail.strike);
+    });
+
+    this.masterControl.strikesHistoric.addEventListener("strikes", (event) => {
+      this.loadHistoricStrikes(event.detail.chunk, event.detail.strikes);
+    });
+    this.masterControl.strikesHistoric.addEventListener("tick", (event) => {
+      this.masterControl.ui.stats.setStrikeReloadTime(event.detail);
+    });
+
+    this.masterControl.strikesLive.connect();
+    this.masterControl.strikesHistoric.connect();
+    this.masterControl.rain.connect();
   }
 
   loadRainTiles(tiles) {

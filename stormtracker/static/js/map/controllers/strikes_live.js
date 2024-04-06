@@ -1,4 +1,4 @@
-export class BlitzortungLive extends EventTarget {
+export class StrikesLiveController extends EventTarget {
   constructor() {
     super();
     this.mode = "a";

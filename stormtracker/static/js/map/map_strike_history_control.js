@@ -1,5 +1,5 @@
-import { BlitzortungHistoric } from "../blitzortung_historic.js";
 import { config } from "../config.js";
+import { StrikesHistoricController } from "./controllers/strikes_historic.js";
 import { MapBaseControl } from "./map_base_control.js";
 import { PlusImage } from "./plus_image.js";
 
@@ -11,7 +11,7 @@ export class MapStrikeHistoryControl extends MapBaseControl {
 
     config.addEventListener("save", () => this.handleConfigChange());
 
-    this.maxChunks = BlitzortungHistoric.maxChunks;
+    this.maxChunks = StrikesHistoricController.maxChunks;
     this.geojson = new Array(this.maxChunks)
       .fill()
       .map(() => ({ type: "FeatureCollection", features: [] }));

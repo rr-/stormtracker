@@ -1,4 +1,4 @@
-export class BlitzortungHistoric extends EventTarget {
+export class StrikesHistoricController extends EventTarget {
   static maxChunks = 24;
 
   constructor() {
