@@ -26,12 +26,12 @@ export class GPSMarker extends EventTarget {
       pitchAlignment: "map",
     });
 
-    this.masterControl.geolocation.addEventListener("geolocate", (event) =>
-      this.handleGeolocate(event.detail)
+    this.masterControl.geolocation.addEventListener("update", (event) =>
+      this.handleGeolocationUpdate(event.detail)
     );
 
-    this.masterControl.geolocation.addEventListener("geolocateError", (event) =>
-      this.handleGeolocateError(event.detail)
+    this.masterControl.geolocation.addEventListener("error", (event) =>
+      this.handleGeolocationError(event.detail)
     );
 
     this.map.on("zoom", (event) => this.handleZoom(event));
@@ -45,12 +45,12 @@ export class GPSMarker extends EventTarget {
       : "hidden";
   }
 
-  handleGeolocate(position) {
+  handleGeolocationUpdate(position) {
     this.updateMarker(position);
     this.dotElement.classList.remove("mapboxgl-user-location-dot-stale");
   }
 
-  handleGeolocateError(error) {
+  handleGeolocationError(error) {
     this.dotElement.classList.add("mapboxgl-user-location-dot-stale");
   }
 

@@ -7,8 +7,8 @@ export class MapLocationReachabilityControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.masterControl = masterControl;
-    this.masterControl.geolocation.addEventListener("geolocate", (event) =>
-      this.handleGeolocate(event.detail)
+    this.masterControl.geolocation.addEventListener("update", (event) =>
+      this.handleGeolocationUpdate(event.detail)
     );
     this.map = masterControl.map;
     this.map.on("style.load", () => this.handleStyleLoad());
@@ -110,17 +110,18 @@ export class MapLocationReachabilityControl extends MapBaseControl {
     this.handleConfigChange();
   }
 
-  handleGeolocate(position) {
-    this.lastKnownPosition = position;
+  handleGeolocationUpdate(position) {
     this.sync();
   }
 
   async sync() {
-    if (!this.isEnabled || !this.lastKnownPosition) {
+    if (!this.isEnabled || !this.masterControl.geolocation.lastKnownPosition) {
       return;
     }
 
-    const result = await this.throttledFetchGeoJSON(this.lastKnownPosition);
+    const result = await this.throttledFetchGeoJSON(
+      this.masterControl.geolocation.lastKnownPosition
+    );
     if (result) {
       this.map.getSource(this.sourceName).setData(result);
     }

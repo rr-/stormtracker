@@ -19,7 +19,7 @@ export class GeolocationController extends EventTarget {
     this.lastKnownPosition = appPosition;
 
     this.dispatchEvent(
-      new CustomEvent("geolocate", {
+      new CustomEvent("update", {
         detail: appPosition,
       })
     );
@@ -33,9 +33,7 @@ export class GeolocationController extends EventTarget {
       this.handleConfigChange();
     }
 
-    this.dispatchEvent(
-      new CustomEvent("geolocateError", { detail: { error } })
-    );
+    this.dispatchEvent(new CustomEvent("error", { detail: { error } }));
   }
 
   handleConfigChange() {
@@ -57,6 +55,7 @@ export class GeolocationController extends EventTarget {
       }
     );
     console.info("GPS: adding watch", this.geolocationWatchID);
+    this.dispatchEvent(new CustomEvent("start", { detail: null }));
   }
 
   clearWatch() {
@@ -64,6 +63,7 @@ export class GeolocationController extends EventTarget {
     window.navigator.geolocation.clearWatch(this.geolocationWatchID);
     this.geolocationWatchID = undefined;
 
-    this.dispatchEvent(new CustomEvent("geolocate", { detail: null }));
+    this.dispatchEvent(new CustomEvent("stop", { detail: null }));
+    this.dispatchEvent(new CustomEvent("update", { detail: null }));
   }
 }

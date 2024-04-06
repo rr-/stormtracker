@@ -6,8 +6,8 @@ export class MapLocationRadiusControl extends MapBaseControl {
   constructor(masterControl) {
     super();
     this.masterControl = masterControl;
-    this.masterControl.geolocation.addEventListener("geolocate", (event) =>
-      this.handleGeolocate(event.detail)
+    this.masterControl.geolocation.addEventListener("update", (event) =>
+      this.handleGeolocationUpdate(event.detail)
     );
     this.map = masterControl.map;
     this.map.on("style.load", () => this.handleStyleLoad());
@@ -120,7 +120,7 @@ export class MapLocationRadiusControl extends MapBaseControl {
     this.handleConfigChange();
   }
 
-  handleGeolocate(position) {
+  handleGeolocationUpdate(position) {
     this.sync();
   }
 

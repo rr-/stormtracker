@@ -56,17 +56,17 @@ export class GPSButtons {
     );
     config.addEventListener("save", () => this.handleConfigChange());
 
-    this.masterControl.geolocation.addEventListener("geolocate", (event) =>
-      this.handleGeolocate(event.detail)
+    this.masterControl.geolocation.addEventListener("update", (event) =>
+      this.handleGeolocationUpdate(event.detail)
     );
-    this.masterControl.geolocation.addEventListener("geolocateError", (event) =>
-      this.handleGeolocateError(event.detail)
+    this.masterControl.geolocation.addEventListener("error", (event) =>
+      this.handleGeolocationError(event.detail)
     );
 
     this.handleConfigChange();
   }
 
-  handleGeolocate(position) {
+  handleGeolocationUpdate(position) {
     this.trackButton.classList.remove("waiting");
     this.trackButton.classList.remove("active-error");
     if (config.trackEnabled) {
@@ -74,7 +74,7 @@ export class GPSButtons {
     }
   }
 
-  handleGeolocateError(error) {
+  handleGeolocationError(error) {
     if (error.code === 1) {
       // PERMISSION_DENIED
       this.handleConfigChange();
