@@ -49,6 +49,10 @@ body {
   --icon-color: #33b5e5;
 }
 
+.hidden {
+  display: none;
+}
+
 .icon.geolocate {
   --mask: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22/%3E%3Cpath d%3D%22M9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0%22/%3E%3Cpath d%3D%22M4 12a8 8 0 1 0 16 0 8 8 0 1 0-16 0M12 2v2M12 20v2M20 12h2M2 12h2%22/%3E%3C/svg%3E");
 }
@@ -139,4 +143,25 @@ body {
   mask-size: 100% 100%;
   -webkit-mask-size: 100% 100%;
   pointer-events: auto;
+}
+
+.mapboxgl-ctrl-custom button {
+  padding: 5px 10px;
+  border: 0;
+  font-size: 14px;
+  border-radius: 4px;
+  background: white;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.mapboxgl-ctrl-bottom-center {
+  bottom: 10px;
+  left: 50%;
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.mapboxgl-ctrl-bottom-center .mapboxgl-ctrl {
+  margin: 10px 0 0 10px;
 }

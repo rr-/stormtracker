@@ -8,6 +8,7 @@ import { StrikesLiveLayer } from "./layers/strikes_live.js";
 import { CycleMapStyleButtons } from "./widgets/cycle_map_style_buttons.js";
 import { GPSButtons } from "./widgets/gps_buttons.js";
 import { GPSMarker } from "./widgets/gps_marker.js";
+import { RecenterButton } from "./widgets/recenter_button.js";
 import { StatsWidget } from "./widgets/stats.js";
 import { ToggleButtons } from "./widgets/toggle_buttons.js";
 
@@ -19,6 +20,7 @@ export class MapUI {
     this.stats = new StatsWidget(control);
     this.toggleButtons = new ToggleButtons(control);
     this.gpsButtons = new GPSButtons(control);
+    this.recenterButton = new RecenterButton(control);
     this.cycleMapButtons = new CycleMapStyleButtons(control);
 
     (this.interactions = [
@@ -33,6 +35,7 @@ export class MapUI {
         new LocationReachabilityLayer(control),
       ]);
 
+    this.registerControlPosition(this.control.map, "bottom-center");
     control.map.on("load", () => this.handleLoad());
     control.map.on("style.load", () => this.handleStyleLoad());
   }
@@ -42,6 +45,7 @@ export class MapUI {
     this.control.map.touchZoomRotate.disableRotation();
     this.control.map.addControl(this.gpsMarker);
     this.control.map.addControl(this.gpsButtons, "top-right");
+    this.control.map.addControl(this.recenterButton, "bottom-center");
     this.control.map.addControl(this.stats, "top-left");
     this.control.map.addControl(this.toggleButtons, "top-right");
     this.control.map.addControl(this.cycleMapButtons, "top-right");
@@ -55,5 +59,15 @@ export class MapUI {
     for (let layerName of ["airport-label", "poi-label"]) {
       this.map.setPaintProperty(layerName, "icon-opacity", 0);
     }
+  }
+
+  registerControlPosition(map, positionName) {
+    if (map._controlPositions[positionName]) {
+      return;
+    }
+    var positionContainer = document.createElement("div");
+    positionContainer.className = `mapboxgl-ctrl-${positionName}`;
+    map._controlContainer.appendChild(positionContainer);
+    map._controlPositions[positionName] = positionContainer;
   }
 }

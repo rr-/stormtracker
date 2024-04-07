@@ -68,7 +68,7 @@ export class CameraTrackerController extends EventTarget {
     config.cameraFollowState = CameraFollowState.Paused;
     config.save();
     console.log("pause tracking");
-    this.dispatchEvent(new CustomEvent("cancel"));
+    this.dispatchEvent(new CustomEvent("pause"));
   }
 
   resumeTracking() {
