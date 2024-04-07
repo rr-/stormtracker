@@ -133,13 +133,11 @@ export class SideButtons {
   }
 
   handleToggleRangeCirclesButtonClick() {
-    config.rangeCirclesEnabled = !config.rangeCirclesEnabled;
-    config.save();
+    this.control.toggleRangeCircles();
   }
 
   handleToggleRangePolygonsButtonClick() {
-    config.rangePolygonsEnabled = !config.rangePolygonsEnabled;
-    config.save();
+    this.control.toggleRangePolygons();
   }
 
   handleToggleFollowButtonClick() {

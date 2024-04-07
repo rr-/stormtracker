@@ -42,6 +42,9 @@ export class KeyboardInteraction {
     if (event.key === "c" || event.key === "C") {
       this.control.toggleRangeCircles();
     }
+    if (event.key === "r" || event.key === "R") {
+      this.control.toggleRangePolygons();
+    }
     if (event.key === "1") {
       this.control.map.zoomTo(8);
     }

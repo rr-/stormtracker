@@ -94,6 +94,12 @@ export class MapControl {
     config.save();
   }
 
+  toggleRangePolygons(enable) {
+    config.rangePolygonsEnabled =
+      enable !== undefined ? enable : !config.rangePolygonsEnabled;
+    config.save();
+  }
+
   toggleStrikes(enable) {
     config.strikeMarkers.enabled =
       enable !== undefined ? enable : !config.strikeMarkers.enabled;
