@@ -45,9 +45,7 @@ export class StrikesHistoricLayer {
     this.control = control;
 
     this.maxChunks = StrikesHistoricController.maxChunks;
-    this.geojson = new Array(this.maxChunks)
-      .fill()
-      .map(() => ({ type: "FeatureCollection", features: [] }));
+    this.geojson = { type: "FeatureCollection", features: [] };
 
     config.addEventListener("save", () => this.handleConfigChange());
     control.map.on("style.load", () => this.handleStyleLoad());
@@ -57,91 +55,87 @@ export class StrikesHistoricLayer {
   }
 
   handleConfigChange() {
-    for (let n = 0; n < this.maxChunks; n++) {
-      if (this.control.map.getLayer(this.layerName(n))) {
-        this.control.map.setLayoutProperty(
-          this.layerName(n),
-          "visibility",
-          config.strikeMarkers.enabled ? "visible" : "none"
-        );
-      }
+    if (this.control.map.getLayer(this.layerName)) {
+      this.control.map.setLayoutProperty(
+        this.layerName,
+        "visibility",
+        config.strikeMarkers.enabled ? "visible" : "none"
+      );
     }
   }
 
   handleStyleLoad() {
     this.loadImages();
 
-    for (let n = this.maxChunks - 1; n >= 0; n--) {
-      this.control.map.addSource(this.sourceName(n), {
-        type: "geojson",
-        data: this.geojson[n],
-      });
+    this.control.map.addSource(this.sourceName, {
+      type: "geojson",
+      data: this.geojson,
+    });
 
-      const plusId = config.strikeMarkers.chunkMarkers[n];
-
-      this.control.map.addLayer({
-        id: this.layerName(n),
-        type: "symbol",
-        paint: {
-          "icon-opacity": config.strikeMarkers.opacity,
+    this.control.map.addLayer({
+      id: this.layerName,
+      type: "symbol",
+      paint: {
+        "icon-opacity": config.strikeMarkers.opacity,
+      },
+      layout: {
+        "icon-image": {
+          stops: config.strikeMarkers.plusResolutions.map((res) => [
+            res.mapZoom,
+            `plus-{chunk}-${res.mapZoom}`,
+          ]),
         },
-        layout: {
-          "icon-image": {
-            stops: config.strikeMarkers.plusResolutions.map((res) => [
-              res.mapZoom,
-              `plus-${plusId}-${res.mapZoom}`,
-            ]),
-          },
-          "icon-size": 1,
-          "icon-allow-overlap": true,
-        },
-        source: this.sourceName(n),
-      });
-    }
+        "icon-size": 1,
+        "icon-allow-overlap": true,
+        "symbol-sort-key": ["-", ["get", "n"]],
+      },
+      source: this.sourceName,
+    });
 
     this.handleConfigChange();
   }
 
   handleStrikes(event) {
-    const n = event.detail.chunk;
+    const n = event.detail.n;
     const strikes = event.detail.strikes;
-    this.geojson[n] = {
-      type: "FeatureCollection",
-      features: strikes.map(this.strikeToFeature),
-    };
-    this.updateSource(n);
+    this.geojson.features = [
+      ...this.geojson.features.filter((feature) => feature.properties.n !== n),
+      ...strikes.map((strike) => this.strikeToFeature(strike, n)),
+    ];
+    this.updateSource();
   }
 
-  updateSource(n) {
-    const source = this.control.map.getSource(this.sourceName(n));
+  updateSource() {
+    const source = this.control.map.getSource(this.sourceName);
     if (source) {
-      source.setData(this.geojson[n]);
+      source.setData(this.geojson);
     }
   }
 
-  sourceName(n) {
-    return `history-${n}-source`;
+  get sourceName() {
+    return `strike-history-source`;
   }
 
-  layerName(n) {
-    return `history-${n}-layer`;
+  get layerName() {
+    return `strike-history-layer`;
   }
 
-  strikeToFeature(strike) {
+  strikeToFeature(strike, n) {
     return {
       type: "Feature",
       geometry: {
         type: "Point",
         coordinates: [strike.lon, strike.lat],
       },
+      properties: { n, chunk: config.strikeMarkers.chunkMarkers[n] },
     };
   }
 
   loadImages() {
-    for (let [n, color] of config.strikeMarkers.plusColors.entries()) {
+    for (let [chunk, color] of config.strikeMarkers.plusColors.entries()) {
       for (let res of config.strikeMarkers.plusResolutions) {
         this.control.map.addImage(
-          `plus-${n}-${res.mapZoom}`,
+          `plus-${chunk}-${res.mapZoom}`,
           new PlusImage(color, res.size, res.thickness)
         );
       }

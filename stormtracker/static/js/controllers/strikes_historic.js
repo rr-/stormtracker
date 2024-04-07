@@ -93,7 +93,7 @@ export class StrikesHistoricController extends EventTarget {
 
     this.dispatchEvent(
       new CustomEvent("strikes", {
-        detail: { chunk: n, strikes: dataSource.data },
+        detail: { n, strikes: dataSource.data },
       })
     );
   }
