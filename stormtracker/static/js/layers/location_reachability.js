@@ -120,7 +120,10 @@ export class LocationReachabilityLayer {
       this.control.geolocation.lastKnownPosition
     );
     if (result) {
-      this.control.map.getSource(this.sourceName).setData(result);
+      const source = this.control.map.getSource(this.sourceName);
+      if (source) {
+        source.setData(result);
+      }
     }
   }
 
