@@ -146,12 +146,15 @@ body {
 }
 
 .mapboxgl-ctrl-custom button {
-  padding: 5px 10px;
-  border: 0;
-  font-size: 14px;
-  border-radius: 4px;
-  background: white;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  &,
+  &:hover {
+    padding: 5px 10px;
+    border: 0;
+    font-size: 14px;
+    border-radius: 4px;
+    background: white !important;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .mapboxgl-ctrl-bottom-center {
