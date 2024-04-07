@@ -8,17 +8,25 @@ export class GPSMarker extends EventTarget {
   }
 
   onAdd(map) {
-    this.div = htmlToElement("<div></div>");
+    this.markerElement = htmlToElement(
+      '<div class="mapboxgl-user-location mapboxgl-marker mapboxgl-marker-anchor-center mapboxgl-user-location-show-heading">' +
+        '<div class="mapboxgl-user-location-dot"></div>' +
+        '<div class="mapboxgl-user-location-heading"></div>' +
+        "</div>"
+    );
 
-    this.dotElement = htmlToElement(
-      '<div class="mapboxgl-user-location-dot"></div>'
+    this.dotElement = this.markerElement.querySelector(
+      ".mapboxgl-user-location-dot"
+    );
+    this.angleElement = this.markerElement.querySelector(
+      ".mapboxgl-user-location-heading"
     );
 
     this.accuracyCircleElement = htmlToElement(
       '<div class="mapboxgl-user-location-accuracy-circle"></div>'
     );
 
-    this.userLocationDotMarker = new mapboxgl.Marker(this.dotElement);
+    this.userLocationMarker = new mapboxgl.Marker(this.markerElement);
     this.accuracyCircleMarker = new mapboxgl.Marker({
       element: this.accuracyCircleElement,
       pitchAlignment: "map",
@@ -33,7 +41,7 @@ export class GPSMarker extends EventTarget {
       this.handleGeolocationError()
     );
 
-    return this.div;
+    return this.markerElement;
   }
 
   handleConfigChange() {
@@ -71,12 +79,18 @@ export class GPSMarker extends EventTarget {
         lng: position.lon,
         lat: position.lat,
       };
-      this.accuracyCircleMarker.setLngLat(center).addTo(this.control.map);
-      this.userLocationDotMarker.setLngLat(center).addTo(this.control.map);
+      this.userLocationMarker.setLngLat(center);
+      if (position.bearing === null) {
+        this.angleElement.classList.add("hidden");
+      } else {
+        this.angleElement.classList.remove("hidden");
+        this.userLocationMarker.setRotation(position.bearing);
+      }
+      this.userLocationMarker.addTo(this.control.map);
       this.accuracy = position.accuracy;
       this.updateAccuracyCircle();
     } else {
-      this.userLocationDotMarker.remove();
+      this.userLocationMarker.remove();
       this.accuracyCircleMarker.remove();
     }
   }

@@ -96,7 +96,6 @@ export class CameraTrackerController extends EventTarget {
   }
 
   updatePosition() {
-    console.log("update position");
     const position = this.geolocation.lastKnownPosition;
     if (position) {
       this.map.easeTo(

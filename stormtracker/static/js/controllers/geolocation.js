@@ -13,13 +13,20 @@ export class GeolocationController extends EventTarget {
     const appPosition = {
       lat: position.coords.latitude,
       lon: position.coords.longitude,
-      accuracy: position.coords.accuracy,
     };
-    this.lastKnownPosition = appPosition;
+
+    const result = {
+      ...appPosition,
+      accuracy: position.coords.accuracy,
+      speed: position.coords.speed,
+      bearing: position.coords.heading,
+    };
+
+    this.lastKnownPosition = result;
 
     this.dispatchEvent(
       new CustomEvent("update", {
-        detail: appPosition,
+        detail: result,
       })
     );
   }
