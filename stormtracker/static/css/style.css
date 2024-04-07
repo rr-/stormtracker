@@ -3,8 +3,8 @@ body {
   padding: 0;
 }
 #map {
-  width: 100vw;
-  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
 }
 .bar-outer {
   border-radius: 5px;
