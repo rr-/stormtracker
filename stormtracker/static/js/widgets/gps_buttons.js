@@ -1,5 +1,6 @@
 import { htmlToElement } from "../common.js";
 import { config } from "../config.js";
+import { CameraFollowState } from "../config.js";
 
 export class GPSButtons {
   constructor(control) {
@@ -96,19 +97,11 @@ export class GPSButtons {
   }
 
   handleTrackButtonClick() {
-    config.trackEnabled = !config.trackEnabled;
-    if (!config.trackEnabled) {
-      config.followEnabled = false;
-    }
-    config.save();
+    this.control.toggleTrack();
   }
 
   handleFollowButtonClick() {
-    config.followEnabled = !config.followEnabled;
-    if (config.followEnabled) {
-      config.trackEnabled = true;
-    }
-    config.save();
+    this.control.toggleFollow();
   }
 
   handleRangeCirclesButtonClick() {
@@ -123,7 +116,10 @@ export class GPSButtons {
 
   handleConfigChange() {
     this.trackButton.classList.toggle("active", config.trackEnabled);
-    this.followButton.classList.toggle("active", config.followEnabled);
+    this.followButton.classList.toggle(
+      "active",
+      config.cameraFollowState !== CameraFollowState.Disabled
+    );
     this.rangeCirclesButton.classList.toggle(
       "active",
       config.rangeCirclesEnabled

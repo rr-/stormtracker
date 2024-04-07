@@ -2,6 +2,12 @@ class Config extends EventTarget {}
 
 export const config = new Config();
 
+export const CameraFollowState = {
+  Disabled: "disabled",
+  Enabled: "enabled",
+  Paused: "paused",
+};
+
 Object.assign(config, {
   mapboxAccessToken: MAPBOX_ACCESS_TOKEN,
   startPos: { lat: 16.8774, lon: 52.3462 },
@@ -26,7 +32,7 @@ Object.assign(config, {
   mapStyle: localStorage.getItem("MapStyle") ?? 0,
   audioEnabled: localStorage.getItem("Audio") === "1" ?? true,
   trackEnabled: false,
-  followEnabled: false,
+  cameraFollowState: CameraFollowState.disabled,
   rangeCirclesEnabled: false,
   rangePolygonsEnabled: true,
   accuracyCircleEnabled: false,
@@ -113,8 +119,14 @@ config.load = () => {
   if (localStorage.getItem("Track") !== null) {
     config.trackEnabled = localStorage.getItem("Track") === "1";
   }
-  if (localStorage.getItem("Follow") !== null) {
-    config.followEnabled = localStorage.getItem("Follow") === "1";
+  if (localStorage.getItem("FollowState") !== null) {
+    if (localStorage.getItem("FollowState") === "?") {
+      config.cameraFollowState = CameraFollowState.Paused;
+    } else if (localStorage.getItem("FollowState") === "1") {
+      config.cameraFollowState = CameraFollowState.Enabled;
+    } else {
+      config.cameraFollowState = CameraFollowState.Disabled;
+    }
   }
   if (localStorage.getItem("Strikes") !== null) {
     config.strikeMarkers.enabled = localStorage.getItem("Strikes") === "1";
@@ -137,7 +149,14 @@ config.save = () => {
   localStorage.setItem("MapStyle", config.mapStyle);
   localStorage.setItem("Audio", config.audioEnabled ? "1" : "0");
   localStorage.setItem("Track", config.trackEnabled ? "1" : "0");
-  localStorage.setItem("Follow", config.followEnabled ? "1" : "0");
+  localStorage.setItem(
+    "FollowState",
+    {
+      [CameraFollowState.Paused]: "?",
+      [CameraFollowState.Disabled]: "0",
+      [CameraFollowState.Enabled]: "1",
+    }[config.cameraFollowState]
+  );
   localStorage.setItem("Strikes", config.strikeMarkers.enabled ? "1" : "0");
   localStorage.setItem("Rain", config.rain.enabled ? "1" : "0");
   localStorage.setItem("RangeCircles", config.rangeCirclesEnabled ? "1" : "0");

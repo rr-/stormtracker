@@ -1,4 +1,6 @@
 import { config } from "./config.js";
+import { CameraFollowState } from "./config.js";
+import { CameraTrackerController } from "./controllers/camera_tracker.js";
 import { GeolocationController } from "./controllers/geolocation.js";
 import { RainController } from "./controllers/rain.js";
 import { StrikesHistoricController } from "./controllers/strikes_historic.js";
@@ -12,6 +14,7 @@ export class MapControl {
     this.strikesLive = new StrikesLiveController();
     this.strikesHistoric = new StrikesHistoricController();
     this.rain = new RainController();
+    this.cameraTracker = new CameraTrackerController(map, this.geolocation);
 
     this.bounds = {
       north: 90,
@@ -26,7 +29,6 @@ export class MapControl {
     map.on("style.load", () => this.handleStyleLoad());
     map.on("moveend", () => this.handleMapMove());
     map.on("zoomed", () => this.handleMapZoom());
-    config.addEventListener("save", () => this.handleConfigChange());
   }
 
   handleStyleLoad() {
@@ -39,29 +41,12 @@ export class MapControl {
     window.setInterval(() => this.updateMapBounds(), 2000);
   }
 
-  handleConfigChange() {
-    if (config.followEnabled) {
-      const position = this.geolocation.lastKnownPosition;
-      if (position) {
-        this.map.easeTo({ center: [position.lon, position.lat] });
-      }
-    } else if (!config.followEnabled) {
-      this.map.dragPan.enable();
-    }
-  }
-
   handleMapMove() {
     this.positionChanged = true;
   }
 
   handleMapZoom() {
     this.positionChanged = true;
-    window.setTimeout(() => {
-      const position = this.geolocation.lastKnownPosition;
-      if (position && config.followEnabled) {
-        this.map.easeTo({ center: [position.lon, position.lat] });
-      }
-    }, 500);
   }
 
   updateMapBounds() {
@@ -113,15 +98,19 @@ export class MapControl {
   toggleTrack(enable) {
     config.trackEnabled = enable !== undefined ? enable : !config.trackEnabled;
     if (!config.trackEnabled) {
-      config.followEnabled = false;
+      config.cameraFollowState = CameraFollowState.Disabled;
     }
     config.save();
   }
 
-  toggleFollow(enable) {
-    config.followEnabled =
-      enable !== undefined ? enable : !config.followEnabled;
-    if (config.followEnabled) {
+  toggleFollow(state) {
+    config.cameraFollowState =
+      state !== undefined
+        ? state
+        : config.cameraFollowState === CameraFollowState.Disabled
+        ? CameraFollowState.Enabled
+        : CameraFollowState.Disabled;
+    if (config.cameraFollowState !== CameraFollowState.Disabled) {
       config.trackEnabled = true;
     }
     config.save();
