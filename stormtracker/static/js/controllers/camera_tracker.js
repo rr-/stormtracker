@@ -10,11 +10,27 @@ export class CameraTrackerController extends EventTarget {
 
     console.log("constructor");
     config.addEventListener("save", () => this.handleConfigChange());
-    map.on("movestart", (event) => this.handleMapMove(event));
-    map.on("zoomstart", (event) => this.handleMapZoom(event));
+    map.on("move", (event) => this.handleMapMove(event));
+    map.on("zoom", (event) => this.handleMapZoom(event));
     geolocation.addEventListener("update", (event) =>
       this.handleGeolocationUpdate(event)
     );
+  }
+
+  get isSignificantlyOff() {
+    const position = this.geolocation.lastKnownPosition;
+    if (!position) {
+      return true;
+    }
+
+    const bounds = this.map.getBounds();
+    const center = this.map.getCenter();
+    const xRatio =
+      (position.lon - bounds.getEast()) / (bounds.getWest() - bounds.getEast());
+    const yRatio =
+      (position.lat - bounds.getNorth()) /
+      (bounds.getSouth() - bounds.getNorth());
+    return xRatio < 0.4 || xRatio > 0.6 || yRatio < 0.4 || yRatio > 0.6;
   }
 
   handleConfigChange() {
@@ -32,13 +48,13 @@ export class CameraTrackerController extends EventTarget {
   }
 
   handleMapMove(event) {
-    if (!event.isCustom) {
+    if (!event.isCustom && this.isSignificantlyOff) {
       this.pauseTracking();
     }
   }
 
   handleMapZoom(event) {
-    if (!event.isCustom) {
+    if (!event.isCustom && this.isSignificantlyOff) {
       this.pauseTracking();
     }
   }

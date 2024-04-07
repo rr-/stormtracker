@@ -8,7 +8,7 @@ export class RecenterButton {
     this.div = htmlToElement(`
       <div class="mapboxgl-ctrl mapboxgl-ctrl-custom">
         <button
-          class='geolocate'
+          class='recenter'
           type='button'
           title='Recenter'
           aria-label='Recenter'
@@ -16,7 +16,7 @@ export class RecenterButton {
       </div>
     `);
 
-    this.button = this.div.querySelector("button.geolocate");
+    this.button = this.div.querySelector("button.recenter");
 
     this.button.addEventListener("click", () => this.handleButtonClick());
 
