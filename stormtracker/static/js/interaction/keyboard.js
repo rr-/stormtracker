@@ -33,6 +33,9 @@ export class KeyboardInteraction {
     if (event.key === "a" || event.key === "A") {
       this.control.toggleAudio();
     }
+    if (event.key === "n" || event.key === "N") {
+      this.control.toggleNorthUp();
+    }
     if (event.key === "r" || event.key === "R") {
       this.control.toggleRain();
     }

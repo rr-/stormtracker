@@ -7,8 +7,8 @@ export class CameraTrackerController extends EventTarget {
     this.map = map;
     this.geolocation = geolocation;
     this.lastCameraFollowState = null;
+    this.lastNorthUpEnabled = null;
 
-    console.log("constructor");
     config.addEventListener("save", () => this.handleConfigChange());
     map.on("move", (event) => this.handleMapMove(event));
     map.on("zoom", (event) => this.handleMapZoom(event));
@@ -34,16 +34,20 @@ export class CameraTrackerController extends EventTarget {
   }
 
   handleConfigChange() {
-    if (this.lastCameraFollowState === config.cameraFollowState) {
-      return;
+    if (this.lastCameraFollowState !== config.cameraFollowState) {
+      this.lastCameraFollowState = config.cameraFollowState;
+      if (config.cameraFollowState === CameraFollowState.Enabled) {
+        this.startTracking();
+      } else if (config.cameraFollowState === CameraFollowState.Paused) {
+        this.pauseTracking();
+      } else if (!config.cameraFollowState === CameraFollowState.Disabled) {
+        this.stopTracking();
+      }
     }
-    this.lastCameraFollowState = config.cameraFollowState;
-    if (config.cameraFollowState === CameraFollowState.Enabled) {
-      this.startTracking();
-    } else if (config.cameraFollowState === CameraFollowState.Paused) {
-      this.pauseTracking();
-    } else if (!config.cameraFollowState === CameraFollowState.Disabled) {
-      this.stopTracking();
+
+    if (this.lastNorthUpEnabled !== config.northUpEnabled) {
+      this.lastNorthUpEnabled = config.northUpEnabled;
+      this.updateRotation();
     }
   }
 
@@ -63,6 +67,7 @@ export class CameraTrackerController extends EventTarget {
     if (config.cameraFollowState === CameraFollowState.Enabled) {
       this.updatePosition();
     }
+    this.updateRotation();
   }
 
   startTracking() {
@@ -99,9 +104,20 @@ export class CameraTrackerController extends EventTarget {
     const position = this.geolocation.lastKnownPosition;
     if (position) {
       this.map.easeTo(
-        { center: [position.lon, position.lat] },
+        {
+          center: [position.lon, position.lat],
+        },
         { isCustom: true }
       );
+    }
+  }
+
+  updateRotation() {
+    const position = this.geolocation.lastKnownPosition;
+    if (config.northUpEnabled) {
+      this.map.easeTo({ bearing: 0 }, { isCustom: true });
+    } else if (position && position.bearing !== null) {
+      this.map.easeTo({ bearing: position.bearing }, { isCustom: true });
     }
   }
 }

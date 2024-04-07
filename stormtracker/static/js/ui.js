@@ -6,11 +6,10 @@ import { RainLayer } from "./layers/rain.js";
 import { StrikesHistoricLayer } from "./layers/strikes_historic.js";
 import { StrikesLiveLayer } from "./layers/strikes_live.js";
 import { CycleMapStyleButtons } from "./widgets/cycle_map_style_buttons.js";
-import { GPSButtons } from "./widgets/gps_buttons.js";
 import { GPSMarker } from "./widgets/gps_marker.js";
 import { RecenterButton } from "./widgets/recenter_button.js";
+import { SideButtons } from "./widgets/side_buttons.js";
 import { StatsWidget } from "./widgets/stats.js";
-import { ToggleButtons } from "./widgets/toggle_buttons.js";
 
 export class MapUI {
   constructor(control) {
@@ -18,8 +17,7 @@ export class MapUI {
 
     this.gpsMarker = new GPSMarker(control);
     this.stats = new StatsWidget(control);
-    this.toggleButtons = new ToggleButtons(control);
-    this.gpsButtons = new GPSButtons(control);
+    this.sideButtons = new SideButtons(control);
     this.recenterButton = new RecenterButton(control);
     this.cycleMapButtons = new CycleMapStyleButtons(control);
 
@@ -54,10 +52,9 @@ export class MapUI {
     this.control.map.addControl(new mapboxgl.ScaleControl());
     this.control.map.touchZoomRotate.disableRotation();
     this.control.map.addControl(this.gpsMarker);
-    this.control.map.addControl(this.gpsButtons, "top-right");
+    this.control.map.addControl(this.sideButtons, "top-right");
     this.control.map.addControl(this.recenterButton, "bottom-center");
     this.control.map.addControl(this.stats, "top-left");
-    this.control.map.addControl(this.toggleButtons, "top-right");
     this.control.map.addControl(this.cycleMapButtons, "top-right");
   }
 

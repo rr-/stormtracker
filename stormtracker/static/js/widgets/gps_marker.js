@@ -26,7 +26,10 @@ export class GPSMarker extends EventTarget {
       '<div class="mapboxgl-user-location-accuracy-circle"></div>'
     );
 
-    this.userLocationMarker = new mapboxgl.Marker(this.markerElement);
+    this.userLocationMarker = new mapboxgl.Marker({
+      element: this.markerElement,
+      rotationAlignment: "map",
+    });
     this.accuracyCircleMarker = new mapboxgl.Marker({
       element: this.accuracyCircleElement,
       pitchAlignment: "map",

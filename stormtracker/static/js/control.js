@@ -77,6 +77,12 @@ export class MapControl {
     config.save();
   }
 
+  toggleNorthUp(enable) {
+    config.northUpEnabled =
+      enable !== undefined ? enable : !config.northUpEnabled;
+    config.save();
+  }
+
   toggleRain(enable) {
     config.rain.enabled = enable !== undefined ? enable : !config.rain.enabled;
     config.save();

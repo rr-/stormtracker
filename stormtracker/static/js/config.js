@@ -31,8 +31,9 @@ Object.assign(config, {
   ],
   mapStyle: localStorage.getItem("MapStyle") ?? 0,
   audioEnabled: localStorage.getItem("Audio") === "1" ?? true,
+  northUpEnabled: localStorage.getItem("NorthUp") === "1" ?? true,
   trackEnabled: false,
-  cameraFollowState: CameraFollowState.disabled,
+  cameraFollowState: CameraFollowState.Disabled,
   rangeCirclesEnabled: false,
   rangePolygonsEnabled: true,
   accuracyCircleEnabled: false,
@@ -149,6 +150,7 @@ config.save = () => {
   localStorage.setItem("MapStyle", config.mapStyle);
   localStorage.setItem("Audio", config.audioEnabled ? "1" : "0");
   localStorage.setItem("Track", config.trackEnabled ? "1" : "0");
+  localStorage.setItem("NorthUp", config.northUpEnabled ? "1" : "0");
   localStorage.setItem(
     "FollowState",
     {
