@@ -18,7 +18,7 @@ export class GeolocationController extends EventTarget {
     const result = {
       ...appPosition,
       accuracy: position.coords.accuracy,
-      speed: position.coords.speed,
+      speed: (position.coords.speed * 3600) / 1000, // in km/h
       bearing: position.coords.heading,
     };
 

@@ -116,7 +116,7 @@ export class CameraTrackerController extends EventTarget {
     const position = this.geolocation.lastKnownPosition;
     if (config.northUpEnabled) {
       this.map.easeTo({ bearing: 0 }, { isCustom: true });
-    } else if (position && position.bearing !== null) {
+    } else if (position && position.bearing !== null && position.speed >= 0.5) {
       this.map.easeTo({ bearing: position.bearing }, { isCustom: true });
     }
   }
