@@ -24,7 +24,6 @@ export class CameraTrackerController extends EventTarget {
     }
 
     const bounds = this.map.getBounds();
-    const center = this.map.getCenter();
     const xRatio =
       (position.lon - bounds.getEast()) / (bounds.getWest() - bounds.getEast());
     const yRatio =
