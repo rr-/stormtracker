@@ -8,6 +8,7 @@ export class CameraController extends EventTarget {
     this.geolocation = geolocation;
     this.lastCameraFollowState = null;
     this.lastNorthUpEnabled = null;
+    this.targetZoom = null;
     this.updateCameraInterval = null;
 
     config.addEventListener("save", () => this.handleConfigChange());
@@ -75,6 +76,7 @@ export class CameraController extends EventTarget {
     config.save();
     this.dispatchEvent(new CustomEvent("stop-tracking"));
     window.clearInterval(this.updateCameraInterval);
+    this.updateCameraInterval = null;
   }
 
   pauseTracking() {
@@ -82,6 +84,7 @@ export class CameraController extends EventTarget {
     config.save();
     this.dispatchEvent(new CustomEvent("pause-tracking"));
     window.clearInterval(this.updateCameraInterval);
+    this.updateCameraInterval = null;
   }
 
   resumeTracking() {
@@ -108,6 +111,17 @@ export class CameraController extends EventTarget {
     }
   }
 
+  zoomTo(zoom) {
+    this.targetZoom = zoom;
+    this.updateCamera(true);
+    if (this.updateCameraInterval !== null) {
+      window.clearInterval(this.updateCameraInterval);
+      this.updateCameraInterval = window.setInterval(() => {
+        this.updateCamera(false);
+      }, 1000);
+    }
+  }
+
   updateCamera(reset) {
     const position = this.geolocation.lastKnownPosition;
 
@@ -123,6 +137,9 @@ export class CameraController extends EventTarget {
       (reset || position.speed >= 0.5)
     ) {
       params.bearing = position.bearing;
+    }
+    if (this.targetZoom !== null) {
+      params.zoom = this.targetZoom;
     }
 
     if (Object.keys(params).length > 0) {

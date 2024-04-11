@@ -32,12 +32,12 @@ export class KeyboardInteraction {
           this.control.toggleRangeCircles();
         }
       },
-      1: () => this.control.map.zoomTo(8),
-      2: () => this.control.map.zoomTo(10),
-      3: () => this.control.map.zoomTo(11.5),
-      4: () => this.control.map.zoomTo(13),
-      5: () => this.control.map.zoomTo(15),
-      6: () => this.control.map.zoomTo(17),
+      1: () => this.control.camera.zoomTo(8),
+      2: () => this.control.camera.zoomTo(10),
+      3: () => this.control.camera.zoomTo(11.5),
+      4: () => this.control.camera.zoomTo(13),
+      5: () => this.control.camera.zoomTo(15),
+      6: () => this.control.camera.zoomTo(17),
     };
 
     const func = keyMap[key];
