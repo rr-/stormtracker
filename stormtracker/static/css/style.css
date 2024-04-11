@@ -1,3 +1,9 @@
+:root {
+  --icon-color: black;
+  --icon-color-paused: darkgoldenrod;
+  --icon-color-active: #33b5e5;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -26,10 +32,6 @@ body {
   background: #60f0f0;
 }
 
-:root {
-  --icon-color: black;
-}
-
 .icon {
   background: var(--icon-color);
   width: 100%;
@@ -45,8 +47,14 @@ body {
   -webkit-mask-position: center;
 }
 
-.active .icon {
-  --icon-color: #33b5e5;
+.active {
+  --icon-color: var(--icon-color-active);
+}
+[data-state="paused"] {
+  --icon-color: var(--icon-color-paused);
+}
+[data-state="enabled"] {
+  --icon-color: var(--icon-color-active);
 }
 
 button.sound {

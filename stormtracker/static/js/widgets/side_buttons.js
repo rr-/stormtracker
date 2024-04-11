@@ -171,10 +171,7 @@ export class SideButtons {
       config.rangePolygonsEnabled
     );
 
-    this.followButton.classList.toggle(
-      "active",
-      config.cameraFollowState !== CameraFollowState.Disabled
-    );
+    this.followButton.dataset.state = config.cameraFollowState;
     this.northUpButton.classList.toggle("active", config.northUpEnabled);
 
     this.soundButton.classList.toggle("active", config.audioEnabled);
