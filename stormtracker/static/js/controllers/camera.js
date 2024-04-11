@@ -12,7 +12,9 @@ export class CameraController extends EventTarget {
     this.updateCameraInterval = null;
 
     config.addEventListener("save", () => this.handleConfigChange());
+    map.on("movestart", (event) => this.handleMapZoom(event));
     map.on("move", (event) => this.handleMapMove(event));
+    map.on("zoomstart", (event) => this.handleMapZoom(event));
     map.on("zoom", (event) => this.handleMapZoom(event));
   }
 
@@ -51,13 +53,13 @@ export class CameraController extends EventTarget {
 
   handleMapMove(event) {
     if (!event.isCustom) {
-      this.syncPauseState();
+      this.handleUserInteraction();
     }
   }
 
   handleMapZoom(event) {
     if (!event.isCustom) {
-      this.syncPauseState();
+      this.handleUserInteraction();
     }
   }
 
@@ -97,7 +99,7 @@ export class CameraController extends EventTarget {
     }, 1000);
   }
 
-  syncPauseState() {
+  handleUserInteraction() {
     if (
       this.isSignificantlyOff &&
       config.cameraFollowState === CameraFollowState.Enabled
@@ -109,17 +111,22 @@ export class CameraController extends EventTarget {
     ) {
       this.resumeTracking();
     }
+    this.resetInterval();
   }
 
-  zoomTo(zoom) {
-    this.targetZoom = zoom;
-    this.updateCamera(true);
+  resetInterval() {
     if (this.updateCameraInterval !== null) {
       window.clearInterval(this.updateCameraInterval);
       this.updateCameraInterval = window.setInterval(() => {
         this.updateCamera(false);
       }, 1000);
     }
+  }
+
+  zoomTo(zoom) {
+    this.targetZoom = zoom;
+    this.resetInterval();
+    this.updateCamera(true);
   }
 
   updateCamera(reset) {
@@ -140,6 +147,7 @@ export class CameraController extends EventTarget {
     }
     if (this.targetZoom !== null) {
       params.zoom = this.targetZoom;
+      this.targetZoom = null;
     }
 
     if (Object.keys(params).length > 0) {
