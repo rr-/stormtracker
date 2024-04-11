@@ -52,14 +52,14 @@ export class CameraTrackerController extends EventTarget {
   }
 
   handleMapMove(event) {
-    if (!event.isCustom && this.isSignificantlyOff) {
-      this.pauseTracking();
+    if (!event.isCustom) {
+      this.syncPauseState();
     }
   }
 
   handleMapZoom(event) {
-    if (!event.isCustom && this.isSignificantlyOff) {
-      this.pauseTracking();
+    if (!event.isCustom) {
+      this.syncPauseState();
     }
   }
 
@@ -98,6 +98,20 @@ export class CameraTrackerController extends EventTarget {
     console.log("resume tracking");
     this.dispatchEvent(new CustomEvent("resume"));
     this.updatePosition();
+  }
+
+  syncPauseState() {
+    if (
+      this.isSignificantlyOff &&
+      config.cameraFollowState === CameraFollowState.Enabled
+    ) {
+      this.pauseTracking();
+    } else if (
+      !this.isSignificantlyOff &&
+      config.cameraFollowState == CameraFollowState.Paused
+    ) {
+      this.resumeTracking();
+    }
   }
 
   updatePosition() {
