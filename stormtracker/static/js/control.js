@@ -115,13 +115,17 @@ export class MapControl {
     config.save();
   }
 
-  toggleFollow(state) {
-    config.cameraFollowState =
-      state !== undefined
-        ? state
-        : config.cameraFollowState === CameraFollowState.Disabled
-        ? CameraFollowState.Enabled
-        : CameraFollowState.Disabled;
+  toggleFollow(newState) {
+    const oldState = config.cameraFollowState;
+    if (newState === undefined) {
+      newState = {
+        [CameraFollowState.Disabled]: CameraFollowState.Enabled,
+        [CameraFollowState.Enabled]: CameraFollowState.Disabled,
+        [CameraFollowState.Paused]: CameraFollowState.Enabled,
+      }[oldState];
+    }
+
+    config.cameraFollowState = newState;
     if (config.cameraFollowState !== CameraFollowState.Disabled) {
       config.trackEnabled = true;
     }
