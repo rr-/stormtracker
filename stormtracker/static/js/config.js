@@ -10,7 +10,7 @@ export const CameraFollowState = {
 
 Object.assign(config, {
   mapboxAccessToken: MAPBOX_ACCESS_TOKEN,
-  startPos: { lat: 16.8774, lon: 52.3462 },
+  startPos: { lat: 52.3462, lon: 16.8774 },
   startZoom: localStorage.getItem("MapZoom") ?? 5,
   mapStyles: [
     {
