@@ -13,9 +13,6 @@ export class CameraTrackerController extends EventTarget {
     config.addEventListener("save", () => this.handleConfigChange());
     map.on("move", (event) => this.handleMapMove(event));
     map.on("zoom", (event) => this.handleMapZoom(event));
-    geolocation.addEventListener("update", (event) =>
-      this.handleGeolocationUpdate(event)
-    );
   }
 
   get isSignificantlyOff() {
