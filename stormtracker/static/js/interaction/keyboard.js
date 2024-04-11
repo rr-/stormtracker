@@ -37,6 +37,7 @@ export class KeyboardInteraction {
       3: () => this.control.map.zoomTo(11.5),
       4: () => this.control.map.zoomTo(13),
       5: () => this.control.map.zoomTo(15),
+      6: () => this.control.map.zoomTo(17),
     };
 
     const func = keyMap[key];
