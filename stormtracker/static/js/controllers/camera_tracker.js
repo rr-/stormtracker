@@ -8,6 +8,7 @@ export class CameraTrackerController extends EventTarget {
     this.geolocation = geolocation;
     this.lastCameraFollowState = null;
     this.lastNorthUpEnabled = null;
+    this.updateCameraInterval = null;
 
     config.addEventListener("save", () => this.handleConfigChange());
     map.on("move", (event) => this.handleMapMove(event));
@@ -46,7 +47,7 @@ export class CameraTrackerController extends EventTarget {
 
     if (this.lastNorthUpEnabled !== config.northUpEnabled) {
       this.lastNorthUpEnabled = config.northUpEnabled;
-      this.updateRotation();
+      this.updateCamera(true);
     }
   }
 
@@ -62,19 +63,15 @@ export class CameraTrackerController extends EventTarget {
     }
   }
 
-  handleGeolocationUpdate() {
-    if (config.cameraFollowState === CameraFollowState.Enabled) {
-      this.updatePosition();
-    }
-    this.updateRotation();
-  }
-
   startTracking() {
     config.cameraFollowState = CameraFollowState.Enabled;
     config.save();
     console.log("start tracking");
     this.dispatchEvent(new CustomEvent("start"));
-    this.updatePosition();
+    this.updateCamera(true);
+    this.updateCameraInterval = window.setInterval(() => {
+      this.updateCamera(false);
+    }, 1000);
   }
 
   stopTracking() {
@@ -82,6 +79,7 @@ export class CameraTrackerController extends EventTarget {
     config.save();
     console.log("stop tracking");
     this.dispatchEvent(new CustomEvent("stop"));
+    window.clearInterval(this.updateCameraInterval);
   }
 
   pauseTracking() {
@@ -89,6 +87,7 @@ export class CameraTrackerController extends EventTarget {
     config.save();
     console.log("pause tracking");
     this.dispatchEvent(new CustomEvent("pause"));
+    window.clearInterval(this.updateCameraInterval);
   }
 
   resumeTracking() {
@@ -96,7 +95,10 @@ export class CameraTrackerController extends EventTarget {
     config.save();
     console.log("resume tracking");
     this.dispatchEvent(new CustomEvent("resume"));
-    this.updatePosition();
+    this.updateCamera(true);
+    this.updateCameraInterval =window.setInterval(() => {
+      this.updateCamera(false);
+    }, 1000);
   }
 
   syncPauseState() {
@@ -113,13 +115,22 @@ export class CameraTrackerController extends EventTarget {
     }
   }
 
-  updatePosition() {
+  updateCamera(reset) {
     const position = this.geolocation.lastKnownPosition;
-    if (position) {
+
+    const params = { };
+    if (config.cameraFollowState === CameraFollowState.Enabled && position) {
+      params.center = [position.lon, position.lat];
+    }
+    if (config.northUpEnabled) {
+      params.bearing = 0;
+    } else if (position && position.bearing !== null && (reset || position.speed >= 0.5)) {
+      params.bearing = position.bearing;
+    }
+
+    if (Object.keys(params).length > 0) {
       this.map.easeTo(
-        {
-          center: [position.lon, position.lat],
-        },
+        params,
         { isCustom: true }
       );
     }
