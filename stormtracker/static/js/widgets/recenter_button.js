@@ -20,17 +20,17 @@ export class RecenterButton {
 
     this.button.addEventListener("click", () => this.handleButtonClick());
 
-    control.cameraTracker.addEventListener("start", () =>
-      this.handleCameraTrackerStart()
+    control.camera.addEventListener("start-tracking", () =>
+      this.handleCameraStartTracking()
     );
-    control.cameraTracker.addEventListener("pause", () =>
-      this.handleCameraTrackerPause()
+    control.camera.addEventListener("pause-tracking", () =>
+      this.handleCameraPauseTracking()
     );
-    control.cameraTracker.addEventListener("resume", () =>
-      this.handleCameraTrackerResume()
+    control.camera.addEventListener("resume-tracking", () =>
+      this.handleCameraResumeTracking()
     );
-    control.cameraTracker.addEventListener("stop", () =>
-      this.handleCameraTrackerStop()
+    control.camera.addEventListener("stop-tracking", () =>
+      this.handleCameraStopTracking()
     );
   }
 
@@ -39,22 +39,22 @@ export class RecenterButton {
   }
 
   handleButtonClick() {
-    this.control.cameraTracker.resumeTracking();
+    this.control.camera.resumeTracking();
   }
 
-  handleCameraTrackerStart() {
+  handleCameraStartTracking() {
     this.hide();
   }
 
-  handleCameraTrackerPause() {
+  handleCameraPauseTracking() {
     this.show();
   }
 
-  handleCameraTrackerResume() {
+  handleCameraResumeTracking() {
     this.hide();
   }
 
-  handleCameraTrackerStop() {
+  handleCameraStopTracking() {
     this.show();
   }
 

@@ -1,6 +1,6 @@
 import { config } from "./config.js";
 import { CameraFollowState } from "./config.js";
-import { CameraTrackerController } from "./controllers/camera_tracker.js";
+import { CameraController } from "./controllers/camera.js";
 import { GeolocationController } from "./controllers/geolocation.js";
 import { RainController } from "./controllers/rain.js";
 import { StrikesHistoricController } from "./controllers/strikes_historic.js";
@@ -14,7 +14,7 @@ export class MapControl {
     this.strikesLive = new StrikesLiveController();
     this.strikesHistoric = new StrikesHistoricController();
     this.rain = new RainController();
-    this.cameraTracker = new CameraTrackerController(map, this.geolocation);
+    this.camera = new CameraController(map, this.geolocation);
 
     this.bounds = {
       north: 90,

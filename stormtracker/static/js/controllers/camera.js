@@ -1,7 +1,7 @@
 import { config } from "../config.js";
 import { CameraFollowState } from "../config.js";
 
-export class CameraTrackerController extends EventTarget {
+export class CameraController extends EventTarget {
   constructor(map, geolocation) {
     super();
     this.map = map;
@@ -63,8 +63,7 @@ export class CameraTrackerController extends EventTarget {
   startTracking() {
     config.cameraFollowState = CameraFollowState.Enabled;
     config.save();
-    console.log("start tracking");
-    this.dispatchEvent(new CustomEvent("start"));
+    this.dispatchEvent(new CustomEvent("start-tracking"));
     this.updateCamera(true);
     this.updateCameraInterval = window.setInterval(() => {
       this.updateCamera(false);
@@ -74,26 +73,23 @@ export class CameraTrackerController extends EventTarget {
   stopTracking() {
     config.cameraFollowState = CameraFollowState.Disabled;
     config.save();
-    console.log("stop tracking");
-    this.dispatchEvent(new CustomEvent("stop"));
+    this.dispatchEvent(new CustomEvent("stop-tracking"));
     window.clearInterval(this.updateCameraInterval);
   }
 
   pauseTracking() {
     config.cameraFollowState = CameraFollowState.Paused;
     config.save();
-    console.log("pause tracking");
-    this.dispatchEvent(new CustomEvent("pause"));
+    this.dispatchEvent(new CustomEvent("pause-tracking"));
     window.clearInterval(this.updateCameraInterval);
   }
 
   resumeTracking() {
     config.cameraFollowState = CameraFollowState.Enabled;
     config.save();
-    console.log("resume tracking");
-    this.dispatchEvent(new CustomEvent("resume"));
+    this.dispatchEvent(new CustomEvent("resume-tracking"));
     this.updateCamera(true);
-    this.updateCameraInterval =window.setInterval(() => {
+    this.updateCameraInterval = window.setInterval(() => {
       this.updateCamera(false);
     }, 1000);
   }
@@ -115,21 +111,22 @@ export class CameraTrackerController extends EventTarget {
   updateCamera(reset) {
     const position = this.geolocation.lastKnownPosition;
 
-    const params = { };
+    const params = {};
     if (config.cameraFollowState === CameraFollowState.Enabled && position) {
       params.center = [position.lon, position.lat];
     }
     if (config.northUpEnabled) {
       params.bearing = 0;
-    } else if (position && position.bearing !== null && (reset || position.speed >= 0.5)) {
+    } else if (
+      position &&
+      position.bearing !== null &&
+      (reset || position.speed >= 0.5)
+    ) {
       params.bearing = position.bearing;
     }
 
     if (Object.keys(params).length > 0) {
-      this.map.easeTo(
-        params,
-        { isCustom: true }
-      );
+      this.map.easeTo(params, { isCustom: true });
     }
   }
 
