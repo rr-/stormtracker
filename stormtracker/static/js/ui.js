@@ -1,3 +1,4 @@
+import { AlwaysOnInteraction } from "./interaction/always_on.js";
 import { AudioInteraction } from "./interaction/audio.js";
 import { KeyboardInteraction } from "./interaction/keyboard.js";
 import { LocationRadiusLayer } from "./layers/location_radius.js";
@@ -24,6 +25,7 @@ export class MapUI {
     (this.interactions = [
       new AudioInteraction(control),
       new KeyboardInteraction(control),
+      new AlwaysOnInteraction(control),
     ]),
       (this.layers = [
         new RainLayer(control),

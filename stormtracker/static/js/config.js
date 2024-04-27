@@ -37,6 +37,7 @@ Object.assign(config, {
   rangeCirclesEnabled: false,
   rangePolygonsEnabled: true,
   accuracyCircleEnabled: false,
+  alwaysOnEnabled: false,
   rain: {
     enabled: true,
     opacity: 0.5,
@@ -141,6 +142,9 @@ config.load = () => {
   if (localStorage.getItem("RangePolygons") !== null) {
     config.rangePolygonsEnabled = localStorage.getItem("RangePolygons") === "1";
   }
+  if (localStorage.getItem("AlwaysOn") !== null) {
+    config.alwaysOnEnabled = localStorage.getItem("AlwaysOn") === "1";
+  }
 };
 
 config.save = () => {
@@ -166,6 +170,7 @@ config.save = () => {
     "RangePolygons",
     config.rangePolygonsEnabled ? "1" : "0"
   );
+  localStorage.setItem("AlwaysOn", config.alwaysOnEnabled ? "1" : "0");
   config.dispatchEvent(new CustomEvent("save"));
 };
 

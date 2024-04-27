@@ -73,6 +73,22 @@ button.north-up {
     display: none;
   }
 }
+button.always-on {
+  &:not(.active) .sleep-off {
+    display: none;
+  }
+  &.active .sleep {
+    display: none;
+  }
+}
+button.north-up {
+  &:not(.active) .north-up {
+    display: none;
+  }
+  &.active .user-up {
+    display: none;
+  }
+}
 
 .hidden {
   display: none;
@@ -107,6 +123,12 @@ button.north-up {
 
 .icon.rain {
   --mask: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%2224%22 height%3D%2224%22 fill%3D%22none%22 stroke%3D%22black%22 stroke-linecap%3D%22round%22 stroke-linejoin%3D%22round%22 stroke-width%3D%222%22%3E%3Cpath stroke%3D%22none%22 d%3D%22M0 0h24v24H0z%22%2F%3E%3Cpath d%3D%22M4 12a8 8 0 0 1 16 0zM12 12v6a2 2 0 0 0 4 0%22%2F%3E%3C%2Fsvg%3E");
+}
+.icon.sleep {
+  --mask: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-zzz"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12h6l-6 8h6" /><path d="M14 4h6l-6 8h6" /></svg>');
+}
+.icon.sleep-off {
+  --mask: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-zzz-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12h6l-6 8h6" /><path d="M14 4h6l-5.146 6.862m1.146 1.138h4" /><path d="M3 3l18 18" /></svg>');
 }
 
 .icon.lightning {

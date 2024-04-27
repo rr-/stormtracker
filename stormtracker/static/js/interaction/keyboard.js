@@ -25,6 +25,7 @@ export class KeyboardInteraction {
       n: () => this.control.toggleNorthUp(),
       r: () => this.control.toggleRain(),
       l: () => this.control.toggleStrikes(),
+      z: () => this.control.toggleAlwaysOn(),
       c: () => {
         if (event.shiftKey) {
           this.control.toggleRangePolygons();

@@ -88,6 +88,12 @@ export class MapControl {
     config.save();
   }
 
+  toggleAlwaysOn(enable) {
+    config.alwaysOnEnabled =
+      enable !== undefined ? enable : !config.alwaysOnEnabled;
+    config.save();
+  }
+
   toggleRangeCircles(enable) {
     config.rangeCirclesEnabled =
       enable !== undefined ? enable : !config.rangeCirclesEnabled;

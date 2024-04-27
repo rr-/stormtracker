@@ -46,6 +46,11 @@ export class SideButtons {
         <button class="rain" title="Toggle rain">
           <span class="icon rain"></span>
         </button>
+
+        <button class="always-on" title="Toggle always-on screen">
+          <span class="icon sleep"></span>
+          <span class="icon sleep-off"></span>
+        </button>
       </div>
       </div>
     `);
@@ -59,6 +64,7 @@ export class SideButtons {
 
     this.soundButton = this.div.querySelector("button.sound");
     this.rainButton = this.div.querySelector("button.rain");
+    this.alwaysOnButton = this.div.querySelector("button.always-on");
     this.strikesButton = this.div.querySelector("button.strikes");
 
     this.trackButton.addEventListener("click", () =>
@@ -83,6 +89,9 @@ export class SideButtons {
     );
     this.rainButton.addEventListener("click", () =>
       this.handleToggleRainClick()
+    );
+    this.alwaysOnButton.addEventListener("click", () =>
+      this.handleToggleAlwaysOnClick()
     );
     this.strikesButton.addEventListener("click", () =>
       this.handleToggleStrikesClick()
@@ -156,6 +165,10 @@ export class SideButtons {
     this.control.toggleRain();
   }
 
+  handleToggleAlwaysOnClick() {
+    this.control.toggleAlwaysOn();
+  }
+
   handleToggleStrikesClick() {
     this.control.toggleStrikes();
   }
@@ -176,6 +189,7 @@ export class SideButtons {
 
     this.soundButton.classList.toggle("active", config.audioEnabled);
     this.rainButton.classList.toggle("active", config.rain.enabled);
+    this.alwaysOnButton.classList.toggle("active", config.alwaysOnEnabled);
     this.strikesButton.classList.toggle("active", config.strikeMarkers.enabled);
   }
 }
