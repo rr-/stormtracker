@@ -11,6 +11,7 @@ export const CameraFollowState = {
 Object.assign(config, {
   mapboxAccessToken: MAPBOX_ACCESS_TOKEN,
   startPos: { lat: 52.3462, lon: 16.8774 },
+  targetPos: localStorage.getItem("TargetPos") ?? null,
   startZoom: localStorage.getItem("MapZoom") ?? 5,
   mapStyles: [
     {
@@ -109,6 +110,14 @@ config.load = () => {
     config.startPos.lon = +localStorage.getItem("MapLng");
     config.startPos.lat = +localStorage.getItem("MapLat");
   }
+  if (localStorage.getItem("TargetLng") !== null) {
+    config.targetPos = {
+      lon: +localStorage.getItem("TargetLng"),
+      lat: +localStorage.getItem("TargetLat"),
+    };
+  } else {
+    config.targetPos = null;
+  }
   if (localStorage.getItem("MapZoom") !== null) {
     config.startZoom = +localStorage.getItem("MapZoom");
   }
@@ -150,6 +159,13 @@ config.load = () => {
 config.save = () => {
   localStorage.setItem("MapLng", config.startPos.lon);
   localStorage.setItem("MapLat", config.startPos.lat);
+  if (config.targetPos !== null) {
+    localStorage.setItem("TargetLng", config.targetPos.lon);
+    localStorage.setItem("TargetLat", config.targetPos.lat);
+  } else {
+    localStorage.setItem("TargetLng", null);
+    localStorage.setItem("TargetLat", null);
+  }
   localStorage.setItem("MapZoom", config.startZoom);
   localStorage.setItem("MapStyle", config.mapStyle);
   localStorage.setItem("Audio", config.audioEnabled ? "1" : "0");

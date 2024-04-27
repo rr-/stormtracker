@@ -7,7 +7,9 @@ import { RainLayer } from "./layers/rain.js";
 import { StrikesHistoricLayer } from "./layers/strikes_historic.js";
 import { StrikesLiveLayer } from "./layers/strikes_live.js";
 import { CycleMapStyleButtons } from "./widgets/cycle_map_style_buttons.js";
+import { Geocoder } from "./widgets/geocoder.js";
 import { GPSMarker } from "./widgets/gps_marker.js";
+import { Navigator } from "./widgets/navigator.js";
 import { RecenterButton } from "./widgets/recenter_button.js";
 import { SideButtons } from "./widgets/side_buttons.js";
 import { StatsWidget } from "./widgets/stats.js";
@@ -20,6 +22,8 @@ export class MapUI {
     this.stats = new StatsWidget(control);
     this.sideButtons = new SideButtons(control);
     this.recenterButton = new RecenterButton(control);
+    this.geocoder = new Geocoder(control);
+    this.navigator = new Navigator(control);
     this.cycleMapButtons = new CycleMapStyleButtons(control);
 
     (this.interactions = [
@@ -56,7 +60,9 @@ export class MapUI {
     this.control.map.addControl(this.gpsMarker);
     this.control.map.addControl(this.sideButtons, "top-right");
     this.control.map.addControl(this.recenterButton, "bottom-center");
+    this.control.map.addControl(this.geocoder, "top-left");
     this.control.map.addControl(this.stats, "top-left");
+    this.control.map.addControl(this.navigator, "bottom-left");
     this.control.map.addControl(this.cycleMapButtons, "top-right");
   }
 

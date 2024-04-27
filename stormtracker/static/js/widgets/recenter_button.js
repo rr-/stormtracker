@@ -7,12 +7,9 @@ export class RecenterButton {
 
     this.div = htmlToElement(`
       <div class="mapboxgl-ctrl mapboxgl-ctrl-custom">
-        <button
-          class='recenter'
-          type='button'
-          title='Recenter'
-          aria-label='Recenter'
-        >Recenter</button>
+        <button class='recenter' type='button'>
+          Recenter
+        </button>
       </div>
     `);
 

@@ -3,11 +3,15 @@ import { config } from "../config.js";
 export class KeyboardInteraction {
   constructor(control) {
     this.control = control;
-    window.addEventListener("keydown", (event) => this.handleKeyDown(event));
+    document.addEventListener("keydown", (event) => this.handleKeyDown(event));
   }
 
   handleKeyDown(event) {
     if (event.ctrlKey) {
+      return;
+    }
+
+    if (["input", "textarea"].includes(event.target.tagName.toLowerCase())) {
       return;
     }
 
