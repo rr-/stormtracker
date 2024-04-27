@@ -7,6 +7,10 @@ export class KeyboardInteraction {
   }
 
   handleKeyDown(event) {
+    if (event.ctrlKey) {
+      return;
+    }
+
     const key = event.key.toLowerCase();
 
     const keyMap = {
