@@ -30,6 +30,12 @@ export class RainLayer {
         "visibility",
         config.rain.enabled ? "visible" : "none"
       );
+
+      this.control.map.setPaintProperty(
+        this.layerName,
+        "raster-opacity",
+        config.rain.opacity
+      );
     }
   }
 

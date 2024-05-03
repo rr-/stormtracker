@@ -137,6 +137,9 @@ config.load = () => {
   if (localStorage.getItem("Rain") !== null) {
     config.rain.enabled = localStorage.getItem("Rain") === "1";
   }
+  if (localStorage.getItem("RainOpacity") !== null) {
+    config.rain.opacity = +localStorage.getItem("RainOpacity");
+  }
   if (localStorage.getItem("RangeCircles") !== null) {
     config.rangeCirclesEnabled = localStorage.getItem("RangeCircles") === "1";
   }
@@ -167,6 +170,7 @@ config.save = () => {
   );
   localStorage.setItem("Strikes", config.strikeMarkers.enabled ? "1" : "0");
   localStorage.setItem("Rain", config.rain.enabled ? "1" : "0");
+  localStorage.setItem("RainOpacity", config.rain.opacity.toString());
   localStorage.setItem("RangeCircles", config.rangeCirclesEnabled ? "1" : "0");
   localStorage.setItem(
     "RangePolygons",

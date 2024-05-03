@@ -93,6 +93,14 @@ export class MapControl {
     config.save();
   }
 
+  toggleRainOpacity(enable) {
+    config.rain.opacity += 0.1;
+    if (config.rain.opacity > 1.0) {
+      config.rain.opacity = 0.1;
+    }
+    config.save();
+  }
+
   toggleAlwaysOn(enable) {
     config.alwaysOnEnabled =
       enable !== undefined ? enable : !config.alwaysOnEnabled;

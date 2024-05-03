@@ -28,7 +28,13 @@ export class KeyboardInteraction {
       a: () => this.control.toggleAudio(),
       n: () => this.control.toggleNorthUp(),
       p: () => this.control.togglePitch(),
-      r: () => this.control.toggleRain(),
+      r: () => {
+        if (event.shiftKey) {
+          this.control.toggleRainOpacity();
+        } else {
+          this.control.toggleRain();
+        }
+      },
       l: () => this.control.toggleStrikes(),
       z: () => this.control.toggleAlwaysOn(),
       c: () => {
