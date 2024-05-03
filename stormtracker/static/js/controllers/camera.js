@@ -8,6 +8,7 @@ export class CameraController extends EventTarget {
     this.geolocation = geolocation;
     this.lastCameraFollowState = null;
     this.lastNorthUpEnabled = null;
+    this.lastPitchEnabled = null;
     this.targetZoom = null;
     this.updateCameraInterval = null;
 
@@ -45,8 +46,12 @@ export class CameraController extends EventTarget {
       }
     }
 
-    if (this.lastNorthUpEnabled !== config.northUpEnabled) {
+    if (
+      this.lastPitchEnabled !== config.pitchEnabled ||
+      this.lastNorthUpEnabled !== config.northUpEnabled
+    ) {
       this.lastNorthUpEnabled = config.northUpEnabled;
+      this.lastPitchEnabled = config.pitchEnabled;
       this.updateCamera(true);
     }
   }
@@ -136,6 +141,15 @@ export class CameraController extends EventTarget {
     if (config.cameraFollowState === CameraFollowState.Enabled && position) {
       params.center = [position.lon, position.lat];
     }
+
+    if (config.pitchEnabled) {
+      params.pitch = 45;
+      params.padding = { top: document.body.scrollHeight / 3 };
+    } else {
+      params.pitch = 0;
+      params.padding = { top: 0 };
+    }
+
     if (config.northUpEnabled) {
       params.bearing = 0;
     } else if (
@@ -145,6 +159,7 @@ export class CameraController extends EventTarget {
     ) {
       params.bearing = position.bearing;
     }
+
     if (this.targetZoom !== null) {
       params.zoom = this.targetZoom;
       this.targetZoom = null;

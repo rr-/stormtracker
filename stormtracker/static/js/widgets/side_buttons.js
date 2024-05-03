@@ -31,6 +31,10 @@ export class SideButtons {
           <span class="icon north-up"></span>
           <span class="icon user-up"></span>
         </button>
+
+        <button class='pitch' title='Toggle Pitch'>
+          <span class="icon pitch"></span>
+        </button>
       </div>
 
       <div class="mapboxgl-ctrl mapboxgl-ctrl-group">
@@ -61,6 +65,7 @@ export class SideButtons {
 
     this.followButton = this.div.querySelector("button.follow");
     this.northUpButton = this.div.querySelector("button.north-up");
+    this.pitchButton = this.div.querySelector("button.pitch");
 
     this.soundButton = this.div.querySelector("button.sound");
     this.rainButton = this.div.querySelector("button.rain");
@@ -82,6 +87,9 @@ export class SideButtons {
     );
     this.northUpButton.addEventListener("click", () =>
       this.handleToggleNorthUpClick()
+    );
+    this.pitchButton.addEventListener("click", () =>
+      this.handleTogglePitchClick()
     );
 
     this.soundButton.addEventListener("click", () =>
@@ -157,6 +165,10 @@ export class SideButtons {
     this.control.toggleNorthUp();
   }
 
+  handleTogglePitchClick() {
+    this.control.togglePitch();
+  }
+
   handleToggleSoundClick() {
     this.control.toggleAudio();
   }
@@ -186,6 +198,7 @@ export class SideButtons {
 
     this.followButton.dataset.state = config.cameraFollowState;
     this.northUpButton.classList.toggle("active", config.northUpEnabled);
+    this.pitchButton.classList.toggle("active", config.pitchEnabled);
 
     this.soundButton.classList.toggle("active", config.audioEnabled);
     this.rainButton.classList.toggle("active", config.rain.enabled);

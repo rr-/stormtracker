@@ -48,8 +48,6 @@ export class MapUI {
 
     // disable pitch
     this.control.map.touchPitch.disable();
-    this.control.map.setMinPitch(0);
-    this.control.map.setMaxPitch(0);
 
     this.control.map.addControl(new mapboxgl.ScaleControl());
     this.control.map.touchZoomRotate.disableRotation();

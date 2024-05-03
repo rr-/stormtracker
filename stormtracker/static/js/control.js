@@ -83,6 +83,11 @@ export class MapControl {
     config.save();
   }
 
+  togglePitch(enable) {
+    config.pitchEnabled = enable !== undefined ? enable : !config.pitchEnabled;
+    config.save();
+  }
+
   toggleRain(enable) {
     config.rain.enabled = enable !== undefined ? enable : !config.rain.enabled;
     config.save();

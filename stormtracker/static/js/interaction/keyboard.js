@@ -27,6 +27,7 @@ export class KeyboardInteraction {
       f: () => this.control.toggleFollow(),
       a: () => this.control.toggleAudio(),
       n: () => this.control.toggleNorthUp(),
+      p: () => this.control.togglePitch(),
       r: () => this.control.toggleRain(),
       l: () => this.control.toggleStrikes(),
       z: () => this.control.toggleAlwaysOn(),
