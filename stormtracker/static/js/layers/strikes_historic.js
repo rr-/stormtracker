@@ -61,6 +61,12 @@ export class StrikesHistoricLayer {
         "visibility",
         config.strikeMarkers.enabled ? "visible" : "none"
       );
+
+      this.control.map.setPaintProperty(
+        this.layerName,
+        "icon-opacity",
+        config.strikeMarkers.opacity
+      );
     }
   }
 

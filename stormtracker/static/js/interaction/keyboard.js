@@ -35,7 +35,13 @@ export class KeyboardInteraction {
           this.control.toggleRain();
         }
       },
-      l: () => this.control.toggleStrikes(),
+      l: () => {
+        if (event.shiftKey) {
+          this.control.toggleStrikesOpacity();
+        } else {
+          this.control.toggleStrikes();
+        }
+      },
       z: () => this.control.toggleAlwaysOn(),
       c: () => {
         if (event.shiftKey) {

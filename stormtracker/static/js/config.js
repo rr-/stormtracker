@@ -134,6 +134,9 @@ config.load = () => {
   if (localStorage.getItem("Strikes") !== null) {
     config.strikeMarkers.enabled = localStorage.getItem("Strikes") === "1";
   }
+  if (localStorage.getItem("StrikesOpacity") !== null) {
+    config.strikeMarkers.opacity = +localStorage.getItem("StrikesOpacity");
+  }
   if (localStorage.getItem("Rain") !== null) {
     config.rain.enabled = localStorage.getItem("Rain") === "1";
   }
@@ -169,6 +172,10 @@ config.save = () => {
     }[config.cameraFollowState]
   );
   localStorage.setItem("Strikes", config.strikeMarkers.enabled ? "1" : "0");
+  localStorage.setItem(
+    "StrikesOpacity",
+    config.strikeMarkers.opacity.toString()
+  );
   localStorage.setItem("Rain", config.rain.enabled ? "1" : "0");
   localStorage.setItem("RainOpacity", config.rain.opacity.toString());
   localStorage.setItem("RangeCircles", config.rangeCirclesEnabled ? "1" : "0");

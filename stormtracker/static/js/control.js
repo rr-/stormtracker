@@ -126,6 +126,14 @@ export class MapControl {
     config.save();
   }
 
+  toggleStrikesOpacity(enable) {
+    config.strikeMarkers.opacity += 0.1;
+    if (config.strikeMarkers.opacity > 1.0) {
+      config.strikeMarkers.opacity = 0.1;
+    }
+    config.save();
+  }
+
   toggleTrack(enable) {
     config.trackEnabled = enable !== undefined ? enable : !config.trackEnabled;
     if (!config.trackEnabled) {
