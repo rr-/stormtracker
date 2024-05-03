@@ -231,7 +231,7 @@ button.north-up {
   --color-circle: rgba(255, 255, 255, 0.75);
   --color-inside: darkorange;
 
-  position: relative;
+  position: absolute;
   width: var(--size-circle);
   aspect-ratio: 1;
   background-color: var(--color-circle);

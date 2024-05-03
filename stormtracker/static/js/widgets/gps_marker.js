@@ -9,7 +9,7 @@ export class GPSMarker extends EventTarget {
 
   onAdd(map) {
     this.markerElement = htmlToElement(
-      '<div class="mapboxgl-marker mapboxgl-marker-custom-location">' +
+      '<div class="mapboxgl-marker mapboxgl-marker-custom-location hidden">' +
         '<div class="dot"></div>' +
         '<div class="heading"></div>' +
         "</div>"
@@ -48,6 +48,7 @@ export class GPSMarker extends EventTarget {
 
   handleGeolocationUpdate(event) {
     this.updateMarker(event.detail);
+    this.markerElement.classList.remove("hidden");
     this.markerElement.classList.remove("stale");
   }
 
