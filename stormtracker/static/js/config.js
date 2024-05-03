@@ -16,12 +16,12 @@ Object.assign(config, {
     {
       icon: "moon",
       name: "Navigation (dark)",
-      style: "mapbox://styles/mapbox/navigation-night-v1",
+      style: "mapbox://styles/mapbox/navigation-guidance-night-v4",
     },
     {
       icon: "sun",
       name: "Navigation (day)",
-      style: "mapbox://styles/mapbox/navigation-day-v1",
+      style: "mapbox://styles/mapbox/navigation-guidance-day-v4",
     },
     {
       icon: "map",
