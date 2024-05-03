@@ -20,7 +20,6 @@ def dated_url_for(endpoint, **values):
     if endpoint == "static":
         if filename := values.get("filename"):
             static_folder = Path(current_app.static_folder)
-            static_url = current_app.static_url_path
             fingerprint = get_file_fingerprint(static_folder, filename)
             return url_for(endpoint, **values) + "?q=" + fingerprint
     return url_for(endpoint, **values)
