@@ -9,17 +9,10 @@ export class GPSMarker extends EventTarget {
 
   onAdd(map) {
     this.markerElement = htmlToElement(
-      '<div class="mapboxgl-user-location mapboxgl-marker mapboxgl-marker-anchor-center mapboxgl-user-location-show-heading">' +
-        '<div class="mapboxgl-user-location-dot"></div>' +
-        '<div class="mapboxgl-user-location-heading"></div>' +
+      '<div class="mapboxgl-marker mapboxgl-marker-custom-location">' +
+        '<div class="dot"></div>' +
+        '<div class="heading"></div>' +
         "</div>"
-    );
-
-    this.dotElement = this.markerElement.querySelector(
-      ".mapboxgl-user-location-dot"
-    );
-    this.angleElement = this.markerElement.querySelector(
-      ".mapboxgl-user-location-heading"
     );
 
     this.accuracyCircleElement = htmlToElement(
@@ -55,11 +48,11 @@ export class GPSMarker extends EventTarget {
 
   handleGeolocationUpdate(event) {
     this.updateMarker(event.detail);
-    this.dotElement.classList.remove("mapboxgl-user-location-dot-stale");
+    this.markerElement.classList.remove("stale");
   }
 
   handleGeolocationError() {
-    this.dotElement.classList.add("mapboxgl-user-location-dot-stale");
+    this.markerElement.classList.add("stale");
   }
 
   handleZoom(event) {
@@ -84,9 +77,9 @@ export class GPSMarker extends EventTarget {
       };
       this.userLocationMarker.setLngLat(center);
       if (position.bearing === null) {
-        this.angleElement.classList.add("hidden");
+        this.markerElement.classList.remove("heading");
       } else {
-        this.angleElement.classList.remove("hidden");
+        this.markerElement.classList.add("heading");
         this.userLocationMarker.setRotation(position.bearing);
       }
       this.userLocationMarker.addTo(this.control.map);

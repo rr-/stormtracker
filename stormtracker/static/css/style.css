@@ -221,3 +221,47 @@ button.north-up {
 .mapboxgl-ctrl-bottom-center .mapboxgl-ctrl {
   margin: 10px 0 0 10px;
 }
+
+.mapboxgl-marker-custom-location {
+  --size-circle: 3rem;
+  --size-arrow: calc(var(--size-circle) * 0.6);
+  --color-circle: rgba(255, 255, 255, 0.75);
+  --color-inside: darkorange;
+
+  position: relative;
+  width: var(--size-circle);
+  aspect-ratio: 1;
+  background-color: var(--color-circle);
+  border-radius: 100%;
+  box-shadow: 0 0 0.4rem 0.2rem rgba(0, 0, 0, 0.25);
+
+  &.stale {
+    --color-circle: rgba(128, 128, 128, 0.75);
+  }
+
+  &.heading::before {
+    content: "";
+    position: absolute;
+    inset: calc(0.5 * (var(--size-circle) - var(--size-arrow)));
+    background-color: var(--color-inside);
+    transform: translateY(-8%);
+    clip-path: polygon(50% 0, 100% 100%, 50% 80%, 0 100%);
+  }
+
+  &:not(.heading)::before {
+    content: "";
+    position: absolute;
+    inset: calc(0.5 * (var(--size-circle) - var(--size-arrow)));
+    background-color: var(--color-inside);
+    clip-path: circle(50%);
+  }
+}
+
+[data-style*="night"],
+[data-style*="dark"],
+[data-style*="Satellite"] {
+  .mapboxgl-marker-custom-location {
+    --color-circle: rgba(255, 128, 0, 0.75);
+    --color-inside: black;
+  }
+}
