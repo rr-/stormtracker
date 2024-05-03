@@ -22,18 +22,19 @@ export class MapUI {
     this.recenterButton = new RecenterButton(control);
     this.cycleMapButtons = new CycleMapStyleButtons(control);
 
-    (this.interactions = [
+    this.interactions = [
       new AudioInteraction(control),
       new KeyboardInteraction(control),
       new AlwaysOnInteraction(control),
-    ]),
-      (this.layers = [
-        new RainLayer(control),
-        new StrikesLiveLayer(control),
-        new StrikesHistoricLayer(control),
-        new LocationRadiusLayer(control),
-        new LocationReachabilityLayer(control),
-      ]);
+    ];
+
+    this.layers = [
+      new RainLayer(control),
+      new StrikesLiveLayer(control),
+      new StrikesHistoricLayer(control),
+      new LocationRadiusLayer(control),
+      new LocationReachabilityLayer(control),
+    ];
 
     this.registerControlPosition(this.control.map, "bottom-center");
     control.map.on("load", () => this.handleLoad());
