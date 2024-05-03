@@ -53,6 +53,7 @@ export class CameraController extends EventTarget {
       this.lastNorthUpEnabled = config.northUpEnabled;
       this.lastPitchEnabled = config.pitchEnabled;
       this.updateCamera(true);
+      this.restartInterval();
     }
   }
 
@@ -73,25 +74,21 @@ export class CameraController extends EventTarget {
     config.save();
     this.dispatchEvent(new CustomEvent("start-tracking"));
     this.updateCamera(true);
-    this.updateCameraInterval = window.setInterval(() => {
-      this.updateCamera(false);
-    }, 1000);
+    this.restartInterval();
   }
 
   stopTracking() {
     config.cameraFollowState = CameraFollowState.Disabled;
     config.save();
     this.dispatchEvent(new CustomEvent("stop-tracking"));
-    window.clearInterval(this.updateCameraInterval);
-    this.updateCameraInterval = null;
+    this.stopInterval();
   }
 
   pauseTracking() {
     config.cameraFollowState = CameraFollowState.Paused;
     config.save();
     this.dispatchEvent(new CustomEvent("pause-tracking"));
-    window.clearInterval(this.updateCameraInterval);
-    this.updateCameraInterval = null;
+    this.stopInterval();
   }
 
   resumeTracking() {
@@ -99,9 +96,7 @@ export class CameraController extends EventTarget {
     config.save();
     this.dispatchEvent(new CustomEvent("resume-tracking"));
     this.updateCamera(true);
-    this.updateCameraInterval = window.setInterval(() => {
-      this.updateCamera(false);
-    }, 1000);
+    this.restartInterval();
   }
 
   handleUserInteraction() {
@@ -116,22 +111,27 @@ export class CameraController extends EventTarget {
     ) {
       this.resumeTracking();
     }
-    this.resetInterval();
+    this.restartInterval();
   }
 
-  resetInterval() {
+  stopInterval() {
     if (this.updateCameraInterval !== null) {
       window.clearInterval(this.updateCameraInterval);
-      this.updateCameraInterval = window.setInterval(() => {
-        this.updateCamera(false);
-      }, 1000);
+      this.updateCameraInterval = null;
     }
+  }
+
+  restartInterval() {
+    this.stopInterval();
+    this.updateCameraInterval = window.setInterval(() => {
+      this.updateCamera(false);
+    }, 1000);
   }
 
   zoomTo(zoom) {
     this.targetZoom = zoom;
-    this.resetInterval();
     this.updateCamera(true);
+    this.restartInterval();
   }
 
   updateCamera(reset) {
