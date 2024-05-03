@@ -256,7 +256,7 @@ button.north-up {
     position: absolute;
     inset: calc(0.5 * (var(--size-circle) - var(--size-arrow)));
     background-color: var(--color-inside);
-    clip-path: circle(50%);
+    clip-path: circle(40%);
   }
 }
 
@@ -265,6 +265,6 @@ button.north-up {
 [data-style*="Satellite"] {
   .mapboxgl-marker-custom-location {
     --color-circle: rgba(255, 128, 0, 0.75);
-    --color-inside: black;
+    --color-inside: white;
   }
 }
