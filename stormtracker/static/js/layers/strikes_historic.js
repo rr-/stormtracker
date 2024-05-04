@@ -47,21 +47,27 @@ export class StrikesHistoricLayer {
     this.maxChunks = StrikesHistoricController.maxChunks;
     this.geojson = { type: "FeatureCollection", features: [] };
 
-    config.addEventListener("save", () => this.handleConfigChange());
+    config.addEventListener("save", (event) => this.handleConfigChange(event));
     control.map.on("style.load", () => this.handleStyleLoad());
     control.strikesHistoric.addEventListener("strikes", (event) =>
       this.handleStrikes(event)
     );
   }
 
-  handleConfigChange() {
-    if (this.control.map.getLayer(this.layerName)) {
+  handleConfigChange(event) {
+    if (!this.control.map.getLayer(this.layerName)) {
+      return;
+    }
+
+    if (config.hasChanged(event, (cfg) => cfg.strikeMarkers.enabled)) {
       this.control.map.setLayoutProperty(
         this.layerName,
         "visibility",
         config.strikeMarkers.enabled ? "visible" : "none"
       );
+    }
 
+    if (config.hasChanged(event, (cfg) => cfg.strikeMarkers.opacity)) {
       this.control.map.setPaintProperty(
         this.layerName,
         "icon-opacity",

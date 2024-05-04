@@ -12,25 +12,30 @@ export class RainLayer {
     control.rain.addEventListener("tiles", (event) =>
       this.handleTiles(event.detail.url)
     );
-    config.addEventListener("save", () => this.handleConfigChange());
+    config.addEventListener("save", (event) => this.handleConfigChange(event));
   }
 
   handleStyleLoad() {
     if (this.lastKnownUrl) {
       this.handleTiles(this.lastKnownUrl);
-      this.handleConfigChange();
+      this.handleConfigChange(null);
     }
   }
 
-  handleConfigChange() {
-    const layer = this.control.map.getLayer(this.layerName);
-    if (layer) {
+  handleConfigChange(event) {
+    if (!this.control.map.getLayer(this.layerName)) {
+      return;
+    }
+
+    if (config.hasChanged(event, (cfg) => cfg.rain.enabled)) {
       this.control.map.setLayoutProperty(
         this.layerName,
         "visibility",
         config.rain.enabled ? "visible" : "none"
       );
+    }
 
+    if (config.hasChanged(event, (cfg) => cfg.rain.opacity)) {
       this.control.map.setPaintProperty(
         this.layerName,
         "raster-opacity",
@@ -57,6 +62,9 @@ export class RainLayer {
       id: this.layerName,
       type: "raster",
       source: this.sourceName,
+      layout: {
+        visibility: config.rain.enabled ? "visible" : "none",
+      },
       paint: {
         "raster-opacity": config.rain.opacity,
       },

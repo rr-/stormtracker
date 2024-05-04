@@ -23,14 +23,18 @@ export class StrikesLiveLayer {
     }));
 
     setInterval(() => this.animate(), 59);
-    config.addEventListener("save", () => this.handleConfigChange());
+    config.addEventListener("save", (event) => this.handleConfigChange(event));
     control.map.on("style.load", () => this.handleStyleLoad());
     control.strikesLive.addEventListener("strike", (event) =>
       this.handleStrike(event)
     );
   }
 
-  handleConfigChange() {
+  handleConfigChange(event) {
+    if (!config.hasChanged(event, (cfg) => cfg.liveMarkers.enabled)) {
+      return;
+    }
+
     for (let n = 0; n < this.maxCircles; n++) {
       const circle = this.circles[n];
       circle.div.style.visibility = config.liveMarkers.enabled
@@ -58,7 +62,7 @@ export class StrikesLiveLayer {
         source: { type: "geojson", data: circle.geojson },
       });
     }
-    this.handleConfigChange();
+    this.handleConfigChange(null);
   }
 
   handleStrike(event) {

@@ -1,14 +1,10 @@
-class Config extends EventTarget {}
-
-export const config = new Config();
-
 export const CameraFollowState = {
   Disabled: "disabled",
   Enabled: "enabled",
   Paused: "paused",
 };
 
-Object.assign(config, {
+const defaultConfig = {
   mapboxAccessToken: MAPBOX_ACCESS_TOKEN,
   startPos: { lat: 52.3462, lon: 16.8774 },
   startZoom: localStorage.getItem("MapZoom") ?? 5,
@@ -103,88 +99,118 @@ Object.assign(config, {
       6,
     ],
   },
-});
+};
 
-config.load = () => {
+export const buildFromLocalStorage = () => {
+  const result = JSON.parse(JSON.stringify(defaultConfig));
   if (localStorage.getItem("MapLng") !== null) {
-    config.startPos.lon = +localStorage.getItem("MapLng");
-    config.startPos.lat = +localStorage.getItem("MapLat");
+    result.startPos.lon = +localStorage.getItem("MapLng");
+    result.startPos.lat = +localStorage.getItem("MapLat");
   }
   if (localStorage.getItem("MapZoom") !== null) {
-    config.startZoom = +localStorage.getItem("MapZoom");
+    result.startZoom = +localStorage.getItem("MapZoom");
   }
   if (localStorage.getItem("MapStyle") !== null) {
-    config.mapStyle = +localStorage.getItem("MapStyle");
+    result.mapStyle = +localStorage.getItem("MapStyle");
   }
   if (localStorage.getItem("Audio") !== null) {
-    config.audioEnabled = localStorage.getItem("Audio") === "1";
+    result.audioEnabled = localStorage.getItem("Audio") === "1";
   }
   if (localStorage.getItem("Track") !== null) {
-    config.trackEnabled = localStorage.getItem("Track") === "1";
+    result.trackEnabled = localStorage.getItem("Track") === "1";
   }
   if (localStorage.getItem("FollowState") !== null) {
     if (localStorage.getItem("FollowState") === "?") {
-      config.cameraFollowState = CameraFollowState.Paused;
+      result.cameraFollowState = CameraFollowState.Paused;
     } else if (localStorage.getItem("FollowState") === "1") {
-      config.cameraFollowState = CameraFollowState.Enabled;
+      result.cameraFollowState = CameraFollowState.Enabled;
     } else {
-      config.cameraFollowState = CameraFollowState.Disabled;
+      result.cameraFollowState = CameraFollowState.Disabled;
     }
   }
   if (localStorage.getItem("Strikes") !== null) {
-    config.strikeMarkers.enabled = localStorage.getItem("Strikes") === "1";
+    result.strikeMarkers.enabled = localStorage.getItem("Strikes") === "1";
   }
   if (localStorage.getItem("StrikesOpacity") !== null) {
-    config.strikeMarkers.opacity = +localStorage.getItem("StrikesOpacity");
+    result.strikeMarkers.opacity = +localStorage.getItem("StrikesOpacity");
   }
   if (localStorage.getItem("Rain") !== null) {
-    config.rain.enabled = localStorage.getItem("Rain") === "1";
+    result.rain.enabled = localStorage.getItem("Rain") === "1";
   }
   if (localStorage.getItem("RainOpacity") !== null) {
-    config.rain.opacity = +localStorage.getItem("RainOpacity");
+    result.rain.opacity = +localStorage.getItem("RainOpacity");
   }
   if (localStorage.getItem("RangeCircles") !== null) {
-    config.rangeCirclesEnabled = localStorage.getItem("RangeCircles") === "1";
+    result.rangeCirclesEnabled = localStorage.getItem("RangeCircles") === "1";
   }
   if (localStorage.getItem("RangePolygons") !== null) {
-    config.rangePolygonsEnabled = localStorage.getItem("RangePolygons") === "1";
+    result.rangePolygonsEnabled = localStorage.getItem("RangePolygons") === "1";
   }
   if (localStorage.getItem("AlwaysOn") !== null) {
-    config.alwaysOnEnabled = localStorage.getItem("AlwaysOn") === "1";
+    result.alwaysOnEnabled = localStorage.getItem("AlwaysOn") === "1";
   }
+  return result;
 };
 
-config.save = () => {
-  localStorage.setItem("MapLng", config.startPos.lon);
-  localStorage.setItem("MapLat", config.startPos.lat);
-  localStorage.setItem("MapZoom", config.startZoom);
-  localStorage.setItem("MapStyle", config.mapStyle);
-  localStorage.setItem("Audio", config.audioEnabled ? "1" : "0");
-  localStorage.setItem("Track", config.trackEnabled ? "1" : "0");
-  localStorage.setItem("NorthUp", config.northUpEnabled ? "1" : "0");
-  localStorage.setItem("Pitch", config.pitchEnabled ? "1" : "0");
+const dumpToLocalStorage = (source) => {
+  localStorage.setItem("MapLng", source.startPos.lon);
+  localStorage.setItem("MapLat", source.startPos.lat);
+  localStorage.setItem("MapZoom", source.startZoom);
+  localStorage.setItem("MapStyle", source.mapStyle);
+  localStorage.setItem("Audio", source.audioEnabled ? "1" : "0");
+  localStorage.setItem("Track", source.trackEnabled ? "1" : "0");
+  localStorage.setItem("NorthUp", source.northUpEnabled ? "1" : "0");
+  localStorage.setItem("Pitch", source.pitchEnabled ? "1" : "0");
   localStorage.setItem(
     "FollowState",
     {
       [CameraFollowState.Paused]: "?",
       [CameraFollowState.Disabled]: "0",
       [CameraFollowState.Enabled]: "1",
-    }[config.cameraFollowState]
+    }[source.cameraFollowState]
   );
-  localStorage.setItem("Strikes", config.strikeMarkers.enabled ? "1" : "0");
+  localStorage.setItem("Strikes", source.strikeMarkers.enabled ? "1" : "0");
   localStorage.setItem(
     "StrikesOpacity",
-    config.strikeMarkers.opacity.toString()
+    source.strikeMarkers.opacity.toString()
   );
-  localStorage.setItem("Rain", config.rain.enabled ? "1" : "0");
-  localStorage.setItem("RainOpacity", config.rain.opacity.toString());
-  localStorage.setItem("RangeCircles", config.rangeCirclesEnabled ? "1" : "0");
+  localStorage.setItem("Rain", source.rain.enabled ? "1" : "0");
+  localStorage.setItem("RainOpacity", source.rain.opacity.toString());
+  localStorage.setItem("RangeCircles", source.rangeCirclesEnabled ? "1" : "0");
   localStorage.setItem(
     "RangePolygons",
-    config.rangePolygonsEnabled ? "1" : "0"
+    source.rangePolygonsEnabled ? "1" : "0"
   );
-  localStorage.setItem("AlwaysOn", config.alwaysOnEnabled ? "1" : "0");
-  config.dispatchEvent(new CustomEvent("save"));
+  localStorage.setItem("AlwaysOn", source.alwaysOnEnabled ? "1" : "0");
+};
+
+class Config extends EventTarget {}
+
+export const config = new Config();
+Object.assign(config, defaultConfig);
+config.load = () => {
+  Object.assign(config, buildFromLocalStorage());
+};
+
+config.save = () => {
+  const oldConfig = buildFromLocalStorage();
+  dumpToLocalStorage(config);
+  config.dispatchEvent(
+    new CustomEvent("save", {
+      detail: { previous: oldConfig, current: config },
+    })
+  );
+};
+
+config.hasChanged = (event, getter) => {
+  let oldValue = undefined;
+  try {
+    oldValue = getter(event.detail.previous);
+  } catch (error) {
+    oldValue = undefined;
+  }
+  const newValue = getter(config);
+  return oldValue !== newValue;
 };
 
 config.load();
