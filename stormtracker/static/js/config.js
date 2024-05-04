@@ -197,19 +197,24 @@ const dumpToLocalStorage = (source) => {
 class Config extends EventTarget {}
 
 export const config = new Config();
+let prevConfig = null;
 Object.assign(config, defaultConfig);
 config.load = () => {
   Object.assign(config, buildFromLocalStorage());
+  prevConfig = JSON.parse(JSON.stringify(config));
 };
 
 config.save = () => {
-  const oldConfig = buildFromLocalStorage();
+  if (JSON.stringify(prevConfig) === JSON.stringify(config)) {
+    return;
+  }
+
   dumpToLocalStorage(config);
-  config.dispatchEvent(
-    new CustomEvent("save", {
-      detail: { previous: oldConfig, current: config },
-    })
-  );
+  const event = new CustomEvent("save", {
+    detail: { previous: prevConfig, current: config },
+  });
+  prevConfig = JSON.parse(JSON.stringify(config));
+  config.dispatchEvent(event);
 };
 
 config.hasChanged = (event, getter) => {
