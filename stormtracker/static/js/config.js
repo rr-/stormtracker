@@ -11,13 +11,23 @@ const defaultConfig = {
   mapStyles: [
     {
       icon: "moon",
-      name: "Navigation (dark)",
+      name: "Navigation (dark, lite)",
       style: "mapbox://styles/mapbox/navigation-guidance-night-v4",
+    },
+    {
+      icon: "moon",
+      name: "Navigation (dark)",
+      style: "mapbox://styles/mapbox/navigation-night-v1",
+    },
+    {
+      icon: "sun",
+      name: "Navigation (day, lite)",
+      style: "mapbox://styles/mapbox/navigation-guidance-day-v4",
     },
     {
       icon: "sun",
       name: "Navigation (day)",
-      style: "mapbox://styles/mapbox/navigation-guidance-day-v4",
+      style: "mapbox://styles/mapbox/navigation-day-v1",
     },
     {
       icon: "map",
