@@ -6,6 +6,20 @@ export const toDegrees = (radians) => {
   return (radians * 180) / Math.PI;
 };
 
+export const fromMapboxPoint = (point) => {
+  return {
+    lat: point.lat,
+    lon: point.lng,
+  };
+};
+
+export const toMapboxPoint = (point) => {
+  return {
+    lat: point.lat,
+    lng: point.lon,
+  };
+};
+
 export const getBearing = (srcPoint, dstPoint) => {
   const startLat = toRadians(srcPoint.lat);
   const startLon = toRadians(srcPoint.lon);

@@ -1,5 +1,6 @@
 import { config } from "../config.js";
 import { CameraFollowState } from "../config.js";
+import { fromMapboxPoint, getDistance } from "../math.js";
 
 export class CameraController extends EventTarget {
   constructor(map, geolocation) {
@@ -26,12 +27,13 @@ export class CameraController extends EventTarget {
     }
 
     const bounds = this.map.getBounds();
-    const xRatio =
-      (position.lon - bounds.getEast()) / (bounds.getWest() - bounds.getEast());
-    const yRatio =
-      (position.lat - bounds.getNorth()) /
-      (bounds.getSouth() - bounds.getNorth());
-    return xRatio < 0.4 || xRatio > 0.6 || yRatio < 0.4 || yRatio > 0.6;
+    const topLeft = fromMapboxPoint(bounds.getNorthWest());
+    const bottomRight = fromMapboxPoint(bounds.getSouthEast());
+    const center = fromMapboxPoint(this.map.getCenter());
+    const distance = getDistance(position, center);
+    const diagonal = getDistance(topLeft, bottomRight);
+    const ratio = distance / diagonal;
+    return ratio > 0.05;
   }
 
   handleConfigChange() {
