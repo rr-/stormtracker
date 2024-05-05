@@ -1,3 +1,4 @@
+import { isDark } from "../common.js";
 import { config } from "../config.js";
 import { StrikesHistoricController } from "../controllers/strikes_historic.js";
 
@@ -144,7 +145,10 @@ export class StrikesHistoricLayer {
   }
 
   loadImages() {
-    for (let [chunk, color] of config.strikeMarkers.plusColors.entries()) {
+    const plusColors = isDark()
+      ? config.strikeMarkers.plusColors.dark
+      : config.strikeMarkers.plusColors.light;
+    for (let [chunk, color] of plusColors.entries()) {
       for (let res of config.strikeMarkers.plusResolutions) {
         this.control.map.addImage(
           `plus-${chunk}-${res.mapZoom}`,
