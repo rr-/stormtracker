@@ -1,4 +1,5 @@
 import { htmlToElement } from "../common.js";
+import { isDark } from "../common.js";
 import { config } from "../config.js";
 
 export class StrikesLiveLayer {
@@ -104,9 +105,13 @@ export class StrikesLiveLayer {
       circle.phase = -1;
     }
 
+    const colorStroke = isDark() ? "white" : "black";
     if (circle.phase === 0) {
       const progress = 1 - timeDelta / config.liveMarkers.timeAlive;
       const opacity = progress / 1.5;
+      const colorFill = isDark()
+        ? `rgba(255, 255, 255, ${opacity})`
+        : `rgba(0, 0, 0, ${opacity})`;
       const radius =
         (this.minSize + progress * (this.maxSize - this.minSize)) / 2;
       const stroke = 1.5;
@@ -116,9 +121,9 @@ export class StrikesLiveLayer {
           <circle
             cx='${center}' cy='${center}'
             r='${radius}'
-            stroke='white'
+            stroke='${colorStroke}'
             stroke-width='${stroke}'
-            fill='rgba(255, 255, 255, ${opacity})'
+            fill='${colorFill}'
           />
         </svg>`;
     } else if (circle.phase === 1) {
@@ -131,7 +136,7 @@ export class StrikesLiveLayer {
             cx='${center}'
             cy='${center}'
             r='${radius}'
-            stroke='white'
+            stroke='${colorStroke}'
             stroke-width='${stroke}'
             fill='none'
           />
