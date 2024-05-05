@@ -165,6 +165,7 @@ export class CameraController extends EventTarget {
     if (this.targetBearing !== null) {
       params.bearing = this.targetBearing;
       this.targetBearing = null;
+      ease = true;
     } else if (
       !config.northUpEnabled &&
       position &&
