@@ -1,4 +1,6 @@
+from functools import wraps
 from pathlib import Path
+from time import time
 
 import requests
 from flask import (
@@ -14,6 +16,24 @@ from flask import (
 from stormtracker.common import MAPBOX_ACCESS_TOKEN, ROOT_URL, VERSION
 
 app = Flask(__name__, static_url_path=f"{ROOT_URL}/static")
+
+
+def ttl_cache(seconds):
+    def decorator(func):
+        cache = {}
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            key = (args, tuple(kwargs.items()))
+            if key in cache and time() - cache[key][1] <= seconds:
+                return cache[key][0]
+            result = func(*args, **kwargs)
+            cache[key] = (result, time())
+            return result
+
+        return wrapper
+
+    return decorator
 
 
 def dated_url_for(endpoint, **values):
@@ -55,14 +75,19 @@ def route_root():
     )
 
 
+@ttl_cache(seconds=15)
+def proxy_blitzortung(n: int):
+    response = requests.get(
+        f"https://map.blitzortung.org/GEOjson/getjson.php?f=s&n={n:02d}",
+        headers={"Referer": "https://map.blitzortung.org/"},
+    )
+    return response.json()
+
+
 @app.get("/blitzortung-geojson/")
 def route_blitzortung_geojson():
     try:
         n = int(request.args.get("n"))
     except (TypeError, ValueError):
         return jsonify([]), 400
-    response = requests.get(
-        f"https://map.blitzortung.org/GEOjson/getjson.php?f=s&n={n:02d}",
-        headers={"Referer": "https://map.blitzortung.org/"},
-    )
-    return response.json()
+    return proxy_blitzortung(n)
