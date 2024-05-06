@@ -6,29 +6,33 @@ export class StrikesLiveLayer {
   constructor(control) {
     this.control = control;
 
-    this.minSize = config.liveMarkers.minSize;
-    this.maxSize = config.liveMarkers.maxSize;
-    this.maxCircles = config.liveMarkers.maxCount;
-    this.lastCircle = 0;
-    this.circles = new Array(this.maxCircles).fill().map(() => ({
-      div: htmlToElement("<div></div>"),
-      geojson: {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: { type: "LineString", coordinates: [] },
-          },
-        ],
-      },
-    }));
+    this.lastId = 0;
+    this.geojson = { type: "FeatureCollection", features: [] };
 
-    setInterval(() => this.animate(), 59);
     config.addEventListener("save", (event) => this.handleConfigChange(event));
     control.map.on("style.load", () => this.handleStyleLoad());
     control.strikesLive.addEventListener("strike", (event) =>
       this.handleStrike(event)
     );
+
+    window.requestAnimationFrame(() => this.animate());
+  }
+
+  animate() {
+    try {
+      for (const feature of this.geojson.features) {
+        const time =
+          Math.min(
+            config.liveMarkers.timeAnimate,
+            performance.now() - feature.properties.start
+          ) / config.liveMarkers.timeAnimate;
+        this.control.map.setFeatureState(
+          { source: this.sourceName, id: feature.id },
+          { time }
+        );
+      }
+    } catch (err) {}
+    window.requestAnimationFrame(() => this.animate());
   }
 
   handleConfigChange(event) {
@@ -36,34 +40,54 @@ export class StrikesLiveLayer {
       return;
     }
 
-    for (let n = 0; n < this.maxCircles; n++) {
-      const circle = this.circles[n];
-      circle.div.style.visibility = config.liveMarkers.enabled
-        ? "visible"
-        : "hidden";
-      if (this.control.map.getLayer(this.layerName(n))) {
-        this.control.map.setLayoutProperty(
-          this.layerName(n),
-          "visibility",
-          config.liveMarkers.enabled ? "visible" : "none"
-        );
-      }
+    if (this.control.map.getLayer(this.layerName)) {
+      this.control.map.setLayoutProperty(
+        this.layerName,
+        "visibility",
+        config.liveMarkers.enabled ? "visible" : "none"
+      );
     }
   }
 
   handleStyleLoad() {
-    for (let n = 0; n < this.maxCircles; n++) {
-      const circle = this.circles[n];
-      circle.marker = new mapboxgl.Marker(circle.div)
-        .setLngLat([0, -90])
-        .addTo(this.control.map);
-      this.control.map.addLayer({
-        id: this.layerName(n),
-        type: "line",
-        source: { type: "geojson", data: circle.geojson },
-      });
-    }
-    this.handleConfigChange(null);
+    this.control.map.addSource(this.sourceName, {
+      type: "geojson",
+      data: this.geojson,
+    });
+
+    this.control.map.addLayer({
+      id: this.layerName,
+      type: "circle",
+      paint: {
+        "circle-radius": [
+          "+",
+          config.liveMarkers.minSize,
+          [
+            "*",
+            config.liveMarkers.maxSize - config.liveMarkers.minSize,
+            ["-", 1, ["feature-state", "time"]],
+          ],
+        ],
+        "circle-opacity": ["-", 1, ["feature-state", "time"]],
+        "circle-stroke-width": [
+          "-",
+          config.liveMarkers.maxBorder,
+          [
+            "*",
+            config.liveMarkers.maxBorder - config.liveMarkers.minBorder,
+            ["feature-state", "time"],
+          ],
+        ],
+        "circle-stroke-color": isDark() ? "white" : "black",
+        "circle-color": isDark()
+          ? "rgba(255, 255, 255, 0.5)"
+          : "rgba(0, 0, 0, 0.5)",
+      },
+      layout: {
+        visibility: config.liveMarkers.enabled ? "visible" : "none",
+      },
+      source: this.sourceName,
+    });
   }
 
   handleStrike(event) {
@@ -72,81 +96,39 @@ export class StrikesLiveLayer {
       return;
     }
 
-    const circle = this.circles[this.lastCircle];
-    circle.start = performance.now();
-    circle.phase = 0;
-    circle.marker.setLngLat([strike.lon, strike.lat]);
-
-    this.lastCircle += 1;
-    this.lastCircle %= this.maxCircles;
+    this.geojson.features = [
+      ...this.geojson.features.slice(-config.liveMarkers.maxCount),
+      this.strikeToFeature(strike),
+    ];
+    this.updateSource();
   }
 
-  animate() {
-    for (let circle of this.circles) {
-      if (circle.phase !== -1) {
-        this.animateCircle(circle);
-      }
+  updateSource() {
+    const source = this.control.map.getSource(this.sourceName);
+    if (source) {
+      source.setData(this.geojson);
     }
   }
 
-  animateCircle(circle) {
-    if (!config.liveMarkers.enabled) {
-      return;
-    }
-
-    const timeDelta = performance.now() - circle.start;
-    if (circle.phase === 0 && timeDelta > config.liveMarkers.timeAlive) {
-      circle.phase = config.liveMarkers.persist ? 1 : -1;
-    }
-    if (
-      circle.phase === 1 &&
-      timeDelta > config.liveMarkers.timeAlivePersisted
-    ) {
-      circle.phase = -1;
-    }
-
-    const colorStroke = isDark() ? "white" : "black";
-    if (circle.phase === 0) {
-      const progress = 1 - timeDelta / config.liveMarkers.timeAlive;
-      const opacity = progress / 1.5;
-      const colorFill = isDark()
-        ? `rgba(255, 255, 255, ${opacity})`
-        : `rgba(0, 0, 0, ${opacity})`;
-      const radius =
-        (this.minSize + progress * (this.maxSize - this.minSize)) / 2;
-      const stroke = 1.5;
-      const size = radius * 2 + stroke * 2;
-      const center = size / 2;
-      circle.div.innerHTML = `<svg style='width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)'>
-          <circle
-            cx='${center}' cy='${center}'
-            r='${radius}'
-            stroke='${colorStroke}'
-            stroke-width='${stroke}'
-            fill='${colorFill}'
-          />
-        </svg>`;
-    } else if (circle.phase === 1) {
-      const radius = this.minSize / 2;
-      const stroke = 2;
-      const size = radius * 2 + stroke * 2;
-      const center = size / 2;
-      circle.div.innerHTML = `<svg style='width: ${size}px; height: ${size}px; transform: translate(0, 2.5px)'>
-          <circle
-            cx='${center}'
-            cy='${center}'
-            r='${radius}'
-            stroke='${colorStroke}'
-            stroke-width='${stroke}'
-            fill='none'
-          />
-        </svg>`;
-    } else if (circle.phase === -1) {
-      circle.div.innerHTML = "";
-    }
+  strikeToFeature(strike) {
+    return {
+      id: this.lastId++,
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [strike.lon, strike.lat],
+      },
+      properties: {
+        start: performance.now(),
+      },
+    };
   }
 
-  layerName(n) {
-    return `live-${n}`;
+  get sourceName() {
+    return `strike-live-source`;
+  }
+
+  get layerName() {
+    return `strike-live-layer`;
   }
 }

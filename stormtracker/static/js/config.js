@@ -52,10 +52,12 @@ const defaultConfig = {
   liveMarkers: {
     enabled: true,
     persist: true,
-    minSize: 16,
+    minSize: 12,
     maxSize: 120,
-    timeAlive: 500, // 1 s
-    timeAlivePersisted: 60000, // 60 s
+    minBorder: 3,
+    maxBorder: 10,
+    timeAnimate: 500, // 1 s
+    timePersist: 60000, // 60 s
     maxCount: 30,
   },
   strikeMarkers: {

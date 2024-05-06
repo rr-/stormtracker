@@ -30,8 +30,8 @@ export class MapUI {
 
     this.layers = [
       new RainLayer(control),
-      new StrikesLiveLayer(control),
       new StrikesHistoricLayer(control),
+      new StrikesLiveLayer(control),
       new LocationRadiusLayer(control),
       new LocationReachabilityLayer(control),
     ];
