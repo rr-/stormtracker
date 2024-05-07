@@ -40,19 +40,13 @@ export class GPSMarker extends EventTarget {
     return this.markerElement;
   }
 
-  handleConfigChange() {
-    this.accuracyCircleElement.style.visibility = config.accuracyCircleEnabled
-      ? "visible"
-      : "hidden";
-    if (this.markerElement.lastKnownPosition !== null) {
-      this.markerElement.classList.remove("hidden");
-    }
-  }
-
   handleGeolocationUpdate(event) {
     this.updateMarker(event.detail);
     this.markerElement.classList.remove("hidden");
     this.markerElement.classList.remove("stale");
+    this.accuracyCircleElement.style.visibility = config.accuracyCircleEnabled
+      ? "visible"
+      : "hidden";
   }
 
   handleGeolocationError() {
@@ -73,7 +67,8 @@ export class GPSMarker extends EventTarget {
     this.accuracyCircleElement.style.height = `${circleDiameter}px`;
   }
 
-  updateMarker(position) {
+  updateMarker() {
+    const position = this.control.geolocation.lastKnownPosition;
     if (position) {
       const center = {
         lng: position.lon,
