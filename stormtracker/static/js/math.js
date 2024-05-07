@@ -49,3 +49,11 @@ export const getDistance = (srcPoint, dstPoint) => {
   const d = R * c * 1000;
   return d;
 };
+
+export const formatDistance = (meters) => {
+  if (meters < 1000) {
+    return `${Math.round(meters % 50)} m`;
+  } else {
+    return `${Math.round(meters / 1000)} km`;
+  }
+};

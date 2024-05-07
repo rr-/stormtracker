@@ -1,6 +1,8 @@
 import { htmlToElement } from "../common.js";
 import { isDark } from "../common.js";
 import { config } from "../config.js";
+import { getDistance } from "../math.js";
+import { formatDistance } from "../math.js";
 
 export class StrikesLiveLayer {
   constructor(control) {
@@ -40,12 +42,14 @@ export class StrikesLiveLayer {
       return;
     }
 
-    if (this.control.map.getLayer(this.layerName)) {
-      this.control.map.setLayoutProperty(
-        this.layerName,
-        "visibility",
-        config.liveMarkers.enabled ? "visible" : "none"
-      );
+    for (const layerName of [this.layerNameCircles, this.layerNameText]) {
+      if (this.control.map.getLayer(layerName)) {
+        this.control.map.setLayoutProperty(
+          layerName,
+          "visibility",
+          config.liveMarkers.enabled ? "visible" : "none"
+        );
+      }
     }
   }
 
@@ -56,7 +60,7 @@ export class StrikesLiveLayer {
     });
 
     this.control.map.addLayer({
-      id: this.layerName,
+      id: this.layerNameCircles,
       type: "circle",
       paint: {
         "circle-radius": [
@@ -85,6 +89,23 @@ export class StrikesLiveLayer {
       },
       layout: {
         visibility: config.liveMarkers.enabled ? "visible" : "none",
+      },
+      source: this.sourceName,
+    });
+
+    this.control.map.addLayer({
+      id: this.layerNameText,
+      type: "symbol",
+      layout: {
+        "text-field": ["get", "distance"],
+        "text-anchor": "left",
+        "text-size": 12,
+        visibility: config.liveMarkers.enabled ? "visible" : "none",
+      },
+      paint: {
+        "text-color": isDark() ? "white" : "black",
+        "text-translate": [config.liveMarkers.minSize * 1.5, 0],
+        "text-translate-anchor": "viewport",
       },
       source: this.sourceName,
     });
@@ -120,6 +141,11 @@ export class StrikesLiveLayer {
       },
       properties: {
         start: performance.now(),
+        distance: this.control.geolocation.lastKnownPosition
+          ? formatDistance(
+              getDistance(this.control.geolocation.lastKnownPosition, strike)
+            )
+          : null,
       },
     };
   }
@@ -128,7 +154,11 @@ export class StrikesLiveLayer {
     return `strike-live-source`;
   }
 
-  get layerName() {
-    return `strike-live-layer`;
+  get layerNameText() {
+    return `strike-live-circles-layer`;
+  }
+
+  get layerNameCircles() {
+    return `strike-live-text-layer`;
   }
 }
