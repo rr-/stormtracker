@@ -16,6 +16,7 @@ export class CameraController extends EventTarget {
     this.targetBearing = null;
 
     config.addEventListener("save", (event) => this.handleConfigChange(event));
+    map.on("style.load", () => this.handleStyleLoad());
     map.on("movestart", (event) => this.handleMapZoom(event));
     map.on("move", (event) => this.handleMapMove(event));
     map.on("zoomstart", (event) => this.handleMapZoom(event));
@@ -38,7 +39,11 @@ export class CameraController extends EventTarget {
     return ratio > 0.05;
   }
 
-  handleConfigChange() {
+  handleStyleLoad() {
+    this.handleConfigChange();
+  }
+
+  handleConfigChange(event) {
     if (config.hasChanged(event, (cfg) => cfg.cameraFollowState)) {
       if (config.cameraFollowState === CameraFollowState.Enabled) {
         this.startTracking();
