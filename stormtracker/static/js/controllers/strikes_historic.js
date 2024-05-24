@@ -99,7 +99,7 @@ export class StrikesHistoricController extends EventTarget {
   }
 
   async getChunkData(n) {
-    const apiUrl = `${ROOT_URL}/blitzortung-geojson/?n=${n}`;
+    const apiUrl = `/blitzortung-geojson/?n=${n}`;
     const apiResponse = await fetch(apiUrl);
     const data = await apiResponse.json();
     return data.map((strike) => ({

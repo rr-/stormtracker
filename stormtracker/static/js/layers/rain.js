@@ -53,6 +53,10 @@ export class RainLayer {
       return;
     }
 
+    if (!this.control.isReady) {
+      return;
+    }
+
     this.control.map.addSource(this.sourceName, {
       type: "raster",
       tiles: [url],

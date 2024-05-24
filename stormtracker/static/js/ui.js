@@ -6,6 +6,7 @@ import { LocationReachabilityLayer } from "./layers/location_reachability.js";
 import { RainLayer } from "./layers/rain.js";
 import { StrikesHistoricLayer } from "./layers/strikes_historic.js";
 import { StrikesLiveLayer } from "./layers/strikes_live.js";
+import { UserMarksLayer } from "./layers/user_marks.js";
 import { CycleMapStyleButtons } from "./widgets/cycle_map_style_buttons.js";
 import { GPSMarker } from "./widgets/gps_marker.js";
 import { RecenterButton } from "./widgets/recenter_button.js";
@@ -34,6 +35,7 @@ export class MapUI {
       new StrikesLiveLayer(control),
       new LocationRadiusLayer(control),
       new LocationReachabilityLayer(control),
+      new UserMarksLayer(control),
     ];
 
     this.registerControlPosition(this.control.map, "bottom-center");

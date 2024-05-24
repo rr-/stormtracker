@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from time import time
@@ -16,6 +17,7 @@ from flask import (
 from stormtracker.common import MAPBOX_ACCESS_TOKEN, ROOT_URL, VERSION
 
 app = Flask(__name__, static_url_path=f"{ROOT_URL}/static")
+user_marks = {}
 
 
 def ttl_cache(seconds):
@@ -91,3 +93,29 @@ def route_blitzortung_geojson():
     except (TypeError, ValueError):
         return jsonify([]), 400
     return proxy_blitzortung(n)
+
+
+@app.get("/user-marks/")
+def route_user_marks():
+    global user_marks
+    user_marks = {
+        username: mark
+        for username, mark in user_marks.items()
+        if (datetime.now() - mark["time"]).total_seconds() < 60 * 60 * 12
+    }
+    return jsonify(list(user_marks.values())), 200
+
+
+@app.put("/user-marks/")
+def route_user_marks_update():
+    global user_marks
+    user_marks.update(
+        {
+            request.json.get("username"): {
+                **request.json.get("position"),
+                "username": request.json.get("username"),
+                "time": datetime.now(),
+            }
+        }
+    )
+    return jsonify({}), 200

@@ -122,6 +122,13 @@ const defaultConfig = {
       6,
     ],
   },
+  userMarks: {
+    size: 15,
+    textSize: 15,
+    username: null,
+    icon: null,
+    enabled: false,
+  },
 };
 
 export const buildFromLocalStorage = () => {
@@ -172,6 +179,15 @@ export const buildFromLocalStorage = () => {
   if (localStorage.getItem("AlwaysOn") !== null) {
     result.alwaysOnEnabled = localStorage.getItem("AlwaysOn") === "1";
   }
+  if (localStorage.getItem("UserMark") !== null) {
+    result.userMarks.username = localStorage.getItem("UserMark") || null;
+  }
+  if (localStorage.getItem("UserMarkIcon") !== null) {
+    result.userMarks.icon = localStorage.getItem("UserMarkIcon") || null;
+  }
+  if (localStorage.getItem("UserMarks") !== null) {
+    result.userMarks.enabled = localStorage.getItem("UserMarks") === "1";
+  }
   return result;
 };
 
@@ -205,6 +221,9 @@ const dumpToLocalStorage = (source) => {
     source.rangePolygonsEnabled ? "1" : "0"
   );
   localStorage.setItem("AlwaysOn", source.alwaysOnEnabled ? "1" : "0");
+  localStorage.setItem("UserMark", source.userMarks.username ?? "");
+  localStorage.setItem("UserMarkIcon", source.userMarks.icon ?? "");
+  localStorage.setItem("UserMarks", source.userMarks.enabled ? "1" : "0");
 };
 
 class Config extends EventTarget {}

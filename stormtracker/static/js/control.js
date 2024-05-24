@@ -5,12 +5,14 @@ import { GeolocationController } from "./controllers/geolocation.js";
 import { RainController } from "./controllers/rain.js";
 import { StrikesHistoricController } from "./controllers/strikes_historic.js";
 import { StrikesLiveController } from "./controllers/strikes_live.js";
+import { UserMarksController } from "./controllers/user_marks.js";
 
 export class MapControl {
   constructor(map) {
     this.map = map;
 
     this.geolocation = new GeolocationController();
+    this.userMarks = new UserMarksController(this.geolocation);
     this.strikesLive = new StrikesLiveController();
     this.strikesHistoric = new StrikesHistoricController();
     this.rain = new RainController();
@@ -156,6 +158,18 @@ export class MapControl {
     if (config.cameraFollowState !== CameraFollowState.Disabled) {
       config.trackEnabled = true;
     }
+    config.save();
+  }
+
+  toggleUserMarks(newState) {
+    config.userMarks.enabled =
+      enable !== undefined ? enable : !config.userMarks.enabled;
+    config.save();
+  }
+
+  setUserMark(username, icon) {
+    config.userMarks.username = username;
+    config.userMarks.icon = icon;
     config.save();
   }
 

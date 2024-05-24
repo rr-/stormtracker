@@ -155,10 +155,10 @@ export class StrikesLiveLayer {
   }
 
   get layerNameText() {
-    return `strike-live-circles-layer`;
+    return `strike-live-text-layer`;
   }
 
   get layerNameCircles() {
-    return `strike-live-text-layer`;
+    return `strike-live-circles-layer`;
   }
 }
