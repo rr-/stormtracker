@@ -65,7 +65,9 @@ export class MapUI {
 
   removeDistractingIcons() {
     for (let layerName of ["airport-label", "poi-label"]) {
-      this.map.setPaintProperty(layerName, "icon-opacity", 0);
+      if (this.control.map.getLayer(layerName)) {
+        this.control.map.setPaintProperty(layerName, "icon-opacity", 0);
+      }
     }
   }
 
