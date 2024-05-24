@@ -4,7 +4,7 @@ import { config } from "../config.js";
 export class GeolocationController extends EventTarget {
   constructor() {
     super();
-    this.lastKnownPosition = null;
+    this.currentPosition = null;
 
     config.addEventListener("save", () => this.handleConfigChange());
   }
@@ -22,7 +22,7 @@ export class GeolocationController extends EventTarget {
       bearing: position.coords.heading,
     };
 
-    this.lastKnownPosition = result;
+    this.currentPosition = result;
 
     this.dispatchEvent(
       new CustomEvent("update", {

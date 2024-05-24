@@ -2,10 +2,10 @@ import { htmlToElement } from "../common.js";
 import { config } from "../config.js";
 import { getDistance, getBearing } from "../math.js";
 
-export class GeolocationMockController extends EventTarget {
+export class GeolocationController extends EventTarget {
   constructor() {
     super();
-    this.lastKnownPosition = null;
+    this.currentPosition = null;
 
     this.intervalId = null;
     this.refPoints = [];
@@ -41,16 +41,16 @@ export class GeolocationMockController extends EventTarget {
       lon: point.lon,
       time: point.time,
       accuracy: 0,
-      speed: this.lastKnownPosition
-        ? getDistance(this.lastKnownPosition, point) *
-          ((point.time - this.lastKnownPosition.time) * 1000.0)
+      speed: this.currentPosition
+        ? getDistance(this.currentPosition, point) *
+          ((point.time - this.currentPosition.time) * 1000.0)
         : 0.0,
-      bearing: this.lastKnownPosition
-        ? getBearing(this.lastKnownPosition, point)
+      bearing: this.currentPosition
+        ? getBearing(this.currentPosition, point)
         : 0,
     };
 
-    this.lastKnownPosition = result;
+    this.currentPosition = result;
 
     this.dispatchEvent(
       new CustomEvent("update", {

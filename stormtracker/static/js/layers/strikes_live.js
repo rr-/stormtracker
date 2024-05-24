@@ -141,9 +141,9 @@ export class StrikesLiveLayer {
       },
       properties: {
         start: performance.now(),
-        distance: this.control.geolocation.lastKnownPosition
+        distance: this.control.geolocation.currentPosition
           ? formatDistance(
-              getDistance(this.control.geolocation.lastKnownPosition, strike)
+              getDistance(this.control.geolocation.currentPosition, strike)
             )
           : null,
       },

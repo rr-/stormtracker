@@ -126,9 +126,7 @@ export class LocationRadiusLayer {
       return;
     }
 
-    this.geojson = this.createGeoJSON(
-      this.control.geolocation.lastKnownPosition
-    );
+    this.geojson = this.createGeoJSON(this.control.geolocation.currentPosition);
 
     const source = this.control.map.getSource(this.sourceName);
     if (source) {

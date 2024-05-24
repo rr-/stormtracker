@@ -112,12 +112,12 @@ export class LocationReachabilityLayer {
   }
 
   async sync() {
-    if (!this.isEnabled || !this.control.geolocation.lastKnownPosition) {
+    if (!this.isEnabled || !this.control.geolocation.currentPosition) {
       return;
     }
 
     const result = await this.throttledFetchGeoJSON(
-      this.control.geolocation.lastKnownPosition
+      this.control.geolocation.currentPosition
     );
     if (result) {
       const source = this.control.map.getSource(this.sourceName);

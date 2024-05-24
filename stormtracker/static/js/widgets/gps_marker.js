@@ -68,7 +68,7 @@ export class GPSMarker extends EventTarget {
   }
 
   updateMarker() {
-    const position = this.control.geolocation.lastKnownPosition;
+    const position = this.control.geolocation.currentPosition;
     if (position) {
       const center = {
         lng: position.lon,

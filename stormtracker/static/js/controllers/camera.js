@@ -24,7 +24,7 @@ export class CameraController extends EventTarget {
   }
 
   get isSignificantlyOff() {
-    const position = this.geolocation.lastKnownPosition;
+    const position = this.geolocation.currentPosition;
     if (!position) {
       return true;
     }
@@ -70,8 +70,8 @@ export class CameraController extends EventTarget {
       reset = true;
       if (config.northUpEnabled) {
         this.targetBearing = 0;
-      } else if (this.geolocation.lastKnownPosition?.bearing) {
-        this.targetBearing = this.geolocation.lastKnownPosition?.bearing;
+      } else if (this.geolocation.currentPosition?.bearing) {
+        this.targetBearing = this.geolocation.currentPosition?.bearing;
       }
     }
 
@@ -159,7 +159,7 @@ export class CameraController extends EventTarget {
   }
 
   updateCamera(reset) {
-    const position = this.geolocation.lastKnownPosition;
+    const position = this.geolocation.currentPosition;
 
     let ease = false;
     const params = {};
