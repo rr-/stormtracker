@@ -28,7 +28,6 @@ export class GPSMarker extends EventTarget {
       pitchAlignment: "map",
     });
 
-    config.addEventListener("save", () => this.handleConfigChange());
     this.control.map.on("zoom", (event) => this.handleZoom(event));
     this.control.geolocation.addEventListener("update", (event) =>
       this.handleGeolocationUpdate(event)
