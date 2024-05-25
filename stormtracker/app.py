@@ -101,7 +101,7 @@ def route_user_marks():
     user_marks = {
         username: mark
         for username, mark in user_marks.items()
-        if (datetime.now() - mark["time"]).total_seconds() < 60 * 60 * 12
+        # if (datetime.now() - mark["time"]).total_seconds() < 60 * 60 * 12
     }
     return jsonify(list(user_marks.values())), 200
 
