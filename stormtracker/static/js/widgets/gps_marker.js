@@ -5,6 +5,7 @@ export class GPSMarker extends EventTarget {
   constructor(control) {
     super();
     this.control = control;
+    config.addEventListener("save", () => this.handleConfigChange());
   }
 
   onAdd(map) {
@@ -37,6 +38,12 @@ export class GPSMarker extends EventTarget {
     );
 
     return this.markerElement;
+  }
+
+  handleConfigChange() {
+    if (this.markerElement) {
+      this.markerElement.classList.toggle("hidden", !config.trackEnabled);
+    }
   }
 
   handleGeolocationUpdate(event) {
