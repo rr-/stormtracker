@@ -115,7 +115,14 @@ export class UserMarksLayer {
         "icon-size": 1,
         "icon-allow-overlap": true,
         "icon-image": ["get", "icon"],
-        "text-field": ["get", "username"],
+        "text-field": [
+          "format",
+          ["get", "username"],
+          { "font-scale": 1.2 },
+          "\n",
+          ["get", "time"],
+          {},
+        ],
         "text-anchor": "left",
         "text-size": config.userMarks.textSize,
         visibility: config.userMarks.enabled ? "visible" : "none",
@@ -154,6 +161,7 @@ export class UserMarksLayer {
       properties: {
         icon: mark.icon ?? "boar",
         username: mark.username,
+        time: mark.time_fmt,
       },
     };
   }

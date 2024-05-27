@@ -10,7 +10,7 @@ def get_all_keys(pattern: str) -> list[str]:
         cursor, partial_keys = redis_client.scan(
             cursor, match=pattern, count=1000
         )
-        keys.extend(partial_keys)
+        keys.extend([key.decode() for key in partial_keys])
         if cursor == 0:
             break
     return keys
