@@ -10,3 +10,5 @@ services:
       - .:/app/
     ports:
       - ${PORT:-8000}:8000
+  redis:
+    image: redis:latest
