@@ -1,5 +1,5 @@
 import pickle
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from stormtracker.redis import get_all_keys, redis_client
 
@@ -24,11 +24,12 @@ def get_user_mark(username: str) -> UserMark | None:
         result = pickle.loads(data)
 
         time = result["time"]
-        diff = datetime.now() - time
-        if diff < timedelta(days=1):
+        if time >= datetime.combine(
+            datetime.now().date(), datetime.min.time()
+        ):
             result["time_fmt"] = time.strftime("%H:%M")
         else:
-            result["time_fmt"] = time.strftime("%A %H:%M")
+            result["time_fmt"] = time.strftime("%a %H:%M")
 
         return result
     return None
