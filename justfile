@@ -19,3 +19,6 @@ update:
     git reset --hard origin/main
     docker-compose build
     docker-compose up -d --force-recreate --remove-orphans
+
+send-update:
+    ssh wind.garden 'cd work/priv/stormtracker; just --yes update'
