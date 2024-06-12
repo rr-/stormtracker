@@ -7,7 +7,7 @@ export class Map {
 
     this.map = new mapboxgl.Map({
       container: container,
-      center: [config.startPos.lat, config.startPos.lon],
+      center: [config.startPos.lon, config.startPos.lat],
       zoom: config.startZoom,
       style: config.mapStyles[config.mapStyle].style,
       hash: true,
